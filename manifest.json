@@ -5,7 +5,7 @@
     "version" : "0.1",
     "author": "Augustin LAOUAR - Thinhinane ZEDDAM",
     "icons": {
-        "48": "icons/icon_test.svg"
+        "48": "icons/temp_icon.jpg"
       },
     "browser_action": {
         "default_area": "navbar",
