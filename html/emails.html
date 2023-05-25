@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <script type="module" src="../scripts/verify_auth.js"></script>
   <title>Email</title>
 </head>
 <body>
-  <h1>EMAILS</h1>
+  <h1>E-mail created</h1>
+  <ul id="address-list"></ul>
+
+  <form id="create-email-form">
+    <div>
+      <label for="address">Address:</label>
+      <input type="email" id="address" name="address" required>
+    </div>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">Create</button>
+  </form>
+  
+
+  <script type = "module" src = "../scripts/email_main_page.js"></script>
 </body>
 </html>

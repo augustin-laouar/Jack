@@ -9,7 +9,7 @@
       },
     "browser_action": {
         "default_area": "navbar",
-        "default_icon": "icons/icon_test.svg",
+        "default_icon": "icons/temp_icon.jpg",
         "default_popup" :"html/popup.html",
         "default_title": "locker"
     },

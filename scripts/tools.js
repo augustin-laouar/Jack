@@ -91,7 +91,7 @@ export function storeLastLogin() {
  }
 
 export function isLogged() {
-    if(sessionExpired(1)){
+    if(sessionExpired(10)){
         return false;
     }
     return true;
