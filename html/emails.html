@@ -8,20 +8,22 @@
 <body>
   <h1>E-mail created</h1>
   <ul id="address-list"></ul>
-
-  <form id="create-email-form">
-    <div>
-      <label for="address">Address:</label>
-      <input type="email" id="address" name="address" required>
-    </div>
-    <div>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-    </div>
-    <button type="submit">Create</button>
-  </form>
-  
-
+  <div>
+    <h2>Create a new address</h2>
+    <form id ="add-email">
+      <div>
+        <label for="Email">Enter your email name:</label>
+        <input id="email" name="email" placeholder="Enter your email" required>
+      </div>
+      <div>
+        <label for="password">Enter your password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <div>
+        <button type="submit">Create</button>
+      </div>
+    </form>
+  </div>
   <script type = "module" src = "../scripts/email_main_page.js"></script>
 </body>
 </html>

@@ -2,15 +2,19 @@ var baseUrl = 'https://api.mail.tm';
 
 
 export class mailAccount {
-    constructor(){
-        this.address = '';
-        this.password = '';
+    constructor(addr, psw, id, createdAt){
+        this.address = addr;
+        this.password = psw;
         this.token = '';
-        this.id = '';
+        this.id = id;
+        this.createdAt = createdAt;
     }
 }
 
-var mail = new mailAccount();
+export const maxEmailNumber = 10;
+
+
+//FUNCTION TO REQUEST API
 
 
 export async function sendRequest(url, method, params, token) {
@@ -87,13 +91,15 @@ export async function login(addr,psw, myMail){ //recupere le token qui permet de
 
 export async function createAccount(addr, psw){
     try {
-        const params = { address: addr, password: psw };
-        await sendRequest(baseUrl + '/accounts', 'POST', params);
-        await login(addr,psw);
-        return true;
+        var dom = await getDomains();
+        var newAddr = addr + '@' + dom;
+        const params = { address: newAddr, password: psw };
+        var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
+        var currMail = new mailAccount(res.address, psw, res.id, res.createdAt);
+        return {answer : true, mail : currMail};
     } catch (error) {
         console.log(error);
-        return false;
+        return {answer : false, mail : null};
     }
 }
 
@@ -176,9 +182,13 @@ export async function marksAsRead(myMail, messageId){
 }
 
 
+
+
+//FUNCTION FOR LOCAL STORAGE
+
 export function storeEmailList(emailList) {
   // Convertir la liste en une chaîne de caractères
-  const emailListString = emailList.join('\n');
+  const emailListString = emailList.join(';');
 
   // Stocker la chaîne de caractères dans le localStorage
   localStorage.setItem('emailList', emailListString);
@@ -186,22 +196,113 @@ export function storeEmailList(emailList) {
 
 
 export function getEmailList() {
-  // Récupérer la chaîne de caractères depuis le localStorage
   const emailListString = localStorage.getItem('emailList');
 
-  // Vérifier si la chaîne est présente
   if (emailListString) {
-    // Convertir la chaîne en un tableau d'adresses e-mail
-    const emailList = emailListString.split('\n');
+    const emailList = emailListString.split(';');
     return emailList;
   } else {
-    // Retourner un tableau vide si la chaîne n'est pas présente
     return [];
   }
 }
 
 
-export function getEmailAndPassword(emailEntry) {
-  const [email, password] = emailEntry.split(';');
-  return { email, password };
+function minIdAvailable(emailList){
+  if(emailList.length >= maxEmailNumber){
+    throw Error('Bad call');
+  }
+  if(emailList.length === 0){
+    return 1;
+  }
+  let min = 1;
+  let found = false;
+
+  while (!found) {
+    found = true; 
+
+    for (const id of emailList) {
+      if (id == min) {
+        found = false; 
+        break;
+      }
+    }
+
+    if (!found) {
+      min++; 
+    }
+  }
+  console.log(min);
+  return min;
 }
+
+export function pushNewIdInEmailList() { //return 0 = error, else return the new ID added
+  var emailList = getEmailList();
+  if(emailList.length >= maxEmailNumber){
+    return 0;
+  }
+  else{
+    var minId = minIdAvailable(emailList);
+    emailList.push(minId);
+    storeEmailList(emailList);
+    return minId;
+  }
+}
+
+export async function createAndStoreAccount(addr, psw){
+  if(getEmailList().length >= maxEmailNumber){
+    throw Error('You have already '+ maxEmailNumber + 'email address');
+  }
+  var res = await createAccount(addr, psw);
+  if(res.answer) {
+    var newId = pushNewIdInEmailList();
+    var jsonEmail = JSON.stringify(res.mail);
+    localStorage.setItem('email_' + newId,  jsonEmail);
+  }
+  else{
+    throw Error('Error during email creation. This email is maybe already taken.');
+  }
+}
+
+export function getAccountStored(emailNumber){
+  if(emailNumber >= maxEmailNumber){
+    return null;
+  }
+  return JSON.parse(localStorage.getItem('email_' + emailNumber));
+}
+
+export function getEmailAddressAssociated(emailNumber) {
+  return getAccountStored(emailNumber).address;
+}
+
+export function getEmailIdAssociated(emailNumber) {
+  return getAccountStored(emailNumber).id;
+}
+
+export async function deleteAccountStored(emailNumber) {
+  if(emailNumber >= maxEmailNumber){
+    return;
+  }
+
+  //request API to delete this account
+  var mailToDelete = getAccountStored(emailNumber);
+  var res = await deleteAccount(mailToDelete);
+  if(!res){
+    throw ('Error during deleting this email address');
+  }
+
+  //delete this account from available email list
+  var emailList = getEmailList();
+  var newEmailList = [];
+  for(const id of emailList) {
+    if(id !== emailNumber){
+      newEmailList.push(id);
+    }
+  }
+  storeEmailList(newEmailList);
+
+  //set every value stored about this email at empty
+  mail = new mailAccount('','','','');
+  var jsonEmail = JSON.stringify(mail);
+  localStorage.setItem('email_' + emailNumber,  jsonEmail);
+}
+
