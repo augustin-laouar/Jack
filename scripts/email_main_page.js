@@ -15,14 +15,12 @@ function fillAddressList(){
       const buttonElement = document.createElement('button');
       const buttonId = 'button-email-' + emailId; // ID unique pour chaque bouton
       buttonElement.setAttribute('id', buttonId);
-      buttonElement.textContent = 'Consulter';
+      buttonElement.textContent = 'Consult';
   
       buttonElement.addEventListener('click', function () {
-        console.log(emailId);
         const url = browser.runtime.getURL('../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
         browser.tabs.create({ url });
       });
-      buttonElement.textContent = 'Consulter';
       liElement.appendChild(buttonElement);
       ulElement.appendChild(liElement);
 
@@ -39,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function() {
     var passwordInput = document.getElementById("password");
     await emailTools.createAndStoreAccount(addressInput.value, passwordInput.value);
     fillAddressList();
+    addressInput.value = '';
+    passwordInput.value = '';
   });
 });
 

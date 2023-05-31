@@ -1,16 +1,89 @@
-var baseUrl = 'https://api.mail.tm';
+export const baseUrl = 'https://api.mail.tm';
 
 
-export class mailAccount {
+export class MailAccount {
     constructor(addr, psw, id, createdAt){
         this.address = addr;
         this.password = psw;
         this.token = '';
         this.id = id;
         this.createdAt = createdAt;
+
     }
 }
+//MESSAGES 
+export class MessageMin {
+  constructor(createdAt, from, subject, intro, id, seen, hasAttachments) {
+    this.createdAt = createdAt;
+    this.from = from;
+    this.subject = subject;
+    this.intro = intro;
+    this.id = id;
+    this.seen = seen;
+    this.hasAttachments = hasAttachments;
+  }
+}
+export class Message {
+  constructor(context, id, type, accountId, attachments, bcc, cc, createdAt, downloadUrl, flagged, from, hasAttachments, html, messageId, isDeleted, msgId, retention, retentionDate, seen, size, subject, text, to, updatedAt, verifications) {
+    this.context = context;
+    this.id = id;
+    this.type = type;
+    this.accountId = accountId;
+    this.attachments = attachments;
+    this.bcc = bcc;
+    this.cc = cc;
+    this.createdAt = createdAt;
+    this.downloadUrl = downloadUrl;
+    this.flagged = flagged;
+    this.from = from;
+    this.hasAttachments = hasAttachments;
+    this.html = html;
+    this.messageId = messageId;
+    this.isDeleted = isDeleted;
+    this.msgId = msgId;
+    this.retention = retention;
+    this.retentionDate = retentionDate;
+    this.seen = seen;
+    this.size = size;
+    this.subject = subject;
+    this.text = text;
+    this.to = to;
+    this.updatedAt = updatedAt;
+    this.verifications = verifications;
+  }
+}
 
+
+export function initMessageFromJson(jsonResponse){
+  const message = new Message(
+    jsonResponse["@context"],
+    jsonResponse["@id"],
+    jsonResponse["@type"],
+    jsonResponse["accountId"],
+    jsonResponse["attachments"], 
+    jsonResponse["bcc"], 
+    jsonResponse["cc"], 
+    jsonResponse["createdAt"],
+    jsonResponse["downloadUrl"],
+    jsonResponse["flagged"],
+    jsonResponse["from"], 
+    jsonResponse["hasAttachments"],
+    jsonResponse["html"], 
+    jsonResponse["id"],
+    jsonResponse["isDeleted"],
+    jsonResponse["msgid"],
+    jsonResponse["retention"],
+    jsonResponse["retentionDate"],
+    jsonResponse["seen"],
+    jsonResponse["size"],
+    jsonResponse["subject"],
+    jsonResponse["text"],
+    jsonResponse["to"], 
+    jsonResponse["updatedAt"],
+    jsonResponse["verifications"]
+  );
+  return message;
+}
 export const maxEmailNumber = 10;
 
 
@@ -49,7 +122,6 @@ export async function sendRequest(url, method, params, token) {
   
       // Récupérer le code de réponse HTTP
       const statusCode = response.status;
-      console.log('Code de réponse HTTP:', statusCode);
   
       if (response.ok) {
         return data;
@@ -57,6 +129,7 @@ export async function sendRequest(url, method, params, token) {
         throw new Error('La requête a échoué avec un code de statut HTTP ' + statusCode);
       }
     } catch (error) {
+      console.error(error.message);
       throw new Error('Une erreur s\'est produite lors de l\'envoi de la requête.');
     }
   }
@@ -71,15 +144,11 @@ export async function getDomains() {
     }
   }
 
-export async function login(addr,psw, myMail){ //recupere le token qui permet de s'authentifier sur les futurs requests
+export async function login(myMail){ //recupere le token qui permet de s'authentifier sur les futurs requests
     try{
-        const params = {address : addr, password : psw};
+        const params = {address : myMail.address, password : myMail.password};
         const response = await sendRequest(baseUrl + '/token', 'POST', params);
-        myMail.address = addr;
-        myMail.password = psw;
         myMail.token = response.token;
-        myMail.id = response.id;
-        console.log(myMail);
         return true;
     } catch(error){
         console.log(error);
@@ -95,7 +164,7 @@ export async function createAccount(addr, psw){
         var newAddr = addr + '@' + dom;
         const params = { address: newAddr, password: psw };
         var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
-        var currMail = new mailAccount(res.address, psw, res.id, res.createdAt);
+        var currMail = new MailAccount(res.address, psw, res.id, res.createdAt);
         return {answer : true, mail : currMail};
     } catch (error) {
         console.log(error);
@@ -137,25 +206,36 @@ export async function deleteAccount(myMail){
   }
 }
 
-export async function getMessages(myMail, pageNumber = 1){
+export async function getMessages(myMail, pageNumber = 1){ 
   try{
     const params = {page : pageNumber};
-    response = await sendRequest(baseUrl + '/messages', 'GET', params, myMail.token );
-    return true;
+    var response = await sendRequest(baseUrl + '/messages', 'GET', params, myMail.token );
+    const messages = response["hydra:member"].map((msg) => {
+      return new MessageMin(
+        msg.createdAt,
+        msg.from,
+        msg.subject,
+        msg.intro,
+        msg.id,
+        msg.seen,
+        msg.hasAttachments
+      );
+    });
+    return messages;
   } catch(error){
     console.log(error);
-    return false;
+    return null;
   }
 }
 
 export async function getMessage(myMail, messageId){
   try{
     const params = {};
-    response = await sendRequest(baseUrl + '/messages/' + messageId, 'GET', params, myMail.token );
-    return true;
+    var response = await sendRequest(baseUrl + '/messages/' + messageId, 'GET', params, myMail.token );
+    return initMessageFromJson(response);
   } catch(error){
     console.log(error);
-    return false;
+    return null;
   }
 }
 
@@ -231,7 +311,6 @@ function minIdAvailable(emailList){
       min++; 
     }
   }
-  console.log(min);
   return min;
 }
 
@@ -248,6 +327,12 @@ export function pushNewIdInEmailList() { //return 0 = error, else return the new
   }
 }
 
+export function storeAccount(emailId, myMail){ // not a secure function (no verification). Be careful using it
+  var jsonEmail = JSON.stringify(myMail);
+  localStorage.setItem(emailId,  jsonEmail);
+}
+
+
 export async function createAndStoreAccount(addr, psw){
   if(getEmailList().length >= maxEmailNumber){
     throw Error('You have already '+ maxEmailNumber + 'email address');
@@ -255,8 +340,7 @@ export async function createAndStoreAccount(addr, psw){
   var res = await createAccount(addr, psw);
   if(res.answer) {
     var newId = pushNewIdInEmailList();
-    var jsonEmail = JSON.stringify(res.mail);
-    localStorage.setItem('email_' + newId,  jsonEmail);
+    storeAccount('email_' + newId, res.mail);
   }
   else{
     throw Error('Error during email creation. This email is maybe already taken.');
@@ -301,8 +385,121 @@ export async function deleteAccountStored(emailNumber) {
   storeEmailList(newEmailList);
 
   //set every value stored about this email at empty
-  mail = new mailAccount('','','','');
+  mail = new MailAccount('','','','');
   var jsonEmail = JSON.stringify(mail);
   localStorage.setItem('email_' + emailNumber,  jsonEmail);
 }
 
+
+// MESSAGES
+
+export async function downloadMessage(myMail, myMessage) {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Accept': 'text/html'
+    }
+  };
+
+  if (myMail.token) {
+    requestOptions.headers['Authorization'] = `Bearer ${myMail.token}`;
+  }
+
+  const response = await fetch(baseUrl + myMessage.downloadUrl, requestOptions);
+  const htmlContent = await response.text();
+  return htmlContent;
+  
+}
+
+
+function replaceAllOccurrences(text, regex, replacements) {
+  let currentIndex = 0;
+  const modifiedText = text.replace(regex, (match) => {
+    const replacement = replacements[currentIndex % replacements.length];
+    currentIndex++;
+    return replacement;
+  });
+  return modifiedText;
+}
+
+function extractImgTags(htmlString) {
+  const regex = /<img[\s\S]*?src=[\s\S]*?>/gi;
+  const imgTags = htmlString.match(regex) || [];
+  return imgTags;
+}
+
+function findAttachmentSrc(inputString) {
+  const regex = /src="attachment:([a-zA-Z0-9]+)"/i;
+  const match = inputString.match(regex);
+  
+  if (match) {
+    const attachment = match[1];
+    return attachment;
+  }
+  
+  return null;
+}
+
+async function downloadAndEncodeImage(url, token) {
+  try {
+    const headers = new Headers();
+    headers.set('Authorization', `Bearer ${token}`);
+
+    const response = await fetch(url, { headers });
+    const blob = await response.blob();
+
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+
+    return new Promise((resolve, reject) => {
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        resolve(base64String);
+      };
+
+      reader.onerror = () => {
+        reject('Une erreur s\'est produite lors de la conversion de l\'image en base64.');
+      };
+    });
+  } catch (error) {
+    throw new Error('Une erreur s\'est produite lors du téléchargement de l\'image.');
+  }
+}
+async function getNewSrc(oldTag, messageId, token) {
+  const attachementId = findAttachmentSrc(oldTag);
+  if(attachementId !== null){
+    const downloadUrl = baseUrl + messageId + '/attachment/' + attachementId;
+    try {
+      const base64String = await downloadAndEncodeImage(downloadUrl, token);
+      const replacementString = 'src="' + base64String + '"';
+      return replacementString;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  else{
+    return null;
+  }
+}
+
+async function replaceSrc(imgTags, messageId, token) {
+  const modifiedImgTags = await Promise.all(imgTags.map(async (tag) => {
+    const oldTag = tag;
+    const replacementString = await getNewSrc(oldTag, messageId, token);
+    if (replacementString !== null) {
+      const newTag = tag.replace(/src="[\s\S]*?"/gi, replacementString);
+      return newTag;
+    }
+    return oldTag;
+  }));
+  return modifiedImgTags;
+}
+
+
+export async function messageToHtml(myMessage, token) {
+  const regex = /<img[\s\S]*?src=[\s\S]*?>/gi;
+  var imgs = extractImgTags(myMessage.html[0]);
+  var res = await replaceSrc(imgs, myMessage.id, token);
+  var newHtml = replaceAllOccurrences(myMessage.html[0],regex, res);
+  return newHtml;
+}

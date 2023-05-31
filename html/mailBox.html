@@ -4,10 +4,30 @@
   <meta charset="UTF-8">
   <script type="module" src="../scripts/verify_auth.js"></script>
   <title>Email</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+  </style>
 </head>
 <body>
   <h1>MAILBOX</h1>
   <h2 id="address"></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>From</th>
+        <th>Subject</th>
+        <th>Content</th>
+      </tr>
+    </thead>
+    <tbody id ="tab-body"></tbody>
+  </table>
   <script type="module" src="../scripts/mailBox.js"></script>
 </body>
 </html>

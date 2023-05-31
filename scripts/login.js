@@ -42,9 +42,8 @@ document.addEventListener("DOMContentLoaded", function() {
   var form = document.getElementById("login-form");
   form.addEventListener("submit", async function(event) {
     event.preventDefault();
-    await storeHashedPassword("titi");
+    await storeHashedPassword("titi"); //enlever
     var password = document.getElementById("password").value;
-
     if (await validPassword(password)) {
       tools.storeLastLogin();
       window.location.href = "../html/popup.html";
