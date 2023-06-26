@@ -22,9 +22,14 @@ Not used now.
 ## TODO
 
 ### Augustin 
-- Page de gestion de la création des emails, emails poubelle ou durable en utilisant une API.
+- Fonctionnalité générer un email aléatoire. OK
+- Gestion des pièces jointes dans un email (sera surement à faire au moment du dev de l'interface).
+- Interface pour les mails (bouton de suppression, marquer non lu etc...)
+- stockage encryptés des données de connexion aux mails.
+- Fonctionnalité permettant de visualisé son MDP enregistré pour un email.
+- Voir les messages d'erreur dans l'interface. (Email deja pris par exemple)
 - Page de configuration pour configurer le mot de passe mère (et d'autres paramètres à definir plus tard).
-- Bouton de déconnexion
+- Bouton de déconnexion.
 
 
 ### Thihinane

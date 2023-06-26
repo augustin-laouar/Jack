@@ -2,7 +2,7 @@
     "name": "locker",
     "description": "Manage passwords and temporary e-mails address",
     "manifest_version": 2,
-    "version" : "0.1",
+    "version" : "1.0",
     "author": "Augustin LAOUAR - Thinhinane ZEDDAM",
     "icons": {
         "48": "icons/temp_icon.jpg"
@@ -13,7 +13,11 @@
         "default_popup" :"html/popup.html",
         "default_title": "locker"
     },
-
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "augustinlaouar@hotmail.com"
+      }
+    },
     "background": {
         "scripts": ["scripts/background.js"]
     },
@@ -32,6 +36,4 @@
           "run_at": "document_end"
         }
       ]
-
-
 }

@@ -97,3 +97,10 @@ export function isLogged() {
     return true;
 
  }
+
+ export function logout() {
+  var now = new Date();
+  var toStore = new Date(now.getTime() - (10 * 60 * 1000)); 
+  localStorage.setItem('lastLogin', toStore.toISOString());
+  window.location.href = '../html/login.html';
+ }

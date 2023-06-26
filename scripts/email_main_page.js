@@ -30,8 +30,8 @@ function fillAddressList(){
 
 fillAddressList();
 document.addEventListener("DOMContentLoaded", function() {
-  var form = document.getElementById("add-email");
-  form.addEventListener("submit", async function(event) {
+  var addEmailForm = document.getElementById("add-email");
+  addEmailForm.addEventListener("submit", async function(event) {
     event.preventDefault();
     var addressInput = document.getElementById("email");
     var passwordInput = document.getElementById("password");
@@ -39,6 +39,11 @@ document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
     addressInput.value = '';
     passwordInput.value = '';
+  });
+  var randomAddressButton = document.getElementById("randomAddress");
+  randomAddressButton.addEventListener("click", async function(event){
+    await emailTools.createAndStoreRandomAccount();
+    fillAddressList();
   });
 });
 

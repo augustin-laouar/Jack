@@ -346,6 +346,36 @@ export async function createAndStoreAccount(addr, psw){
     throw Error('Error during email creation. This email is maybe already taken.');
   }
 }
+function generateRandomString(characters, length) {
+  let randomString = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters.charAt(randomIndex);
+  }
+  
+  return randomString;
+}
+
+export async function createAndStoreRandomAccount() { 
+  if(getEmailList().length >= maxEmailNumber){
+    throw Error('You have already '+ maxEmailNumber + 'email address');
+  }
+  const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
+  var addr = generateRandomString(letterAndNumber, 10);
+  var psw = generateRandomString(allCharacters,15);
+  var res = await createAccount(addr, psw);
+  var tryCounter = 0;
+  while(!res.answer) {
+    if(tryCounter == 15){
+      throw Error('Error during email creation.');
+    }
+    addr = generateRandomString(letterAndNumber, 10);
+    tryCounter ++;
+  }
+  var newId = pushNewIdInEmailList();
+  storeAccount('email_' + newId, res.mail);
+}
 
 export function getAccountStored(emailNumber){
   if(emailNumber >= maxEmailNumber){
