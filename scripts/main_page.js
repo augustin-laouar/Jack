@@ -6,3 +6,4 @@ document.addEventListener("DOMContentLoaded", function() {
       tools.logout();
     });
   });
+  document.getElementById("stockerBtn").addEventListener("click", tools.stockerDonnees);
