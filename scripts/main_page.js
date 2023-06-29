@@ -5,9 +5,4 @@ document.addEventListener("DOMContentLoaded", function() {
   logoutButton.addEventListener("click", async function(event){
     tools.logout();
   });
-
-  var stockerButton = document.getElementById("pwdForm");
-  stockerButton.addEventListener("click", async function(event){
-    tools.stockerDonnees();
-  });
 });

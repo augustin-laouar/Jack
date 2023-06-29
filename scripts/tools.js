@@ -105,15 +105,3 @@ export function isLogged() {
   window.location.href = '../html/login.html';
  }
 
- export function stockerDonnees() {
-  var identifiant = document.getElementById("identifiant").value;
-  var motDePasse = document.getElementById("motDePasse").value;
-
-  // Stockage des données dans le local storage
-  localStorage.setItem('identifiant', identifiant);
-  localStorage.setItem('motDePasse', motDePasse);
-
-  // Réinitialisation des champs du formulaire
-  document.getElementById("identifiant").value = "";
-  document.getElementById("motDePasse").value = "";
-}
