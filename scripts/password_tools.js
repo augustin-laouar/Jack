@@ -1,10 +1,11 @@
 export async function storeLogs(url, id, psw) {
-  const aesKey = await generateAESKey();
+  const aesKey = await getAesKey();
+  console.log(aesKey);
+
   const encryptedPsw = await encryptWithAES(psw, aesKey);
 
-  localStorage.setItem(url, id + ';' + encryptedPsw);
+  localStorage.setItem("url_"+url, id + ';' + encryptedPsw);
   addNewUrl(url);
-  storeAesKey(aesKey);
 }
 
 export function storeUrlList(urlList) {
@@ -29,13 +30,13 @@ export function getUrlList() {
 export function addNewUrl(url) {
   var urlList = getUrlList();
   // Vérification si l'URL existe déjà dans la liste
-  if (!urlList.includes(url)) {
+  if (!urlList.includes("url_"+url)) {
     urlList.push(url);
     storeUrlList(urlList);
   }
 }
 
-async function generateAESKey() {
+export async function generateAESKey() {
   const keySize = 256;
   const key = await window.crypto.subtle.generateKey(
     {
@@ -48,7 +49,7 @@ async function generateAESKey() {
   return key;
 }
 
-async function encryptWithAES(data, key) {
+export async function encryptWithAES(data, key) {
   const encodedData = new TextEncoder().encode(data);
 
   const iv = window.crypto.getRandomValues(new Uint8Array(16));
@@ -75,6 +76,37 @@ async function encryptWithAES(data, key) {
   return encryptedResult;
 }
 
-function storeAesKey(key) {
-  localStorage.setItem('aesKey', key);
-}
+export function storeAesKey(key) {
+  return window.crypto.subtle.exportKey('raw', key)
+    .then(keyData => {
+      const keyString = Array.from(new Uint8Array(keyData))
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+      localStorage.setItem('aesKey', keyString);
+    });
+  }
+
+  export async function getAesKey() {
+    const aesKeyString = localStorage.getItem('aesKey');
+    if (aesKeyString) {
+      const keyData = new Uint8Array(aesKeyString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+      const aesKey = await window.crypto.subtle.importKey(
+        'raw',
+        keyData,
+        {
+          name: 'AES-CBC'
+        },
+        false,
+        ['encrypt', 'decrypt']
+      );
+      return aesKey;
+    } else {
+      return null;
+    }
+  }
+  
+
+  
+
+
+
