@@ -1,3 +1,4 @@
+
 export async function storeLogs(url, id, psw) {
   const aesKey = await getAesKey();
   console.log(aesKey);
@@ -106,7 +107,25 @@ export function storeAesKey(key) {
   }
   
 
+  export async function decryptWithAESKey(encryptedData, key) {
+    const ivHex = encryptedData.substr(0, 32);
+    const encryptedHex = encryptedData.substr(32);
   
+    const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    const encryptedArray = new Uint8Array(encryptedHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+  
+    const decryptedData = await window.crypto.subtle.decrypt(
+      {
+        name: 'AES-CBC',
+        iv: iv
+      },
+      key,
+      encryptedArray
+    );
+  
+    const decryptedString = new TextDecoder().decode(decryptedData);
+    return decryptedString;
+  }
 
 
 
