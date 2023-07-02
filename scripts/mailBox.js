@@ -44,51 +44,95 @@ function changeDateFormat(oldDateFormat) {
     return newFormat;
 }
 
+async function fillAttachement(myMail, message) {
+    var attachmentDiv = document.getElementById("attachments");
+    attachmentDiv.innerHTML = '';
+    for(var i =0; i < message.attachments.length; i++) {
+        var attachmentUrl = message.attachments[i].downloadUrl;
+        var attachmentName = message.attachments[i].filename;  
+        var downloadUrl = await emailTools.downloadAttachment(attachmentUrl, myMail.token);      
+        var downloadLink = document.createElement('a');
+        downloadLink.href = downloadUrl;
+        downloadLink.download = attachmentName;
+        downloadLink.textContent = attachmentName;
+        downloadLink.classList.add('btn', 'btn-dark', 'text-light');
+        attachmentDiv.appendChild(downloadLink);
+    }
+}
+
+async function showMailContent(myMail, message) {
+    var m = await emailTools.getMessage(myMail, message.id);
+    const newHTML = await emailTools.messageToHtml(m, myMail.token);
+    var sender = document.getElementById("sender");
+    var receiver = document.getElementById("receiver");
+    var date = document.getElementById("date");
+    var mailContentDiv = document.getElementById("mailContent");
+    sender.innerText = 'From : ' + m.from.name + ' <' + m.from.address + '>';
+    receiver.innerText = 'To : ';
+    for(var i = 0; i<m.to.length; i++) {
+        receiver.innerText = receiver.innerText + m.to[i].name + ' <' + m.to[i].address + '>';
+        if(i !== m.to.length - 1){ 
+            receiver.innerText = receiver.innerText + '; ';
+        }
+    }
+    const creationDate = new Date(m.createdAt);
+    date.innerText = (creationDate.getMonth() + 1) + '/' + creationDate.getDate() + '/' + creationDate.getFullYear() + '  ' + creationDate.getHours() + ':' + creationDate.getMinutes() + ':' + creationDate.getSeconds();
+    subject.innerText = m.subject;
+    mailContentDiv.innerHTML = newHTML;
+    fillAttachement(myMail, m);
+}
+
+
+function getTrContent(message) {
+    var from = message.from.name;
+    var createdAt = changeDateFormat(message.createdAt);
+    var subject = message.subject;
+    var intro = message.intro;
+    if(from === "" || from === null) {
+        from = message.from.address;
+    }
+    var codeHTML = `<td>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-10">
+                        <div class="d-flex align-items-center">
+                          <div class="mx-2">
+                            <div class="text-center">
+                                <h3 style="text-align: initial;">${from}</h2>
+                                <h4 style="text-align: initial;">${subject}</h3>
+                                <p style="text-align: initial;">${intro}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="d-flex align-items-center justify-content-center">
+                          <div class="text-center">${createdAt}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>`;
+    return codeHTML;
+    
+
+}
+
 async function fillEmailList(myMail){
     var messages = await emailTools.getMessages(myMail);
     var tab = document.querySelector('#tab-body');
     tab.innerHTML = '';
     for(const message of messages) {
         const trElement = document.createElement('tr');
-        const tdDate = document.createElement('td');
-        const tdFrom = document.createElement('td');
-        const tdSubject = document.createElement('td');
-        const tdContent = document.createElement('td');
-        const tdConsult = document.createElement('td');
-        const tdDelete = document.createElement('td');
-        tdDate.textContent = changeDateFormat(message.createdAt);
-        tdFrom.textContent = message.from.name + '(' + message.from.address + ')';
-        tdSubject.textContent = message.subject;
-        tdContent.innerHTML = '<p>' + message.intro;
-
-        const buttonConsult = document.createElement('button');
-        const buttonId = 'consult-' + message.id;
-        buttonConsult.setAttribute('id', buttonId);
-        buttonConsult.textContent = 'Consult';
-        buttonConsult.addEventListener('click', async function () {
-            var m = await emailTools.getMessage(myMail, message.id);
-            const newHTML = await emailTools.messageToHtml(m, myMail.token);
-            const newWindow = window.open();
-            newWindow.document.open();
-            newWindow.document.write(newHTML);
-            newWindow.document.close();
+        trElement.innerHTML = getTrContent(message);
+        trElement.addEventListener('click', function() {
+            var showMailContainer = document.getElementById('showMailContainer');
+            //change style of the mail div first time we click on a mail
+            showMailContainer.classList.add('bg-light');
+            showMailContainer.classList.add('text-dark');
+            showMailContainer.style.setProperty('overflow', 'scroll');
+            showMailContent(myMail, message);
         });
-
-        const buttonDelete = document.createElement('button');
-        const buttonId2 = 'delete-' + message.id;
-        buttonDelete.setAttribute('id', buttonId2);
-        buttonDelete.textContent = 'Delete';
-        buttonDelete.addEventListener('click', function () {
-            console.log('delete message');
-        });
-        tdConsult.appendChild(buttonConsult);
-        tdDelete.appendChild(buttonDelete);
-        trElement.appendChild(tdDate);
-        trElement.appendChild(tdFrom);
-        trElement.appendChild(tdSubject);
-        trElement.appendChild(tdContent);
-        trElement.appendChild(tdConsult);
-        trElement.appendChild(tdDelete);
         tab.appendChild(trElement);
     }
 }
@@ -100,10 +144,13 @@ async function init(){
         throw Error('Error during login');
     }
     const h2Element = document.querySelector('#address');
-    h2Element.innerHTML = 'Mail box for ' + email.address;
+    h2Element.innerHTML = '<strong>' + email.address + '</strong>';
     fillEmailList(email);
 }   
+
 init();
+browser.tabs.insertCSS({ file: "../css/mailbox.css" });
+browser.tabs.insertCSS({ file: "../css/bootstrap.min.css" });
 
 
 

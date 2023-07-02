@@ -533,3 +533,20 @@ export async function messageToHtml(myMessage, token) {
   var newHtml = replaceAllOccurrences(myMessage.html[0],regex, res);
   return newHtml;
 }
+
+//ATTACHEMENT
+
+export async function downloadAttachment(url, token) {
+  try {
+    const headers = new Headers();
+    headers.set('Authorization', `Bearer ${token}`);
+
+    const response = await fetch(baseUrl + url, { headers });
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    return downloadUrl;
+  }
+  catch (error){
+
+  }
+}
