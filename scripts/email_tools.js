@@ -98,11 +98,14 @@ export async function sendRequest(url, method, params, token) {
         const keys = Object.keys(params);
         queryParams = keys.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`).join('&');
       }
-  
+      var contentType = 'application/json';
+      if(method === 'PATCH'){
+        contentType = 'application/ld+json';
+      }
       const requestOptions = {
         method: method,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': contentType
         }
       };
 
@@ -116,10 +119,14 @@ export async function sendRequest(url, method, params, token) {
       } else {
         requestOptions.body = JSON.stringify(params);
       }
-  
       const response = await fetch(url, requestOptions);
-      const data = await response.json();
-  
+      var data;
+      try{
+        data = await response.json();
+      }
+      catch{
+        data = null;
+      }
       // Récupérer le code de réponse HTTP
       const statusCode = response.status;
   
@@ -210,6 +217,12 @@ export async function getMessages(myMail, pageNumber = 1){
   try{
     const params = {page : pageNumber};
     var response = await sendRequest(baseUrl + '/messages', 'GET', params, myMail.token );
+    console.log(response["hydra:totalItems"]);
+    const totalItems = response["hydra:totalItems"];
+    var hasMoreMessages = false;
+    if(totalItems > pageNumber * 30){
+      hasMoreMessages = true;
+    }
     const messages = response["hydra:member"].map((msg) => {
       return new MessageMin(
         msg.createdAt,
@@ -221,7 +234,7 @@ export async function getMessages(myMail, pageNumber = 1){
         msg.hasAttachments
       );
     });
-    return messages;
+    return {messages, hasMoreMessages, totalItems};
   } catch(error){
     console.log(error);
     return null;
@@ -242,7 +255,7 @@ export async function getMessage(myMail, messageId){
 export async function deleteMessage(myMail, messageId){
   try{
     const params = {};
-    response = await sendRequest(baseUrl + '/messages/' + messageId, 'DELETE', params, myMail.token );
+    await sendRequest(baseUrl + '/messages/' + messageId, 'DELETE', params, myMail.token);
     return true;
   } catch(error){
     console.log(error);
@@ -252,8 +265,10 @@ export async function deleteMessage(myMail, messageId){
 
 export async function marksAsRead(myMail, messageId){
   try{
-    const params = {};
-    response = await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token );
+    const params = {
+      "seen" : true
+    };
+    await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token);
     return true;
   } catch(error){
     console.log(error);
@@ -261,6 +276,18 @@ export async function marksAsRead(myMail, messageId){
   }
 }
 
+export async function marksAsUnread(myMail, messageId){
+  try{
+    const params = {
+      "seen" : false
+    };
+    await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token);
+    return true;
+  } catch(error){
+    console.log(error);
+    return false;
+  }
+}
 
 
 
@@ -532,4 +559,39 @@ export async function messageToHtml(myMessage, token) {
   var res = await replaceSrc(imgs, myMessage.id, token);
   var newHtml = replaceAllOccurrences(myMessage.html[0],regex, res);
   return newHtml;
+}
+
+
+export async function howMuchUnread(myMail){
+  var res = 0;
+  var pageNumber = 1;
+  while(true){
+    var res =  await getMessages(myMail, pageNumber);
+    var messages = res.messages;
+    if(messages.length === 0){
+      break;
+    }
+    for(const message in messages){
+      if(!message.seen){
+        res += 1;
+      }
+    }
+  }
+  return res;
+}
+//ATTACHEMENT
+
+export async function downloadAttachment(url, token) {
+  try {
+    const headers = new Headers();
+    headers.set('Authorization', `Bearer ${token}`);
+
+    const response = await fetch(baseUrl + url, { headers });
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    return downloadUrl;
+  }
+  catch (error){
+
+  }
 }
