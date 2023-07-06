@@ -91,7 +91,7 @@ export function storeLastLogin() {
  }
 
 export function isLogged() {
-    if(sessionExpired(10)){
+    if(sessionExpired(500)){
         return false;
     }
     return true;
@@ -104,3 +104,4 @@ export function isLogged() {
   localStorage.setItem('lastLogin', toStore.toISOString());
   window.location.href = '../html/login.html';
  }
+
