@@ -22,18 +22,11 @@ Not used now.
 ## TODO
 
 ### Augustin 
-Dimanche 02/07 : objectifs : changement de couleur lorsque l'on passe la souris sur un mail de la liste. 
-- delete un message
-- Fonctionnalité générer un email aléatoire. OK
-- Gestion des pièces jointes dans un email (sera surement à faire au moment du dev de l'interface). OK
-- Interface pour les mails (bouton de suppression, marquer non lu etc...)
 - stockage encryptés des données de connexion aux mails. 
 - Fonctionnalité permettant de visualisé son MDP enregistré pour un email.
 - Voir les messages d'erreur dans l'interface. (Email deja pris par exemple)
-- Page de configuration pour configurer le mot de passe mère (et d'autres paramètres à definir plus tard).
-- Bouton de déconnexion.
-- bouton refresh sur la page de mail
-- afficher le nombre de mail non lu dans la page principal
+- Page de configuration pour configurer le mot de passe mère + durée de connexion (et d'autres paramètres à definir plus tard).
+- Quitter la page mailBox lorsqu'on fait logout
 
 ### Thinhinane 
 - Gérer le stockage sécurisé des mots de passes en utilisant une encryption AES, fesable avec l'API window.crypto

@@ -16,7 +16,7 @@ function fillAddressList(){
       const buttonId = 'button-email-' + emailId; // ID unique pour chaque bouton
       buttonElement.setAttribute('id', buttonId);
       buttonElement.textContent = 'Consult';
-  
+      
       buttonElement.addEventListener('click', function () {
         const url = browser.runtime.getURL('../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
         browser.tabs.create({ url });
