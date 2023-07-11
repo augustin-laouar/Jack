@@ -1,7 +1,7 @@
 import * as emailTools from './email_tools.js';
 
 
-function fillAddressList(){
+async function fillAddressList(){
     const addressList = emailTools.getEmailList(); 
     const ulElement = document.querySelector('#address-list');
   
@@ -9,7 +9,7 @@ function fillAddressList(){
     ulElement.innerHTML = ''; 
 
     for(const emailId of addressList) {
-      var mail = emailTools.getEmailAddressAssociated(emailId);
+      var mail = await emailTools.getEmailAddressAssociated(emailId);
       const liElement = document.createElement('li');    
       liElement.textContent = mail;
       const buttonElement = document.createElement('button');

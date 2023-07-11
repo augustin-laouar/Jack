@@ -1,3 +1,5 @@
+import * as pswTools from './password_tools.js';
+
 export const baseUrl = 'https://api.mail.tm';
 
 
@@ -354,9 +356,11 @@ export function pushNewIdInEmailList() { //return 0 = error, else return the new
   }
 }
 
-export function storeAccount(emailId, myMail){ // not a secure function (no verification). Be careful using it
-  var jsonEmail = JSON.stringify(myMail);
-  localStorage.setItem(emailId,  jsonEmail);
+export async function storeAccount(emailId, myMail){ // not a secure function (no verification). Be careful using it
+  const jsonEmail = JSON.stringify(myMail);
+  const aesKey = await pswTools.getAesKey();
+  const encryptedJsonEmail = await pswTools.encryptWithAES(jsonEmail, aesKey);
+  localStorage.setItem(emailId, encryptedJsonEmail);
 }
 
 
@@ -367,12 +371,13 @@ export async function createAndStoreAccount(addr, psw){
   var res = await createAccount(addr, psw);
   if(res.answer) {
     var newId = pushNewIdInEmailList();
-    storeAccount('email_' + newId, res.mail);
+    await storeAccount('email_' + newId, res.mail);
   }
   else{
     throw Error('Error during email creation. This email is maybe already taken.');
   }
 }
+
 function generateRandomString(characters, length) {
   let randomString = '';
   for (let i = 0; i < length; i++) {
@@ -401,22 +406,26 @@ export async function createAndStoreRandomAccount() {
     tryCounter ++;
   }
   var newId = pushNewIdInEmailList();
-  storeAccount('email_' + newId, res.mail);
+  await storeAccount('email_' + newId, res.mail);
 }
 
-export function getAccountStored(emailNumber){
+export async function getAccountStored(emailNumber){
   if(emailNumber >= maxEmailNumber){
     return null;
   }
-  return JSON.parse(localStorage.getItem('email_' + emailNumber));
+  const aesKey = await pswTools.getAesKey();
+  const decryptedJsonEmail = await pswTools.decryptWithAESKey(localStorage.getItem('email_' + emailNumber), aesKey);
+  return JSON.parse(decryptedJsonEmail);
 }
 
-export function getEmailAddressAssociated(emailNumber) {
-  return getAccountStored(emailNumber).address;
+export async function getEmailAddressAssociated(emailNumber) {
+  const res = await getAccountStored(emailNumber);
+  return res.address;
 }
 
-export function getEmailIdAssociated(emailNumber) {
-  return getAccountStored(emailNumber).id;
+export async function getEmailIdAssociated(emailNumber) {
+  const res = await getAccountStored(emailNumber);
+  return res.id;
 }
 
 export async function deleteAccountStored(emailNumber) {
@@ -425,7 +434,7 @@ export async function deleteAccountStored(emailNumber) {
   }
 
   //request API to delete this account
-  var mailToDelete = getAccountStored(emailNumber);
+  var mailToDelete = await getAccountStored(emailNumber);
   var res = await deleteAccount(mailToDelete);
   if(!res){
     throw ('Error during deleting this email address');

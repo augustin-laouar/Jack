@@ -21,7 +21,7 @@ async function markAsUnread(myMail, message, trElement) {
 async function loginAssociatedAccount() {
     const params = new URLSearchParams(window.location.search);
     const emailId = params.get('emailId');
-    var email = emailTools.getAccountStored(emailId);
+    var email = await emailTools.getAccountStored(emailId);
     var res = await emailTools.login(email);
     if(res){
         emailTools.storeAccount(emailId, email);
@@ -233,6 +233,7 @@ async function fillEmailList(myMail, pageNumber = 1){
         var res = await emailTools.getMessages(myMail, pageNumber);
         var messages = res.messages;
         var tab = document.querySelector('#tab-body');
+        tab.innerHTML = '';
         for(const message of messages) {
             const trElement = document.createElement('tr');
             trElement.innerHTML = getTrContent(message);

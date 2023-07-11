@@ -77,14 +77,12 @@ export async function encryptWithAES(data, key) {
   return encryptedResult;
 }
 
-export function storeAesKey(key) {
-  return window.crypto.subtle.exportKey('raw', key)
-    .then(keyData => {
-      const keyString = Array.from(new Uint8Array(keyData))
-        .map(byte => byte.toString(16).padStart(2, '0'))
-        .join('');
-      localStorage.setItem('aesKey', keyString);
-    });
+export async function storeAesKey(key) {
+  const keyData = await window.crypto.subtle.exportKey('raw', key);
+  const keyString = Array.from(new Uint8Array(keyData))
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+  localStorage.setItem('aesKey', keyString);
   }
 
   export async function getAesKey() {
