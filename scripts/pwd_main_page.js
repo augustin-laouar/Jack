@@ -1,4 +1,5 @@
 import * as pswTools from './password_tools.js';
+import * as urlTools from './urlList.js';
 
 
 document.addEventListener("DOMContentLoaded", function() { //on attend que la page se charge
@@ -13,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       id.value = '';
       pwd.value = '';
       url.value = '';
+      urlTools.refresh();
+      
     });
 
     var keyGen = document.getElementById("genKey");
