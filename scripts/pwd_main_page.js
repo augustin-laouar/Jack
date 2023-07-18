@@ -20,8 +20,9 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
 
     var keyGen = document.getElementById("genKey");
     keyGen.addEventListener("click",async function(event){
-      var key = await pswTools.generateAESKey();
-      pswTools.storeAesKey(key);
+      
+      var aeskey = await pswTools.generateAESKey();
+      pswTools.storeAesKeyEncrypted(aeskey);
     }
     );
 });
