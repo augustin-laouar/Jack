@@ -1,4 +1,4 @@
-import * as tools from './tools.js';
+import * as tools from '../tools.js';
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }

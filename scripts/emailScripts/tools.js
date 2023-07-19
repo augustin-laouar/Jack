@@ -1,11 +1,13 @@
-import * as pswTools from './password_tools.js';
-import * as errorManager from './error_manager.js';
+import * as pswTools from '../passwordScripts/tools.js';
+import * as errorManager from '../exception/errorManager.js';
 
 export const baseUrl = 'https://api.mail.tm';
 const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
 
 
+
+//CLASS 
 export class MailAccount {
     constructor(addr, psw, id, createdAt){
         this.address = addr;
@@ -16,7 +18,6 @@ export class MailAccount {
 
     }
 }
-//MESSAGES 
 export class MessageMin {
   constructor(createdAt, from, subject, intro, id, seen, hasAttachments) {
     this.createdAt = createdAt;
@@ -90,6 +91,30 @@ export function initMessageFromJson(jsonResponse){
   return message;
 }
 export const maxEmailNumber = 10;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //FUNCTION TO REQUEST API
@@ -228,6 +253,35 @@ export async function marksAsUnread(myMail, messageId){
   };
   await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -382,6 +436,38 @@ export async function deleteAccountStored(emailId) {
   }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // MESSAGES
 
 export async function downloadMessage(myMail, myMessage) {
@@ -510,6 +596,7 @@ export async function howMuchUnread(myMail){
   }
   return res;
 }
+
 //ATTACHEMENT
 
 export async function downloadAttachment(url, token) {

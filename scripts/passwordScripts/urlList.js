@@ -1,4 +1,4 @@
-import * as pwd_tools from './password_tools.js';
+import * as pwd_tools from './tools.js';
 
 export async function refresh() {
   // Récupération de la liste d'URL depuis le Local Storage

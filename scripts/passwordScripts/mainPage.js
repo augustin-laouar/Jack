@@ -1,4 +1,4 @@
-import * as pswTools from './password_tools.js';
+import * as pswTools from './tools.js';
 import * as urlTools from './urlList.js';
 
 

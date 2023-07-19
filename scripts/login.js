@@ -8,12 +8,9 @@ async function hashPassword(psw) {
     const hash = await window.crypto.subtle.digest('SHA-512', data);
     const hashArray = Array.from(new Uint8Array(hash));
     const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-    
-    console.log('SHA-256 hash:', hashHex);
     return hashHex;
   } catch (error) {
-    console.error('Error:', error);
-    throw error;
+    throw error;//todo
   }
 }
 
@@ -23,7 +20,7 @@ async function validPassword(psw) {
     const storedHash = localStorage.getItem('password');
     return hashedpsw === storedHash;
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error); //todo
     return false;
   }
 }
@@ -31,10 +28,9 @@ async function validPassword(psw) {
 async function storeHashedPassword(psw) {
   try {
     const hashedpsw = await hashPassword(psw);
-    console.log("stored hash:", hashedpsw);
     localStorage.setItem('password', hashedpsw);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error); //todo
   }
 }
 

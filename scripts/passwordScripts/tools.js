@@ -1,4 +1,5 @@
 
+//SIMPLE AES
 export async function generateAESKey() {
   const keySize = 256;
   const key = await window.crypto.subtle.generateKey(
@@ -105,6 +106,27 @@ export async function decryptBytesWithAes(encryptedData, key) { //return bytes
   return decryptedArray;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// DERIVED KEY
 export async function generateDerivedKey(password) {
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
@@ -149,6 +171,22 @@ export async function getDerivedKey() {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//AES key encrypted
 
 export async function storeAesKeyEncrypted(aesKey) {
   const exportedAesKey = await window.crypto.subtle.exportKey('raw', aesKey);
@@ -214,6 +252,14 @@ export async function storeAesKeyEncrypted(aesKey) {
   
    
   
+
+
+
+
+
+
+
+  //LocalStorage
   export async function storeLogs(url, id, psw) {
     try{
       var aesKey = await getAesKey();

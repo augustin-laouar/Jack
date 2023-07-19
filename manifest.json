@@ -19,7 +19,7 @@
       }
     },
     "background": {
-        "scripts": ["scripts/background.js"]
+        "scripts": ["scripts/backgroundScripts/background.js"]
     },
 
     "permissions": [

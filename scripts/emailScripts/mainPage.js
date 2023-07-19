@@ -1,5 +1,5 @@
-import * as emailTools from './email_tools.js';
-import * as errorManager from './error_manager.js';
+import * as emailTools from './tools.js';
+import * as errorManager from '../exception/errorManager.js';
 
 
 function showError(error){
