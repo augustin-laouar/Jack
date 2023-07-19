@@ -1,4 +1,5 @@
 import * as pswTools from './password_tools.js';
+import * as urlTools from './urlList.js';
 
 
 document.addEventListener("DOMContentLoaded", function() { //on attend que la page se charge
@@ -13,12 +14,15 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       id.value = '';
       pwd.value = '';
       url.value = '';
+      urlTools.refresh();
+      
     });
 
     var keyGen = document.getElementById("genKey");
     keyGen.addEventListener("click",async function(event){
-      var key = await pswTools.generateAESKey();
-      pswTools.storeAesKey(key);
+      
+      var aeskey = await pswTools.generateAESKey();
+      pswTools.storeAesKeyEncrypted(aeskey);
     }
     );
 });
