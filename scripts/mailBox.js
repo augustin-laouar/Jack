@@ -1,36 +1,62 @@
 import * as emailTools from './email_tools.js';
+import * as errorManager from './error_manager.js';
+
+function showError(error){
+    if(!(error instanceof errorManager.Error)){
+      return;
+    }
+    const errorStr = errorManager.errorToString(error);
+    const infoLabel = document.getElementById('info');
+    infoLabel.innerHTML = errorStr;
+    if(error.type === 1){
+      infoLabel.classList.remove('text-warning');
+      infoLabel.classList.add('text-danger'); //system error
+    }
+    if(error.type === 2){
+      infoLabel.classList.remove('text-danger');
+      infoLabel.classList.add('text-warning'); //user error
+    }
+  }
+
 
 async function markAsRead(myMail, message, trElement) {
-    var response = await emailTools.marksAsRead(myMail, message.id);
-    if(response){
+    try{
+        await emailTools.marksAsRead(myMail, message.id);
         trElement.querySelector('#messageSubject').classList.remove('fw-bolder');
         trElement.querySelector('#messageSubject').classList.remove('text-info');
         message.seen = true;
     }
+    catch(error){
+        showError(error);
+    }
 }
 
 async function markAsUnread(myMail, message, trElement) {
-    var response = await emailTools.marksAsUnread(myMail, message.id);
-    if(response){
+    try{
+        await emailTools.marksAsUnread(myMail, message.id);
         message.seen = false;
         trElement.querySelector('#messageSubject').classList.add('fw-bolder');
         trElement.querySelector('#messageSubject').classList.add('text-info');
     }
+    catch(error){
+        showError(error);
+    }
+
 }
 
 async function loginAssociatedAccount() {
-    const params = new URLSearchParams(window.location.search);
-    const emailId = params.get('emailId');
-    var email = await emailTools.getAccountStored(emailId);
-    var res = await emailTools.login(email);
-    if(res){
+    try{
+        const params = new URLSearchParams(window.location.search);
+        const emailId = params.get('emailId');
+        var email = await emailTools.getAccountStored(emailId);
+        email = await emailTools.login(email);
         emailTools.storeAccount(emailId, email);
         return email;
     }
-    else{
-        console.log('Error during login');
-        return null;
+    catch(error){
+        showError(error);
     }
+
 }
 
 function changeDateFormat(oldDateFormat) {
@@ -65,52 +91,72 @@ async function fillAttachement(myMail, message) {
     attachmentDiv.innerHTML = '';
     for(var i =0; i < message.attachments.length; i++) {
         var attachmentUrl = message.attachments[i].downloadUrl;
-        var attachmentName = message.attachments[i].filename;  
-        var downloadUrl = await emailTools.downloadAttachment(attachmentUrl, myMail.token);      
-        var downloadLink = document.createElement('a');
-        downloadLink.href = downloadUrl;
-        downloadLink.download = attachmentName;
-        downloadLink.textContent = attachmentName;
-        downloadLink.classList.add('btn', 'btn-dark', 'text-light');
-        attachmentDiv.appendChild(downloadLink);
+        var attachmentName = message.attachments[i].filename; 
+        try{
+            var downloadUrl = await emailTools.downloadAttachment(attachmentUrl, myMail.token);      
+            var downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = attachmentName;
+            downloadLink.textContent = attachmentName;
+            downloadLink.classList.add('btn', 'btn-dark', 'text-light');
+            attachmentDiv.appendChild(downloadLink);
+        } 
+        catch(error){
+            showError(error);
+        }
     }
 }
 
 async function showMailContent(myMail, message) {
-    var m = await emailTools.getMessage(myMail, message.id);
-    const newHTML = await emailTools.messageToHtml(m, myMail.token);
-    var sender = document.getElementById("sender");
-    var receiver = document.getElementById("receiver");
-    var date = document.getElementById("date");
-    var cc = document.getElementById("cc");
-    var mailContentDiv = document.getElementById("mailContent");
-    sender.innerText = 'From : ' + m.from.name + ' <' + m.from.address + '>';
-    receiver.innerText = 'To : ';
-    for(var i = 0; i<m.to.length; i++) {
-        receiver.innerText = receiver.innerText + m.to[i].name + ' <' + m.to[i].address + '>';
-        if(i !== m.to.length - 1){ 
-            receiver.innerText = receiver.innerText + '; ';
+    try{
+        var m = await emailTools.getMessage(myMail, message.id);
+        const newHTML = await emailTools.messageToHtml(m, myMail.token);
+        var subject = document.getElementById("subject");
+        var sender = document.getElementById("sender");
+        var receiver = document.getElementById("receiver");
+        var date = document.getElementById("date");
+        var cc = document.getElementById("cc");
+        var mailContentDiv = document.getElementById("mailContent");
+        sender.innerText = 'From : ' + m.from.name + ' <' + m.from.address + '>';
+        receiver.innerText = 'To : ';
+        for(var i = 0; i<m.to.length; i++) {
+            receiver.innerText = receiver.innerText + m.to[i].name + ' <' + m.to[i].address + '>';
+            if(i !== m.to.length - 1){ 
+                receiver.innerText = receiver.innerText + '; ';
+            }
         }
-    }
-    const creationDate = new Date(m.createdAt);
-    date.innerText = (creationDate.getMonth() + 1) + '/' + creationDate.getDate() + '/' + creationDate.getFullYear() + '  ' + creationDate.getHours() + ':' + creationDate.getMinutes() + ':' + creationDate.getSeconds();
-    if(m.subject === ''){
-        subject.innerText = 'No subject';
-    }
-    else{
-        subject.innerText = m.subject;
-    }
-    cc.innerText = 'CC : ';
-    for(var i = 0; i<m.cc.length; i++) {
-        cc.innerText = cc.innerText + m.cc[i].name + ' <' + m.cc[i].address + '>';
-        if(i !== m.cc.length - 1){ 
-            cc.innerText = cc.innerText + '; ';
+        const creationDate = new Date(m.createdAt);
+        date.innerText = (creationDate.getMonth() + 1) + '/' + creationDate.getDate() + '/' + creationDate.getFullYear() + '  ' + creationDate.getHours() + ':' + creationDate.getMinutes() + ':' + creationDate.getSeconds();
+        if(m.subject === ''){
+            subject.innerText = 'No subject';
         }
+        else{
+            subject.innerText = m.subject;
+        }
+        cc.innerText = 'CC : ';
+        for(var i = 0; i<m.cc.length; i++) {
+            cc.innerText = cc.innerText + m.cc[i].name + ' <' + m.cc[i].address + '>';
+            if(i !== m.cc.length - 1){ 
+                cc.innerText = cc.innerText + '; ';
+            }
+        }
+        mailContentDiv.innerHTML = newHTML;
+        fillAttachement(myMail, m);
     }
-    mailContentDiv.innerHTML = newHTML;
-    fillAttachement(myMail, m);
+    catch(error){
+        showError(error);
+    }
 }
 
+function emptyMailContent(){
+    document.getElementById("subject").innerText = '';
+    document.getElementById("sender").innerText = '';
+    document.getElementById("receiver").innerText = '';
+    document.getElementById("date").innerText = '';
+    document.getElementById("cc").innerText = '';
+    document.getElementById("mailContent").innerHTML = '';
+    document.getElementById("attachments").innerHTML = '';
+}
 
 function getTrContent(message) {
     var from = message.from.name;
@@ -176,15 +222,21 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
     deleteMenuItem.style.padding = "5px 20px";
     deleteMenuItem.style.cursor = "pointer";
     deleteMenuItem.addEventListener("click", async function() {
-        var response = await emailTools.deleteMessage(myMail, message.id);
-        if(response){
+        try{
+            await emailTools.deleteMessage(myMail, message.id);
             tab.removeChild(trElement);
+            document.body.removeChild(customMenu);
+            var showMailContainer = document.getElementById('showMailContainer');
+            showMailContainer.classList.remove('bg-light');
+            showMailContainer.classList.remove('text-dark');
+            showMailContainer.classList.add('bg-dark');
+            showMailContainer.classList.add('text-light');
+            showMailContainer.style.removeProperty('overflow');
+            emptyMailContent();
         }
-        else{
-            console.log('error during deleting message');
+        catch(error){
+            showError(error);
         }
-        document.body.removeChild(customMenu);
-
     });
     customMenu.appendChild(deleteMenuItem);
     //Separator
@@ -204,18 +256,25 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
     markAsReadMenuItem.style.cursor = "pointer";
     markAsReadMenuItem.addEventListener("click", async function() {
         if(message.seen){
-            markAsUnread(myMail, message, trElement);
+            try{
+                markAsUnread(myMail, message, trElement);
+            }
+            catch(error){
+                showError(error);
+            }
         }
         else {
-            markAsRead(myMail, message, trElement);
+            try{
+                markAsRead(myMail, message, trElement);
+            }
+            catch(error){
+                showError(error);
+            }        
         }
         document.body.removeChild(customMenu);
     });
     customMenu.appendChild(markAsReadMenuItem);
-
-
     document.body.appendChild(customMenu);
-
     customMenu.style.left = x + "px";
     customMenu.style.top = y + "px";
 }
@@ -230,6 +289,7 @@ function hideCustomMenu(event) {
 }
 
 async function fillEmailList(myMail, pageNumber = 1){
+    try{
         var res = await emailTools.getMessages(myMail, pageNumber);
         var messages = res.messages;
         var tab = document.querySelector('#tab-body');
@@ -239,12 +299,19 @@ async function fillEmailList(myMail, pageNumber = 1){
             trElement.innerHTML = getTrContent(message);
             trElement.addEventListener('click', function() {
                 var showMailContainer = document.getElementById('showMailContainer');
+                showMailContainer.classList.remove('bg-dark');
+                showMailContainer.classList.remove('text-light');
                 showMailContainer.classList.add('bg-light');
                 showMailContainer.classList.add('text-dark');
                 showMailContainer.style.setProperty('overflow', 'scroll');
                 showMailContent(myMail, message);
                 if(!message.seen){
-                    markAsRead(myMail,message,trElement);
+                    try{
+                        markAsRead(myMail,message,trElement);
+                    }
+                    catch(error){
+                        showError(error);
+                    }
                 }
             });
             trElement.addEventListener('contextmenu', function(event) {
@@ -265,22 +332,29 @@ async function fillEmailList(myMail, pageNumber = 1){
             tab.appendChild(moreMessageButton);
         }
         document.getElementById('totalItems').innerHTML = '<strong>' + res.totalItems + '</strong> messages in <strong>' + myMail.address + '</strong> mail box.';
+        }
+    catch(error){
+        showError(error);
+    }
+    
 }
 
 
 async function init(){
-    var email = await loginAssociatedAccount();
-    if(email === null) {
-        throw Error('Error during login');
-    }
-    fillEmailList(email);
-    document.addEventListener('click', function(event) { 
-        hideCustomMenu(event);
-    });
-    document.getElementById('refreshButton').addEventListener('click', function() {
+    try{
+        var email = await loginAssociatedAccount();
         fillEmailList(email);
-    });
-    document.getElementById('title').innerText = email.address;
+        document.addEventListener('click', function(event) { 
+            hideCustomMenu(event);
+        });
+        document.getElementById('refreshButton').addEventListener('click', function() {
+            fillEmailList(email);
+        });
+        document.getElementById('title').innerText = email.address;
+    }
+    catch(error){
+        showError(error);
+    }
 }   
 
 init();

@@ -3,28 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <script type="module" src="../scripts/verify_auth.js"></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
   <title>Email</title>
 </head>
-<body>
-  <h1>E-mail created</h1>
-  <ul id="address-list"></ul>
-  <div>
-    <h2>Create a new address</h2>
-    <form id ="add-email">
-      <div>
-        <label for="Email">Enter your email name:</label>
-        <input id="email" name="email" placeholder="Enter your email" required>
+<body class="bg-dark text-light overflow-x-hidden">
+  <div class="row" style="width:850px; height:350px;">
+    <div class="col-4 m-2">
+      <h3>Create a new address</h3>
+      <p>Create with a specific name</p>
+      <form id ="add-email">
+        <div>
+          <input id="email" autocomplete="off" placeholder="Enter an email name" required>
+        </div>
+        <div>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-info">Create</button>
+        </div>
+      </form>
+      <p>Or generate a random address</p>
+      <button type="button" class="btn btn-info" id="randomAddress">Generate</button>
+      <br>
+      <p id="info"></p>
+    </div>
+    <div class="col m-2" >
+      <h3>My emails</h3>
+      <div style="overflow-y:scroll; max-height:80vh;">
+        <table class="table table-dark">
+          <tbody id="tab-body"></tbody>
+        </table>
       </div>
-      <div>
-        <label for="password">Enter your password:</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-      </div>
-      <div>
-        <button type="submit">Create</button>
-      </div>
-    </form>
-    <button type="button" id="randomAddress">Generate random address</button>
-    <a href="test.html">TEST</a>
+    </div>
   </div>
   <script type = "module" src = "../scripts/email_main_page.js"></script>
 </body>

@@ -105,3 +105,7 @@ export function isLogged() {
   window.location.href = '../html/login.html';
  }
 
+ export function showError(msg) {
+  const infoText = document.getElementById('info').innerText = msg;
+ }
+

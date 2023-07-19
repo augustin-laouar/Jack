@@ -1,6 +1,9 @@
 import * as pswTools from './password_tools.js';
+import * as errorManager from './error_manager.js';
 
 export const baseUrl = 'https://api.mail.tm';
+const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
 
 
 export class MailAccount {
@@ -129,166 +132,101 @@ export async function sendRequest(url, method, params, token) {
       catch{
         data = null;
       }
-      // Récupérer le code de réponse HTTP
       const statusCode = response.status;
   
       if (response.ok) {
         return data;
       } else {
-        throw new Error('La requête a échoué avec un code de statut HTTP ' + statusCode);
+        throw new errorManager.Error(1, 1, 'Status code : ' + statusCode);
       }
     } catch (error) {
-      console.error(error.message);
-      throw new Error('Une erreur s\'est produite lors de l\'envoi de la requête.');
+      throw new errorManager.Error(1, 1, 'Unexpected error.');
     }
   }
 
 
 export async function getDomains() {
-    try {
       const response = await sendRequest(baseUrl + '/domains', 'GET', null);
       return response["hydra:member"][0].domain;
-    } catch (error) {
-      throw new Error('Erreur récupération domaines');
-    }
   }
 
 export async function login(myMail){ //recupere le token qui permet de s'authentifier sur les futurs requests
-    try{
-        const params = {address : myMail.address, password : myMail.password};
-        const response = await sendRequest(baseUrl + '/token', 'POST', params);
-        myMail.token = response.token;
-        return true;
-    } catch(error){
-        console.log(error);
-        return false;
-    }
-
+    const params = {address : myMail.address, password : myMail.password};
+    const response = await sendRequest(baseUrl + '/token', 'POST', params);
+    myMail.token = response.token;
+    return myMail;
 }
 
 
 export async function createAccount(addr, psw){
-    try {
-        var dom = await getDomains();
-        var newAddr = addr + '@' + dom;
-        const params = { address: newAddr, password: psw };
-        var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
-        var currMail = new MailAccount(res.address, psw, res.id, res.createdAt);
-        return {answer : true, mail : currMail};
-    } catch (error) {
-        console.log(error);
-        return {answer : false, mail : null};
-    }
+  var dom = await getDomains();
+  var newAddr = addr + '@' + dom;
+  const params = { address: newAddr, password: psw };
+  var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
+  var currMail = new MailAccount(res.address, psw, res.id, res.createdAt);
+  return currMail;
 }
 
 export async function getAccount(myMail) {
-  try{
-    const params = {};
-    response = await sendRequest(baseUrl + '/accounts/' + myMail.id, 'GET', params, myMail.token );
-    return true;
-  } catch(error){
-    console.log(error);
-    return false;
-  }
-
+  const params = {};
+  response = await sendRequest(baseUrl + '/accounts/' + myMail.id, 'GET', params, myMail.token );
 }
 
 export async function me(myMail){
-  try{
-    const params = {};
-    response = await sendRequest(baseUrl + '/me', 'GET', params, myMail.token );
-    return true;
-  } catch(error){
-    console.log(error);
-    return false;
-  }
+  const params = {};
+  response = await sendRequest(baseUrl + '/me', 'GET', params, myMail.token );
 }
 
 export async function deleteAccount(myMail){
-  try{
-    const params = {};
-    response = await sendRequest(baseUrl + '/accounts/' + myMail.id, 'DELETE', params, myMail.token );
-    return true;
-  } catch(error){
-    console.log(error);
-    return false;
-  }
+  const params = {};
+  await sendRequest(baseUrl + '/accounts/' + myMail.id, 'DELETE', params, myMail.token );
 }
 
 export async function getMessages(myMail, pageNumber = 1){ 
-  try{
-    const params = {page : pageNumber};
-    var response = await sendRequest(baseUrl + '/messages', 'GET', params, myMail.token );
-    console.log(response["hydra:totalItems"]);
-    const totalItems = response["hydra:totalItems"];
-    var hasMoreMessages = false;
-    if(totalItems > pageNumber * 30){
-      hasMoreMessages = true;
-    }
-    const messages = response["hydra:member"].map((msg) => {
-      return new MessageMin(
-        msg.createdAt,
-        msg.from,
-        msg.subject,
-        msg.intro,
-        msg.id,
-        msg.seen,
-        msg.hasAttachments
-      );
-    });
-    return {messages, hasMoreMessages, totalItems};
-  } catch(error){
-    console.log(error);
-    return null;
+  const params = {page : pageNumber};
+  var response = await sendRequest(baseUrl + '/messages', 'GET', params, myMail.token );
+  const totalItems = response["hydra:totalItems"];
+  var hasMoreMessages = false;
+  if(totalItems > pageNumber * 30){
+    hasMoreMessages = true;
   }
+  const messages = response["hydra:member"].map((msg) => {
+    return new MessageMin(
+      msg.createdAt,
+      msg.from,
+      msg.subject,
+      msg.intro,
+      msg.id,
+      msg.seen,
+      msg.hasAttachments
+    );
+  });
+  return {messages, hasMoreMessages, totalItems};
 }
 
 export async function getMessage(myMail, messageId){
-  try{
-    const params = {};
-    var response = await sendRequest(baseUrl + '/messages/' + messageId, 'GET', params, myMail.token );
-    return initMessageFromJson(response);
-  } catch(error){
-    console.log(error);
-    return null;
-  }
+  const params = {};
+  var response = await sendRequest(baseUrl + '/messages/' + messageId, 'GET', params, myMail.token );
+  return initMessageFromJson(response);
 }
 
 export async function deleteMessage(myMail, messageId){
-  try{
-    const params = {};
-    await sendRequest(baseUrl + '/messages/' + messageId, 'DELETE', params, myMail.token);
-    return true;
-  } catch(error){
-    console.log(error);
-    return false;
-  }
+  const params = {};
+  await sendRequest(baseUrl + '/messages/' + messageId, 'DELETE', params, myMail.token);
 }
 
 export async function marksAsRead(myMail, messageId){
-  try{
     const params = {
       "seen" : true
     };
     await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token);
-    return true;
-  } catch(error){
-    console.log(error);
-    return false;
-  }
 }
 
 export async function marksAsUnread(myMail, messageId){
-  try{
-    const params = {
-      "seen" : false
-    };
-    await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token);
-    return true;
-  } catch(error){
-    console.log(error);
-    return false;
-  }
+  const params = {
+    "seen" : false
+  };
+  await sendRequest(baseUrl + '/messages/' + messageId, 'PATCH', params, myMail.token);
 }
 
 
@@ -296,17 +234,18 @@ export async function marksAsUnread(myMail, messageId){
 //FUNCTION FOR LOCAL STORAGE
 
 export function storeEmailList(emailList) {
-  // Convertir la liste en une chaîne de caractères
   const emailListString = emailList.join(';');
-
-  // Stocker la chaîne de caractères dans le localStorage
-  localStorage.setItem('emailList', emailListString);
+  try{
+    localStorage.setItem('emailList', emailListString);
+  }
+  catch(error){
+    throw new errorManager.Error(2, 1, 'Error while storing email list.');
+  }
 }
 
 
 export function getEmailList() {
   const emailListString = localStorage.getItem('emailList');
-
   if (emailListString) {
     const emailList = emailListString.split(';');
     return emailList;
@@ -315,67 +254,44 @@ export function getEmailList() {
   }
 }
 
-
-function minIdAvailable(emailList){
-  if(emailList.length >= maxEmailNumber){
-    throw Error('Bad call');
+function isInEmailList(id, emailList){ 
+  if(emailList.includes(id)){
+    return true;
   }
-  if(emailList.length === 0){
-    return 1;
-  }
-  let min = 1;
-  let found = false;
-
-  while (!found) {
-    found = true; 
-
-    for (const id of emailList) {
-      if (id == min) {
-        found = false; 
-        break;
-      }
-    }
-
-    if (!found) {
-      min++; 
-    }
-  }
-  return min;
+  return false;
 }
 
-export function pushNewIdInEmailList() { //return 0 = error, else return the new ID added
+export function pushNewIdInEmailList() {
   var emailList = getEmailList();
   if(emailList.length >= maxEmailNumber){
-    return 0;
+    return; //security to not fuck the localStorage
   }
-  else{
-    var minId = minIdAvailable(emailList);
-    emailList.push(minId);
-    storeEmailList(emailList);
-    return minId;
+  var newId = generateRandomString(letterAndNumber,10);
+  while(isInEmailList(newId, emailList)){
+    newId = generateRandomString(letterAndNumber, 10);
   }
+  emailList.push(newId);
+  storeEmailList(emailList);
+  return newId;
 }
 
 export async function storeAccount(emailId, myMail){ // not a secure function (no verification). Be careful using it
   const jsonEmail = JSON.stringify(myMail);
   const aesKey = await pswTools.getAesKey();
   const encryptedJsonEmail = await pswTools.encryptWithAES(jsonEmail, aesKey);
-  localStorage.setItem(emailId, encryptedJsonEmail);
+  try{
+    localStorage.setItem(emailId, encryptedJsonEmail);
+  }
+  catch{
+    throw new errorManager.Error(2, 1, 'Error while storing account.');
+  }
 }
 
-
-export async function createAndStoreAccount(addr, psw){
+function canCreateEmail() {
   if(getEmailList().length >= maxEmailNumber){
-    throw Error('You have already '+ maxEmailNumber + 'email address');
+    return false;
   }
-  var res = await createAccount(addr, psw);
-  if(res.answer) {
-    var newId = pushNewIdInEmailList();
-    await storeAccount('email_' + newId, res.mail);
-  }
-  else{
-    throw Error('Error during email creation. This email is maybe already taken.');
-  }
+  return true;
 }
 
 function generateRandomString(characters, length) {
@@ -384,37 +300,57 @@ function generateRandomString(characters, length) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     randomString += characters.charAt(randomIndex);
   }
-  
   return randomString;
 }
 
-export async function createAndStoreRandomAccount() { 
-  if(getEmailList().length >= maxEmailNumber){
-    throw Error('You have already '+ maxEmailNumber + 'email address');
+export async function createAndStoreAccount(addr, psw){
+  if(!canCreateEmail()){
+    throw new errorManager.Error(3, 2, 'Can\'t create account.');
   }
-  const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
-  var addr = generateRandomString(letterAndNumber, 10);
-  var psw = generateRandomString(allCharacters,15);
-  var res = await createAccount(addr, psw);
-  var tryCounter = 0;
-  while(!res.answer) {
-    if(tryCounter == 15){
-      throw Error('Error during email creation.');
+  var myMail;
+  try{
+    myMail = await createAccount(addr, psw);
+  }
+  catch(error){
+    if(error instanceof errorManager.Error){
+      error.details = 'This address is maybe already taken.';
     }
-    addr = generateRandomString(letterAndNumber, 10);
-    tryCounter ++;
+    throw error;
   }
   var newId = pushNewIdInEmailList();
-  await storeAccount('email_' + newId, res.mail);
+  await storeAccount('email_' + newId, myMail);
 }
 
-export async function getAccountStored(emailNumber){
-  if(emailNumber >= maxEmailNumber){
-    return null;
+export async function createAndStoreRandomAccount(tryNumber = 0) { 
+  if(!canCreateEmail()){
+    throw new errorManager.Error(3, 2, 'Can\'t create account.');
   }
+  
+  var addr = generateRandomString(letterAndNumber, 10);
+  var psw = generateRandomString(allCharacters,15);
+  var myMail;
+  try{
+    myMail = await createAccount(addr, psw);
+  }
+  catch(error){
+    if(tryNumber === 5){
+      throw new errorManager.Error(4, 1, 'Error while creating random account.');
+    }
+    else{
+      createAndStoreRandomAccount(tryNumber + 1);
+    }
+  }
+  var newId = pushNewIdInEmailList();
+  await storeAccount('email_' + newId, myMail);
+}
+
+export async function getAccountStored(emailId){
   const aesKey = await pswTools.getAesKey();
-  const decryptedJsonEmail = await pswTools.decryptWithAESKey(localStorage.getItem('email_' + emailNumber), aesKey);
+  const email = localStorage.getItem('email_' + emailId);
+  if(email === null){
+    throw new errorManager.Error(4, 1, 'Error while getting account : Bad ID.');
+  }
+  const decryptedJsonEmail = await pswTools.decryptWithAESKey(email, aesKey);
   return JSON.parse(decryptedJsonEmail);
 }
 
@@ -428,33 +364,22 @@ export async function getEmailIdAssociated(emailNumber) {
   return res.id;
 }
 
-export async function deleteAccountStored(emailNumber) {
-  if(emailNumber >= maxEmailNumber){
-    return;
-  }
-
+export async function deleteAccountStored(emailId) {
   //request API to delete this account
-  var mailToDelete = await getAccountStored(emailNumber);
-  var res = await deleteAccount(mailToDelete);
-  if(!res){
-    throw ('Error during deleting this email address');
-  }
-
+  var mailToDelete = await getAccountStored(emailId);
+  await login(mailToDelete); //login pour recuperer le token
+  await deleteAccount(mailToDelete);
   //delete this account from available email list
   var emailList = getEmailList();
   var newEmailList = [];
   for(const id of emailList) {
-    if(id !== emailNumber){
+    if(id !== emailId){
       newEmailList.push(id);
-    }
+     }
   }
   storeEmailList(newEmailList);
-
-  //set every value stored about this email at empty
-  mail = new MailAccount('','','','');
-  var jsonEmail = JSON.stringify(mail);
-  localStorage.setItem('email_' + emailNumber,  jsonEmail);
-}
+  localStorage.removeItem('email_' + emailId);
+  }
 
 
 // MESSAGES
@@ -470,8 +395,10 @@ export async function downloadMessage(myMail, myMessage) {
   if (myMail.token) {
     requestOptions.headers['Authorization'] = `Bearer ${myMail.token}`;
   }
-
   const response = await fetch(baseUrl + myMessage.downloadUrl, requestOptions);
+  if(!response.ok){
+    throw new errorManager.Error(1, 1, response.statusText);
+  }
   const htmlContent = await response.text();
   return htmlContent;
   
@@ -507,41 +434,36 @@ function findAttachmentSrc(inputString) {
 }
 
 async function downloadAndEncodeImage(url, token) {
-  try {
-    const headers = new Headers();
-    headers.set('Authorization', `Bearer ${token}`);
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
 
-    const response = await fetch(url, { headers });
-    const blob = await response.blob();
-
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-
-    return new Promise((resolve, reject) => {
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        resolve(base64String);
-      };
-
-      reader.onerror = () => {
-        reject('Une erreur s\'est produite lors de la conversion de l\'image en base64.');
-      };
-    });
-  } catch (error) {
-    throw new Error('Une erreur s\'est produite lors du téléchargement de l\'image.');
+  const response = await fetch(url, { headers });
+  if(!response.ok){
+    throw new errorManager.Error(1, 1, response.statusText);
   }
+  const blob = await response.blob();
+
+  const reader = new FileReader();
+  reader.readAsDataURL(blob);
+
+  return new Promise((resolve, reject) => {
+    reader.onloadend = () => {
+      const base64String = reader.result;
+      resolve(base64String);
+    };
+
+    reader.onerror = () => {
+      reject('Unexpected error.');
+    };
+  });
 }
 async function getNewSrc(oldTag, messageId, token) {
   const attachementId = findAttachmentSrc(oldTag);
   if(attachementId !== null){
     const downloadUrl = baseUrl + messageId + '/attachment/' + attachementId;
-    try {
-      const base64String = await downloadAndEncodeImage(downloadUrl, token);
-      const replacementString = 'src="' + base64String + '"';
-      return replacementString;
-    } catch (error) {
-      console.error(error);
-    }
+    const base64String = await downloadAndEncodeImage(downloadUrl, token);
+    const replacementString = 'src="' + base64String + '"';
+    return replacementString;
   }
   else{
     return null;
@@ -591,16 +513,14 @@ export async function howMuchUnread(myMail){
 //ATTACHEMENT
 
 export async function downloadAttachment(url, token) {
-  try {
-    const headers = new Headers();
-    headers.set('Authorization', `Bearer ${token}`);
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
 
-    const response = await fetch(baseUrl + url, { headers });
-    const blob = await response.blob();
-    const downloadUrl = URL.createObjectURL(blob);
-    return downloadUrl;
+  const response = await fetch(baseUrl + url, { headers });
+  if(!response.ok){
+    throw new errorManager.Error(1, 1, response.statusText);
   }
-  catch (error){
-
-  }
+  const blob = await response.blob();
+  const downloadUrl = URL.createObjectURL(blob);
+  return downloadUrl;
 }

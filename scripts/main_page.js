@@ -5,4 +5,9 @@ document.addEventListener("DOMContentLoaded", function() {
   logoutButton.addEventListener("click", async function(event){
     tools.logout();
   });
+  var settingsButton = document.getElementById('settings');
+  settingsButton.addEventListener('click', function(){
+    const url = browser.runtime.getURL('../html/settings.html');
+    browser.tabs.create({ url });
+  });
 });

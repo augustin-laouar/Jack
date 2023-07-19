@@ -23,9 +23,10 @@ Not used now.
 
 ### Augustin 
 - Fonctionnalité permettant de visualisé son MDP enregistré pour un email.
-- Voir les messages d'erreur dans l'interface. (Email deja pris par exemple)
-- Page de configuration pour configurer le mot de passe mère + durée de connexion (et d'autres paramètres à definir plus tard).
-- Quitter la page mailBox lorsqu'on fait logout
+- Page de configuration pour configurer le mot de passe mère + durée de connexion + changer la clé de cryptage aes(et d'autres paramètres à definir plus tard).
+- Gestion de la premiere connexion
+- deplacer showError dans un fichier specifique
+- rename verify auth et fix bug
 
 ### Thinhinane 
 - Gérer le stockage sécurisé des mots de passes en utilisant une encryption AES, fesable avec l'API window.crypto
