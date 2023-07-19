@@ -1,5 +1,7 @@
 import * as emailTools from './tools.js';
 import * as errorManager from '../exception/errorManager.js';
+import * as tools from '../tools.js';
+
 
 
 function showError(error){
@@ -113,5 +115,10 @@ document.addEventListener("DOMContentLoaded", function() {
         showError(error);
       }
       fillAddressList();
+    });
+
+    var logOutButton = document.getElementById('log-out');
+    logOutButton.addEventListener("click", async function(event){
+      tools.logout();
     });
 });

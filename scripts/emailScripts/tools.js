@@ -379,7 +379,6 @@ export async function createAndStoreRandomAccount(tryNumber = 0) {
   if(!canCreateEmail()){
     throw new errorManager.Error(3, 2, 'Can\'t create account.');
   }
-  
   var addr = generateRandomString(letterAndNumber, 10);
   var psw = generateRandomString(allCharacters,15);
   var myMail;

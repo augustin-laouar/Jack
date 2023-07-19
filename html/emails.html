@@ -7,15 +7,33 @@
   <title>Email</title>
 </head>
 <body class="bg-dark text-light overflow-x-hidden">
-  <div class="row" style="width:850px; height:350px;">
+  <div class="container-fluid bg-dark">
+    <div class="row d-flex align-items-center">
+      <div class="col">
+        <div class="d-flex align-items-center">
+          <img src="../icons/lock-svgrepo-com.svg" alt="Logo" class="me-2" style="max-height:50px;">
+          <h4>Jack The Mail</h4>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="d-flex align-items-center">
+          <a href="./passwords.html" class="btn btn-dark me-2">Passwords</a>
+          <a href="./settings.html" class="btn btn-dark">Settings</a>
+          <a href="login.html" class="btn btn-dark" id="log-out">Log out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-top"  style="margin-bottom : 10px; margin-left: 2%; margin-right:2%;"></div>
+  <div class="row" style="width:850px; height:340px;">
     <div class="col-4 m-2">
       <h3>Create a new address</h3>
       <p>Create with a specific name</p>
       <form id ="add-email">
-        <div>
+        <div class ="m-1">
           <input id="email" autocomplete="off" placeholder="Enter an email name" required>
         </div>
-        <div>
+        <div class ="m-1">
           <input type="password" id="password" placeholder="Enter your password" required>
         </div>
         <div>
@@ -29,13 +47,13 @@
     </div>
     <div class="col m-2" >
       <h3>My emails</h3>
-      <div style="overflow-y:scroll; max-height:80vh;">
+      <div style="overflow-y:scroll; max-height:70vh;">
         <table class="table table-dark">
           <tbody id="tab-body"></tbody>
         </table>
       </div>
     </div>
   </div>
-  <script type = "module" src = "../scripts/emailScripts/mainPage.js"></script>
+<script type = "module" src = "../scripts/emailScripts/mainPage.js"></script>
 </body>
 </html>

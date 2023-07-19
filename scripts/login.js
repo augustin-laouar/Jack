@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var password = document.getElementById("password").value;
     if (await validPassword(password)) {
       tools.storeLastLogin();
-      window.location.href = "../html/popup.html";
+      window.location.href = "../html/emails.html";
     }
   });
 });

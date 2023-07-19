@@ -22,11 +22,12 @@ Not used now.
 ## TODO
 
 ### Augustin 
-- Fonctionnalité permettant de visualisé son MDP enregistré pour un email.
-- Page de configuration pour configurer le mot de passe mère + durée de connexion + changer la clé de cryptage aes(et d'autres paramètres à definir plus tard).
-- Gestion de la premiere connexion
-- deplacer showError dans un fichier specifique
+- Page de configuration pour configurer le mot de passe mère + durée de connexion + changer la clé de cryptage aes + possibilite d'export le compte(et d'autres paramètres à definir plus tard).
+- Gestion de la premiere connexion : si pas de mdp enregistre -> première conn donc rediriger vers page + suppr tout les mdps / emails par securite. Par la suite peut etre faire un moyen de recup donnée corompus.
 - rename verify auth et fix bug
+
+
+
 
 ### Thinhinane 
 - Gérer le stockage sécurisé des mots de passes en utilisant une encryption AES, fesable avec l'API window.crypto

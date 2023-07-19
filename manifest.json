@@ -10,7 +10,7 @@
     "browser_action": {
         "default_area": "navbar",
         "default_icon": "icons/temp_icon.jpg",
-        "default_popup" :"html/popup.html",
+        "default_popup" :"html/emails.html",
         "default_title": "locker"
     },
     "browser_specific_settings": {

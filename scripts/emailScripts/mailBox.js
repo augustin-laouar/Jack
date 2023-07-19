@@ -358,7 +358,6 @@ async function init(){
 }   
 
 init();
-browser.tabs.insertCSS({ file: "../css/mailbox.css" });
 browser.tabs.insertCSS({ file: "../css/bootstrap.min.css" });
 
 
