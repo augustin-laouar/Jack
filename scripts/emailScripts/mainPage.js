@@ -65,7 +65,7 @@ async function fillAddressList(){
       const addressDiv = trElement.querySelector('#address-div');
       addressDiv.style.cursor = 'pointer';
       addressDiv.addEventListener('click', function(){
-        const url = browser.runtime.getURL('../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
+        const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
         browser.tabs.create({ url });
       });
       const deleteButton = trElement.querySelector('#delete-button');
@@ -120,5 +120,10 @@ document.addEventListener("DOMContentLoaded", function() {
     var logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
       tools.logout();
+    });
+    var settingsButton = document.getElementById('settings');
+    settingsButton.addEventListener("click", async function(event){
+      const url = browser.runtime.getURL('../../html/settings.html');
+      browser.tabs.create({ url });
     });
 });

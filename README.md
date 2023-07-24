@@ -22,11 +22,11 @@ Not used now.
 ## TODO
 
 ### Augustin 
-- Page de configuration pour configurer le mot de passe mère + durée de connexion + changer la clé de cryptage aes + possibilite d'export le compte(et d'autres paramètres à definir plus tard).
+- Page de configuration pour configurer le mot de passe mère + possibilite d'export le compte(et d'autres paramètres à definir plus tard).
 - Gestion de la premiere connexion : si pas de mdp enregistre -> première conn donc rediriger vers page + suppr tout les mdps / emails par securite. Par la suite peut etre faire un moyen de recup donnée corompus.
 - rename verify auth et fix bug
-
-
+- Une seule variable pour les adresses mails/mdp (list format json) -> a voir plus tard
+- Une seule clé (la clé générer avc le mdp)
 
 
 ### Thinhinane 

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <script type="module" src="../scripts/backgroundScripts/verify_auth.js"></script>
+  <script type="module" src="../scripts/settings.js"></script>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <title>Settings</title>
 </head>
@@ -13,39 +14,54 @@
     <div class="border-top"  style="margin-bottom : 10px"></div>
     <div class="row">
       <div class ="col-3">
+        <h2>Security</h2>
         <h4>Change my password</h4>
-        <form>
-          <div class="mb-3">
+        <form id="change-password" class ="mb-3">
+          <div class="mb-1">
             <label class="form-label">Current password :</label>
             <input type="password" class="form-control" id="old-psw">
           </div>
-          <div class="mb-3">
+          <div class="mb-1">
             <label class="form-label">New password : </label>
             <input type="password" class="form-control" id="new-psw">
-            <div class="form-text text-light">Choose a strong password !</div>
           </div>
-          <div class="mb-3">
+          <div class="mb-1">
             <label class="form-label">Confirm new password : </label>
-            <input type="password" class="form-control" id="new-psw-2">
+            <input type="password" class="form-control" id="new-psw-confirm">
           </div>
-          <button type="submit" class="btn btn-primary">Change</button>
+          <button type="submit" class="btn btn-info">Change</button>
+        </form>
+        <h4>Connexion duration</h4>
+        <form id="change-connexion-duration" class="mb-3">
+          <div class="mb-1">
+            <label class="form-label">Keep connexion alive for :</label>
+            <select class="form-select" id="connexion-duration-value">
+              <option value="0.5">30 seconds</option>
+              <option value="1">1 minute</option>
+              <option value="3" selected="selected">3 minutes (recommended)</option>
+              <option value="5">5 minutes</option>
+              <option value="10">10 minutes</option>
+            </select>          
+          </div>
+          <button type="submit" class="btn btn-info">Apply</button>
         </form>
       </div>
-    </div>
-    <div class ="col-3">
-      <form>
-        <div class="mb-3">
-          <label class="form-label">Connexion expire after :</label>
-          <input type="number" class="form-control" id="connexion-expire-after">
+      <div class="col-3"></div>
+      <div class="col-5">
+        <h3>Data</h3>
+        <p>Import data from JSON a file</p>
+        <div class="input-group mb-3">
+          <input type="file" class="form-control" id="data-to-load-file">
+          <button class="btn btn-info" id="load-data">Load</button>
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-      </form>
+        <p>Export data to a JSON file</p>
+        <button class="btn btn-info" id="export-data">Export</button>
+        <div class="mb-1">
+          <label class="form-label">Password :</label>
+          <input type="password" class="form-control" id="psw-check">
+        </div>
+      </div>
     </div>
-    <div class ="col-3">
-      <h4>Generate a new AES key</h4>
-      <button type="submit" class="btn btn-primary">Generate</button>
-    </div>
-  </div>
   </div>
 </body>
 </html>
