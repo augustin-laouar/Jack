@@ -18,11 +18,4 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       
     });
 
-    var keyGen = document.getElementById("genKey");
-    keyGen.addEventListener("click",async function(event){
-      
-      var aeskey = await pswTools.generateAESKey();
-      pswTools.storeAesKeyEncrypted(aeskey);
-    }
-    );
 });
