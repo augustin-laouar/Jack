@@ -29,7 +29,7 @@ export async function refresh() {
       if (urlData) {
         var userData = urlData.split(';');
         var username = userData[0];
-        var key = await pwd_tools.getAesKey();
+        var key = await pwd_tools.generateDerivedKey("titi");
         var password = await pwd_tools.decryptWithAESKey(userData[1], key);
 
         // Création d'une ligne dans le tableau pour chaque URL
