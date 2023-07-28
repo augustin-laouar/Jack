@@ -65,18 +65,51 @@ export async function generateDerivedKey(password) {
   const data = encoder.encode(password);
   const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const first16Bytes = hashArray.slice(0, 16);
-  const keyBytes = new Uint8Array(first16Bytes)
+  const first32Bytes = hashArray.slice(0, 32);
+  const keyBytes = new Uint8Array(first32Bytes)
   const key = await window.crypto.subtle.importKey(
     "raw", // Format de la clé : bytes bruts
     keyBytes, // Suite de bytes passée en paramètre
     { name: "AES-CBC" }, // Algorithme AES-CBC
-    false, // Non-extractable : la clé ne peut pas être exportée
+    true, // exportable
     ["encrypt", "decrypt"] // Opérations autorisées avec la clé
   );
   return key;
 }
 
+export async function storeDerivedKey(derivedKey) {
+  const derivedKeyData = await window.crypto.subtle.exportKey('raw', derivedKey);
+  const derivedKeyString = Array.from(new Uint8Array(derivedKeyData))
+    .map(byte => byte.toString(32).padStart(2, '0'))
+    .join('');
+  localStorage.setItem('derivedKey', derivedKeyString);
+}
+
+export async function getDerivedKey() {
+  const derivedKeyString = localStorage.getItem('derivedKey');
+  if (derivedKeyString) {
+    const keyData = new Uint8Array(derivedKeyString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    const derivedKey = await window.crypto.subtle.importKey(
+      'raw',
+      keyData,
+      {
+        name: 'AES-CBC'
+      },
+      false,
+      ['encrypt', 'decrypt']
+    );
+    return derivedKey;
+  } else {
+    return null;
+  }
+}
+//replace the key by 16 bytes at 0
+export function deleteDerivedKey(){
+  const zeros = Array.from(new Uint8Array(32))
+  .map(byte => byte.toString(16).padStart(2, '0'))
+  .join('');
+  localStorage.setItem('derivedKey', zeros);
+}
 
 
 
@@ -87,13 +120,22 @@ export async function generateDerivedKey(password) {
 
 
   //LocalStorage
-  export async function storeLogs(url, id, psw) {
+  export async function storeLogs(url, id, psw){
     try{
-      var aesKey = await generateDerivedKey("titi"); // ici mettre get derived key
-      console.log(aesKey);
+      const aesKey = await getDerivedKey();
       const encryptedPsw = await encryptWithAES(psw, aesKey);
-      localStorage.setItem("url_"+url, id + ';' + encryptedPsw);
-      addNewUrl(url);
+      const encryptedId = await encryptWithAES(id, aesKey);
+      localStorage.setItem("logs_"+url, encryptedId + ';' + encryptedPsw);
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+  export async function createLogs(url, id, psw) {
+    try{
+      if(addNewUrl(url)){
+        storeLogs(url, id, psw);
+      }
     }
     catch(error){
       console.log(error);
@@ -101,17 +143,16 @@ export async function generateDerivedKey(password) {
   
   }
   
-  export function storeUrlList(urlList) {
+  export function storeLogsList(logsList) {
     // Convertir la liste en une chaîne de caractères
-    const urlListString = urlList.join(';');
+    const logsListStr = logsList.join(';');
   
     // Stocker la chaîne de caractères dans le localStorage
-    localStorage.setItem('urlList', urlListString);
+    localStorage.setItem('logsList', logsListStr);
   }
   
-  export function getUrlList() {
-    const urlListString = localStorage.getItem('urlList');
-  
+  export function getLogsList() {
+    const urlListString = localStorage.getItem('logsList');
     if (urlListString) {
       const urlList = urlListString.split(';');
       return urlList;
@@ -121,11 +162,24 @@ export async function generateDerivedKey(password) {
   }
   
   export function addNewUrl(url) {
-    var urlList = getUrlList();
+    var logsList = getLogsList();
     // Vérification si l'URL existe déjà dans la liste
-    if (!urlList.includes("url_"+url)) {
-      urlList.push(url);
-      storeUrlList(urlList);
+    if (!logsList.includes(url)) {
+      logsList.push(url);
+      storeLogsList(logsList);
+      return true;
     }
+    return false;
   }
   
+  export async function getLogs(logsUrl){
+    var encryptedData = localStorage.getItem("logs_" + logsUrl);
+    if(encryptedData === null){
+      return null;
+    }
+    var encryptedData = encryptedData.split(';');
+    var key = await getDerivedKey();
+    var id = await decryptWithAESKey(encryptedData[0], key);
+    var psw = await decryptWithAESKey(encryptedData[1], key);
+    return {url : logsUrl, id : id, password : psw};
+  }

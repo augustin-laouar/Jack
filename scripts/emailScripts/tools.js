@@ -315,25 +315,28 @@ function isInEmailList(id, emailList){
   return false;
 }
 
-export function pushNewIdInEmailList() {
+function generateNewId(){
   var emailList = getEmailList();
-  if(emailList.length >= maxEmailNumber){
-    return; //security to not fuck the localStorage
-  }
   var newId = generateRandomString(letterAndNumber,10);
   while(isInEmailList(newId, emailList)){
     newId = generateRandomString(letterAndNumber, 10);
   }
-  emailList.push(newId);
-  storeEmailList(emailList);
   return newId;
+}
+export function pushIdInEmailList(id) {
+  var emailList = getEmailList();
+  if(emailList.length >= maxEmailNumber){
+    return; //security to not fuck the localStorage
+  }
+  emailList.push(id);
+  storeEmailList(emailList);
 }
 
 export async function storeAccount(emailId, myMail){ // not a secure function (no verification). Be careful using it
-  const jsonEmail = JSON.stringify(myMail);
-  const aesKey = await pswTools.getAesKey();
-  const encryptedJsonEmail = await pswTools.encryptWithAES(jsonEmail, aesKey);
   try{
+    const jsonEmail = JSON.stringify(myMail);
+    const aesKey = await pswTools.getDerivedKey();
+    const encryptedJsonEmail = await pswTools.encryptWithAES(jsonEmail, aesKey);
     localStorage.setItem(emailId, encryptedJsonEmail);
   }
   catch{
@@ -393,12 +396,13 @@ export async function createAndStoreRandomAccount(tryNumber = 0) {
       createAndStoreRandomAccount(tryNumber + 1);
     }
   }
-  var newId = pushNewIdInEmailList();
+  var newId = generateNewId();
   await storeAccount('email_' + newId, myMail);
+  pushIdInEmailList(newId);
 }
 
 export async function getAccountStored(emailId){
-  const aesKey = await pswTools.getAesKey();
+  const aesKey = await pswTools.getDerivedKey();
   const email = localStorage.getItem('email_' + emailId);
   if(email === null){
     throw new errorManager.Error(4, 1, 'Error while getting account : Bad ID.');

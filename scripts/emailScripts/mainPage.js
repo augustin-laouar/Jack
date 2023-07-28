@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      tools.logout();
+      tools.logout(true);
     });
     var settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", async function(event){

@@ -6,8 +6,14 @@ function wait(ms) {
 async function onPeriod(ms){
   var counter = 0;
   while(true) {
-    if(!tools.isLogged()){
-      window.location.href = '../html/login.html';
+    if(tools.isFirstConnexion()){
+      window.location.href = '../html/firstConnection.html';
+    }
+    else{
+      if(!tools.isLogged()){
+        window.location.href = '../html/login.html';
+        tools.logout();
+      }
     }
    if(document.getElementById('info').innerHTML !== '')
       counter ++;
@@ -22,8 +28,17 @@ async function onPeriod(ms){
 }
 
 //log verification before loading the page
+
 if(!tools.isLogged()){
-  window.location.href = '../html/login.html';
+  if(tools.isFirstConnexion()){
+    window.location.href = '../html/firstConnection.html';
+  }
+  else{
+    if(!tools.isLogged()){
+      window.location.href = '../html/login.html';
+      tools.logout();
+    }
+  }
 }
 
 
