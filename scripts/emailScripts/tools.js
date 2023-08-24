@@ -1,5 +1,5 @@
 import * as pswTools from '../passwordScripts/tools.js';
-import * as errorManager from '../exception/errorManager.js';
+import * as errorManager from '../exception/mailError.js';
 
 export const baseUrl = 'https://api.mail.tm';
 const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -1,5 +1,5 @@
 import * as emailTools from './tools.js';
-import * as errorManager from '../exception/errorManager.js';
+import * as errorManager from '../exception/mailError.js';
 
 function showError(error){
     if(!(error instanceof errorManager.Error)){
