@@ -1,3 +1,4 @@
+import * as errorManager from '../exception/passwordError.js';
 
 //SIMPLE AES
 
@@ -121,24 +122,30 @@ export function deleteDerivedKey(){
 
   //LocalStorage
   export async function storeLogs(url, id, psw){
-    try{
       const aesKey = await getDerivedKey();
       const encryptedPsw = await encryptWithAES(psw, aesKey);
       const encryptedId = await encryptWithAES(id, aesKey);
       localStorage.setItem("logs_"+url, encryptedId + ';' + encryptedPsw);
-    }
-    catch(error){
-      console.log(error);
+  }
+
+  export function deleteLogs(url){
+    localStorage.removeItem("logs_" + url);
+    var logsList = getLogsList();
+    var index = logsList.indexOf(url);
+    if(index !== -1){
+      logsList.splice(index, 1);
     }
   }
+
+
+
   export async function createLogs(url, id, psw) {
     try{
-      if(addNewUrl(url)){
-        storeLogs(url, id, psw);
-      }
+        addNewUrl(url);
+        await storeLogs(url, id, psw);
     }
     catch(error){
-      console.log(error);
+      throw errorManager.Error(2,1);
     }
   
   }

@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //TODO
         });
         const exportDataButton = document.getElementById('export-data');
-        newEncryptionKeyButton.addEventListener('click', function(){
+        exportDataButton.addEventListener('click', function(){
             const pswCheckInput = document.getElementById('psw-check');
             //TODO
         });

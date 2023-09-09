@@ -1,83 +1,120 @@
 import * as pswTools from './tools.js';
+import * as errorManager from '../exception/passwordError.js';
+
+function showError(error){
+  if(!(error instanceof errorManager.Error)){
+    return;
+  }
+  const errorStr = errorManager.errorToString(error);
+  const infoLabel = document.getElementById('info');
+  infoLabel.innerHTML = errorStr;
+  if(error.type === 1){
+    infoLabel.classList.remove('text-warning');
+    infoLabel.classList.add('text-danger'); //system error
+  }
+  if(error.type === 2){
+    infoLabel.classList.remove('text-danger');
+    infoLabel.classList.add('text-warning'); //user error
+  }
+}
 
 
-async function refresh() {
-  // Récupération de la liste d'URL depuis le Local Storage
-  const logsList = pswTools.getLogsList();
-  // Supprime l'ancien contenu du tableau
-  var table = document.createElement('table');
-  var headerRow = document.createElement('tr');
-  var urlHeader = document.createElement('th');
-  urlHeader.textContent = 'URL';
-  var usernameHeader = document.createElement('th');
-  usernameHeader.textContent = 'Username';
-  var passwordHeader = document.createElement('th');
-  passwordHeader.textContent = 'Password';
+function getTrContent(url){ 
+  var newUrl = url;
+  if(url.length > 30){
+    var newUrl = url.substring(0,30) + '...';
+  }
+  var codeHTML = `
+    <td>
+      <p class="text-info">${newUrl}</p>
+    </td>
+    <td>
+      <button id="cp-username-button" class="btn btn-outline-info">Copy</button>
+    </td>
+    <td>
+      <button id="cp-psw-button" class="btn btn-outline-info">Copy</button>
+    </td>
+    <td>
+      <button id="delete-button" class="btn btn-danger">Delete</button>
+    </td>
+    `;
+  return codeHTML;
+}
 
-  headerRow.appendChild(urlHeader);
-  headerRow.appendChild(usernameHeader);
-  headerRow.appendChild(passwordHeader);
-  table.appendChild(headerRow);
-
-  // Parcours des URL
-  for (var i = 0; i < logsList.length; i++) {
-    const logsUrl = logsList[i];
-    const logsData = await pswTools.getLogs(logsUrl);   
-    if (logsData !== null) {
-      const username = logsData.id;
-      const password = logsData.password;
-      const url = logsData.url;
-      // Création d'une ligne dans le tableau pour chaque URL
-      var row = document.createElement('tr');
-      var urlCell = document.createElement('td');
-      urlCell.textContent = url;
-      var usernameCell = document.createElement('td');
-      usernameCell.textContent = username;
-      var passwordCell = document.createElement('td');
-
-      // Création du bouton de copie
-      var copyButton = document.createElement('button');
-      copyButton.textContent = 'Copier';
-      copyButton.addEventListener('click', function () {
-        copyToClipboard(password);
+async function fillPasswordList(){
+  try{
+    const logsList = pswTools.getLogsList();
+    const tab = document.querySelector('#tab-body');
+    tab.innerHTML = ''; 
+    for(const logs of logsList) {
+      const logsData = await pswTools.getLogs(logs);   
+      const trElement = document.createElement('tr');
+      trElement.innerHTML = getTrContent(logsData.url);
+      const cpUsernameButton = trElement.querySelector('#cp-username-button');
+      const cpPasswordButton = trElement.querySelector('#cp-psw-button');
+      const deleteButton = trElement.querySelector('#delete-button');
+      cpUsernameButton.addEventListener('click', async function(){
+        try{
+          copyToClipboard(logsData.id);
+        }
+        catch(error){
+          showError(error);
+        }
       });
-
-      passwordCell.appendChild(copyButton);
-      row.appendChild(urlCell);
-      row.appendChild(usernameCell);
-      row.appendChild(passwordCell);
-      table.appendChild(row);
+      cpPasswordButton.addEventListener('click', async function(){
+        try{
+          copyToClipboard(logsData.password);
+        }
+        catch(error){
+          showError(error);
+        }
+      });
+      deleteButton.addEventListener('click', async function(){
+        try{
+          pswTools.deleteLogs(logsData.url);
+          fillPasswordList();
+        }
+        catch(error){
+          showError(error);
+        }
+      });
+      tab.appendChild(trElement);
     }
   }
+  catch(error){
+    showError(error);
+  }
 
-  // Remplace le contenu existant de la liste des URL par le nouveau tableau
-  var urlListElement = document.getElementById('url-list');
-  urlListElement.innerHTML = '';
-  urlListElement.appendChild(table);
 }
+
 
 // Fonction pour copier le texte dans le presse-papiers
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
   } catch (error) {
-    console.error('Impossible de copier le texte :', error);
+    throw errorManager.Error(1,1,'Error while copying to clipboard.');
   }
 }
 
 document.addEventListener("DOMContentLoaded", function() { //on attend que la page se charge
-    refresh();
-    const pwdForm = document.getElementById("pwdForm");
+    fillPasswordList();
+    const pwdForm = document.getElementById("pwd-form");
     pwdForm.addEventListener("submit", async function(event) {
       event.preventDefault(); //on supprime le comportement par defaut de submit 
       var id = document.getElementById("id");
       var pwd = document.getElementById("password");
       var url = document.getElementById("url");
-      await pswTools.createLogs(url.value,id.value, pwd.value);
+      try{
+        await pswTools.createLogs(url.value,id.value, pwd.value);
+      }
+      catch(error){
+        showError(error);
+      }
       id.value = '';
       pwd.value = '';
       url.value = '';
-      refresh();
+      fillPasswordList();
     });
 
 });

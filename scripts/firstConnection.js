@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const password = document.getElementById('password').value;
       const confirm = document.getElementById('confirm').value;
       if(password !== confirm){
-        //afficher erreur
+        document.getElementById('info').innerText = "Passwords are not the same.";
         return;
       }
       try{
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "../html/login.html";
       }
       catch(error){
-        //todo
+        document.getElementById('info').innerText = "Unexpected error.";
       }
     });
   });

@@ -18,9 +18,6 @@
         "id": "augustinlaouar@hotmail.com"
       }
     },
-    "background": {
-        "scripts": ["scripts/backgroundScripts/background.js"]
-    },
 
     "permissions": [
         "storage",
