@@ -374,8 +374,9 @@ export async function createAndStoreAccount(addr, psw){
     }
     throw error;
   }
-  var newId = pushNewIdInEmailList();
+  var newId = generateNewId();
   await storeAccount('email_' + newId, myMail);
+  pushIdInEmailList(newId);
 }
 
 export async function createAndStoreRandomAccount(tryNumber = 0) { 

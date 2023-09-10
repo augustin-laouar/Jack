@@ -6,6 +6,7 @@ import * as tools from '../tools.js';
 
 function showError(error){
   if(!(error instanceof errorManager.Error)){
+    console.log(error);
     return;
   }
   const errorStr = errorManager.errorToString(error);
