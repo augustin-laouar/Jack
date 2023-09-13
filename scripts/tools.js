@@ -68,7 +68,9 @@ export function deleteCookie(name, url) {
   //Login
   function sessionExpired(minutes) {
     const storedDate = localStorage.getItem('lastLogin');
-    
+    if(storedDate === null){
+      return true;
+    }
     if (storedDate) {
       const currentDate = new Date();
       const storedDateObj = new Date(storedDate);
@@ -113,11 +115,10 @@ export function isLogged() {
 //set lastLogin to an expired value, and delete derivedKey
  export function logout(logoutButtonUsed = false) {
   if(logoutButtonUsed){
-    /*var now = new Date();
+    var now = new Date();
     const connexionDuration = getConnexionDuration();
     var toStore = new Date(now.getTime() - (parseInt(connexionDuration * 60 * 1000))); 
-    localStorage.setItem('lastLogin', toStore.toISOString());*/
-    localStorage.removeItem('lastLogin');
+    localStorage.setItem('lastLogin', toStore.toISOString());
   }
   pswTools.deleteDerivedKey();
   window.location.href = '../html/login.html';

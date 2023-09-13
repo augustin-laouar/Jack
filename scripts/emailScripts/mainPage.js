@@ -59,27 +59,32 @@ async function fillAddressList(){
     const addressList = emailTools.getEmailList(); 
     const tab = document.querySelector('#tab-body');
     tab.innerHTML = ''; 
-    for(const emailId of addressList) {
-      var myMail = await emailTools.getEmailAddressAssociated(emailId);
-      const trElement = document.createElement('tr');
-      trElement.innerHTML = getTrContent(myMail);
-      const addressDiv = trElement.querySelector('#address-div');
-      addressDiv.style.cursor = 'pointer';
-      addressDiv.addEventListener('click', function(){
-        const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
-        browser.tabs.create({ url });
-      });
-      const deleteButton = trElement.querySelector('#delete-button');
-      deleteButton.addEventListener('click', async function(){
-        try{
-          await emailTools.deleteAccountStored(emailId);
-          fillAddressList();
-        }
-        catch(error){
-          showError(error);
-        }
-      });
-      tab.appendChild(trElement);
+    if(addressList.length === 0){
+      tab.innerHTML = '<p class="lead">No address for the moment.</p>';
+    }
+    else{
+      for(const emailId of addressList) {
+        var myMail = await emailTools.getEmailAddressAssociated(emailId);
+        const trElement = document.createElement('tr');
+        trElement.innerHTML = getTrContent(myMail);
+        const addressDiv = trElement.querySelector('#address-div');
+        addressDiv.style.cursor = 'pointer';
+        addressDiv.addEventListener('click', function(){
+          const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
+          browser.tabs.create({ url });
+        });
+        const deleteButton = trElement.querySelector('#delete-button');
+        deleteButton.addEventListener('click', async function(){
+          try{
+            await emailTools.deleteAccountStored(emailId);
+            fillAddressList();
+          }
+          catch(error){
+            showError(error);
+          }
+        });
+        tab.appendChild(trElement);
+      }
     }
   }
   catch(error){

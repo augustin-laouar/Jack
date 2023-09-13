@@ -135,6 +135,7 @@ export function deleteDerivedKey(){
     if(index !== -1){
       logsList.splice(index, 1);
     }
+    storeLogsList(logsList);
   }
 
 

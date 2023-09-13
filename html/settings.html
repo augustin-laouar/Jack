@@ -11,58 +11,51 @@
 </head>
 <body class="bg-dark text-light">
   <div class="container">
-    <h1>Settings</h1>
-    <div class="border-top"  style="margin-bottom : 10px"></div>
-    <div class="row">
-      <div class ="col-3">
-        <h2>Security</h2>
-        <h4>Change my password</h4>
-        <form id="change-password" class ="mb-3">
-          <div class="mb-1">
-            <label class="form-label">Current password :</label>
-            <input type="password" class="form-control" id="old-psw">
-          </div>
-          <div class="mb-1">
-            <label class="form-label">New password : </label>
-            <input type="password" class="form-control" id="new-psw">
-          </div>
-          <div class="mb-1">
-            <label class="form-label">Confirm new password : </label>
-            <input type="password" class="form-control" id="new-psw-confirm">
-          </div>
-          <button type="submit" class="btn btn-info">Change</button>
-        </form>
-        <h4>Connexion duration</h4>
-        <form id="change-connexion-duration" class="mb-3">
-          <div class="mb-1">
-            <label class="form-label">Keep connexion alive for :</label>
-            <select class="form-select" id="connexion-duration-value">
-              <option value="0.5">30 seconds</option>
-              <option value="1">1 minute</option>
-              <option value="3" selected="selected">3 minutes (recommended)</option>
-              <option value="5">5 minutes</option>
-              <option value="10">10 minutes</option>
-            </select>          
-          </div>
-          <button type="submit" class="btn btn-info">Apply</button>
-        </form>
-        <p id="info"></p>
-
+    <h1 class="display-3">Settings</h1>
+    <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px; width:70%"></div>
+    <div class ="row">
+      <div class = "col-5">
+            <h2 class = "display-5">Security</h2>
+            <p class="lead">Change my password</p>
+            <form id="change-password" class ="mb-3">
+              <div class="mb-1">
+                <input type="password" class="form-control" id="old-psw" placeholder="Enter your current password" style ="width:60%;">
+              </div>
+              <div class="mb-1">
+                <input type="password" class="form-control" id="new-psw" placeholder="Enter your new password" style ="width:60%;">
+              </div>
+              <div class="mb-1">
+                <input type="password" class="form-control" id="new-psw-confirm" placeholder="Confirm your new password" style ="width:60%;">
+              </div>
+              <button type="submit" class="btn btn-info">Change</button>
+            </form>
+            <p class ="lead">Connexion duration</p>
+            <form id="change-connexion-duration" class="mb-3">
+              <div class="mb-1">
+                <label class="form-label" >Keep connexion alive for :</label>
+                <select class="form-select" id="connexion-duration-value" style ="width:70%;">
+                  <option value="0.5">30 seconds</option>
+                  <option value="1">1 minute</option>
+                  <option value="3" selected="selected">3 minutes (recommended)</option>
+                  <option value="5">5 minutes</option>
+                  <option value="10">10 minutes</option>
+                </select>          
+              </div>
+              <button type="submit" class="btn btn-info">Apply</button>
+            </form>
+            <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px;"></div>
+            <h3 class = "display-5">Data</h3>
+            <p class ="lead">Import data from JSON a file</p>
+            <div class="input-group mb-3">
+              <input type="file" class="form-control" id="data-to-load-file">
+              <button class="btn btn-info" id="load-data">Load</button>
+            </div>
+            <p class ="lead">Export data to a JSON file</p>
+            <button class="btn btn-info" id="export-data">Export</button>
       </div>
-      <div class="col-3"></div>
-      <div class="col-5">
-        <h3>Data</h3>
-        <p>Import data from JSON a file</p>
-        <div class="input-group mb-3">
-          <input type="file" class="form-control" id="data-to-load-file">
-          <button class="btn btn-info" id="load-data">Load</button>
-        </div>
-        <p>Export data to a JSON file</p>
-        <button class="btn btn-info" id="export-data">Export</button>
-        <div class="mb-1">
-          <label class="form-label">Password :</label>
-          <input type="password" class="form-control" id="psw-check">
-        </div>
+      <div class = "col-1"></div>
+      <div class ="col-3">
+        <p id="info"></p>
       </div>
     </div>
   </div>

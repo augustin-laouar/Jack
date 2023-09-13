@@ -1,21 +1,21 @@
 {
-    "name": "locker",
+    "name": "Jack's Mails",
     "description": "Manage passwords and temporary e-mails address",
     "manifest_version": 2,
     "version" : "1.0",
-    "author": "Augustin LAOUAR - Thinhinane ZEDDAM",
+    "author": "Augustin LAOUAR",
     "icons": {
-        "48": "icons/temp_icon.jpg"
+        "48": "icons/jackthemail-nobg3.png"
       },
     "browser_action": {
         "default_area": "navbar",
-        "default_icon": "icons/temp_icon.jpg",
+        "default_icon": "icons/jackthemail-nobg3.png",
         "default_popup" :"html/emails.html",
-        "default_title": "locker"
+        "default_title": "Jack's Mails"
     },
     "browser_specific_settings": {
       "gecko": {
-        "id": "augustinlaouar@hotmail.com"
+        "id": "jacksmails@harrouchi.com"
       }
     },
     "background": {
@@ -25,15 +25,6 @@
     "permissions": [
         "storage",
         "tabs",
-        "cookies",
         "<all_urls>"
-      ],
-
-      "content_scripts": [
-        {
-          "matches": ["http://*/*", "https://*/*"],
-          "js": ["scripts/content-script.js"], 
-          "run_at": "document_end"
-        }
       ]
 }

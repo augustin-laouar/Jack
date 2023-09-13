@@ -98,7 +98,8 @@ async function fillAttachement(myMail, message) {
             downloadLink.href = downloadUrl;
             downloadLink.download = attachmentName;
             downloadLink.textContent = attachmentName;
-            downloadLink.classList.add('btn', 'btn-dark', 'text-light');
+            downloadLink.classList.add('btn', 'btn-secondary', 'text-light');
+            downloadLink.style.marginRight = '3px';
             attachmentDiv.appendChild(downloadLink);
         } 
         catch(error){
@@ -133,13 +134,16 @@ async function showMailContent(myMail, message) {
         else{
             subject.innerText = m.subject;
         }
-        cc.innerText = 'CC : ';
+        if(m.cc.lenght > 0){
+            cc.innerText = 'CC : ';
+        }
         for(var i = 0; i<m.cc.length; i++) {
             cc.innerText = cc.innerText + m.cc[i].name + ' <' + m.cc[i].address + '>';
             if(i !== m.cc.length - 1){ 
                 cc.innerText = cc.innerText + '; ';
             }
         }
+        document.getElementById("border").classList.add('border-top');
         mailContentDiv.innerHTML = newHTML;
         fillAttachement(myMail, m);
     }
@@ -344,21 +348,40 @@ async function init(){
     try{
         var email = await loginAssociatedAccount();
         fillEmailList(email);
-        document.addEventListener('click', function(event) { 
-            hideCustomMenu(event);
-        });
-        document.getElementById('refreshButton').addEventListener('click', function() {
-            fillEmailList(email);
-        });
-        document.getElementById('title').innerText = email.address;
+        return email;
     }
     catch(error){
         showError(error);
     }
 }   
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+  
+async function onPeriod(ms, email){
+    while(true){
+        console.log('autorefresh');
+        fillEmailList(email);
+        await wait(ms);
+    }
+}
 
-init();
-browser.tabs.insertCSS({ file: "../css/bootstrap.min.css" });
+
+document.addEventListener("DOMContentLoaded", async function() {
+    const email = await init();
+    document.addEventListener('click', function(event) { 
+        hideCustomMenu(event);
+    });
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        fillEmailList(email);
+    });
+    document.getElementById('title').innerText = email.address;
+    browser.tabs.insertCSS({ file: "../css/bootstrap.min.css" });
+
+    //autorefrsh
+    onPeriod(5000, email);
+  });
+
 
 
 

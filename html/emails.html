@@ -14,8 +14,8 @@
     <div class="row d-flex align-items-center">
       <div class="col">
         <div class="d-flex align-items-center">
-          <img src="../icons/logo.PNG" alt="Logo" class="me-2" style="max-height:50px;">
-          <h4>Jack Mail</h4>
+          <img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="me-2" style="max-height:50px;">
+          <h4>Jack's Mails</h4>
         </div>
       </div>
       <div class="col-auto">
@@ -30,8 +30,7 @@
   <div class="border-top"  style="margin-bottom : 10px; margin-left: 2%; margin-right:2%;"></div>
   <div class="row" style="width:850px; height:340px;">
     <div class="col-4 m-2">
-      <h3>Create a new address</h3>
-      <p>Create with a specific name</p>
+      <h3 class="display-6">Specific address</h3>
       <form id ="add-email">
         <div class ="m-1">
           <input id="email" autocomplete="off" placeholder="Enter an email name" required>
@@ -40,16 +39,17 @@
           <input type="password" id="password" placeholder="Enter your password" required>
         </div>
         <div>
-          <button type="submit" class="btn btn-info">Create</button>
+          <button type="submit" class="btn btn-info">Generate</button>
         </div>
       </form>
-      <p>Or generate a random address</p>
+      <br>
+      <h3 class="display-6">Random address</h3>
       <button type="button" class="btn btn-info" id="randomAddress">Generate</button>
       <br>
       <p id="info"></p>
     </div>
     <div class="col m-2" >
-      <h3>My emails</h3>
+      <h3 class="display-6">My emails</h3>
       <div style="overflow-y:scroll; max-height:70vh;">
         <table class="table table-dark">
           <tbody id="tab-body"></tbody>

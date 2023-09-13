@@ -1,4 +1,5 @@
 import * as pswTools from './tools.js';
+import * as tools from '../tools.js';
 import * as errorManager from '../exception/passwordError.js';
 
 function showError(error){
@@ -44,42 +45,52 @@ function getTrContent(url){
 async function fillPasswordList(){
   try{
     const logsList = pswTools.getLogsList();
-    const tab = document.querySelector('#tab-body');
+    const tab = document.querySelector('#tab-body');    
+    const head = document.querySelector('#tab-head');
+
     tab.innerHTML = ''; 
-    for(const logs of logsList) {
-      const logsData = await pswTools.getLogs(logs);   
-      const trElement = document.createElement('tr');
-      trElement.innerHTML = getTrContent(logsData.url);
-      const cpUsernameButton = trElement.querySelector('#cp-username-button');
-      const cpPasswordButton = trElement.querySelector('#cp-psw-button');
-      const deleteButton = trElement.querySelector('#delete-button');
-      cpUsernameButton.addEventListener('click', async function(){
-        try{
-          copyToClipboard(logsData.id);
-        }
-        catch(error){
-          showError(error);
-        }
-      });
-      cpPasswordButton.addEventListener('click', async function(){
-        try{
-          copyToClipboard(logsData.password);
-        }
-        catch(error){
-          showError(error);
-        }
-      });
-      deleteButton.addEventListener('click', async function(){
-        try{
-          pswTools.deleteLogs(logsData.url);
-          fillPasswordList();
-        }
-        catch(error){
-          showError(error);
-        }
-      });
-      tab.appendChild(trElement);
+    if(logsList.length === 0){
+      head.innerHTML = '';
+      tab.innerHTML = '<p class ="lead">No password saved for the moment.</p>'
     }
+    else{
+      head.innerHTML = '<tr><th scope="col">URL</th><th scope="col">Username</th><th scope="col">Password</th></tr>';
+      for(const logs of logsList) {
+        const logsData = await pswTools.getLogs(logs);   
+        const trElement = document.createElement('tr');
+        trElement.innerHTML = getTrContent(logsData.url);
+        const cpUsernameButton = trElement.querySelector('#cp-username-button');
+        const cpPasswordButton = trElement.querySelector('#cp-psw-button');
+        const deleteButton = trElement.querySelector('#delete-button');
+        cpUsernameButton.addEventListener('click', async function(){
+          try{
+            copyToClipboard(logsData.id);
+          }
+          catch(error){
+            showError(error);
+          }
+        });
+        cpPasswordButton.addEventListener('click', async function(){
+          try{
+            copyToClipboard(logsData.password);
+          }
+          catch(error){
+            showError(error);
+          }
+        });
+        deleteButton.addEventListener('click', async function(){
+          try{
+            pswTools.deleteLogs(logsData.url);
+            fillPasswordList();
+          }
+          catch(error){
+            showError(error);
+          }
+        });
+        tab.appendChild(trElement);
+      }
+    }
+
   }
   catch(error){
     showError(error);
@@ -115,6 +126,15 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       pwd.value = '';
       url.value = '';
       fillPasswordList();
+    });
+    var logOutButton = document.getElementById('log-out');
+    logOutButton.addEventListener("click", async function(){
+      tools.logout(true);
+    });
+    var settingsButton = document.getElementById('settings');
+    settingsButton.addEventListener("click", async function(event){
+      const url = browser.runtime.getURL('../../html/settings.html');
+      browser.tabs.create({ url });
     });
 
 });
