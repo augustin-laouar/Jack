@@ -19,15 +19,31 @@ function showError(error){
   }
 }
 
+function researchPassword(){
+  try{
+    const logsList = pswTools.getLogsList();
+    if(logsList === null){
+      return;
+    }
+    if(logsList.length === 0){
+      return;
+    }
+    const input = document.getElementById('search').value;
+    const logsListFiltred = logsList.filter(element => element.includes(input));
+    fillPasswordList(logsListFiltred, true);
+  }
+  catch(error){
+    showError(error);
+  }
+
+}
 
 function getTrContent(url){ 
-  var newUrl = url;
-  if(url.length > 30){
-    var newUrl = url.substring(0,30) + '...';
-  }
   var codeHTML = `
     <td>
-      <p class="text-info">${newUrl}</p>
+      <div style=" max-width: 150px;overflow-x: auto;">
+        <p class="text-info" style="white-space: nowrap;">${url}</p>
+      </div>
     </td>
     <td>
       <button id="cp-username-button" class="btn btn-outline-info">Copy</button>
@@ -42,16 +58,27 @@ function getTrContent(url){
   return codeHTML;
 }
 
-async function fillPasswordList(){
+async function fillPasswordList(logsListParam = null, searching = false){
   try{
-    const logsList = pswTools.getLogsList();
+    var logsList;
+    if(logsListParam === null){
+      logsList = pswTools.getLogsList();
+    }
+    else{
+      logsList = logsListParam;
+    }
     const tab = document.querySelector('#tab-body');    
     const head = document.querySelector('#tab-head');
 
     tab.innerHTML = ''; 
     if(logsList.length === 0){
       head.innerHTML = '';
-      tab.innerHTML = '<p class ="lead">No password saved for the moment.</p>'
+      if(searching){
+        tab.innerHTML = '<p class ="lead">No matching URL.</p>'
+      }
+      else{
+        tab.innerHTML = '<p class ="lead">No password saved for the moment.</p>'
+      }
     }
     else{
       head.innerHTML = '<tr><th scope="col">URL</th><th scope="col">Username</th><th scope="col">Password</th></tr>';
@@ -113,9 +140,9 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     const pwdForm = document.getElementById("pwd-form");
     pwdForm.addEventListener("submit", async function(event) {
       event.preventDefault(); //on supprime le comportement par defaut de submit 
-      var id = document.getElementById("id");
-      var pwd = document.getElementById("password");
-      var url = document.getElementById("url");
+      const id = document.getElementById("id");
+      const pwd = document.getElementById("password");
+      const url = document.getElementById("url");
       try{
         await pswTools.createLogs(url.value,id.value, pwd.value);
       }
@@ -127,14 +154,21 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       url.value = '';
       fillPasswordList();
     });
-    var logOutButton = document.getElementById('log-out');
+    const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(){
       tools.logout(true);
     });
-    var settingsButton = document.getElementById('settings');
+    const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", async function(event){
       const url = browser.runtime.getURL('../../html/settings.html');
       browser.tabs.create({ url });
     });
+    const searchInput = document.getElementById('search');
+    let timeout;
+    searchInput.addEventListener("input", function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(researchPassword,1000);
+    });
+
 
 });

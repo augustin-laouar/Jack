@@ -22,14 +22,9 @@ Not used now.
 ## TODO
 
 ### Augustin 
-- Message d'erreur succes sur page settings + passwords
-- rename verify auth et fix bug
 - Une seule variable pour les adresses mails/mdp (list format json) -> a voir plus tard
 - Amelioration : ne plus stocké les logs avec l'url mais avc une chaine aléatoire
-- variable lastConnection doit s'actualiser si l'utilisateur utilise l'app
 
-### Thinhinane 
-- Gérer le stockage sécurisé des mots de passes en utilisant une encryption AES, fesable avec l'API window.crypto
-- Stocker la clé AES dans un fichier sécurisé, voir window.crypto.subtle.exportKey et window.crypto.subtle.importKey
-- Les mots de passes doivent etre stocké sous la forme : "username;mdp;url", on pourrait les concaténés puis les encryptés tous ensemble par exemple. Dans tous les cas on doit avoir les 3 données de dispo : username (un email, un num de tel, un nom d'utilisateur...), un mot de passe et l'url du site associé. L'url pourrait etre de la forme www.example.com/* , pour que le mot de passe soit associé à tout les url du nom de domaine example.com.
-
+- Barre de recherche psw
+- Gérer les url trop longues psw
+- faire page help 

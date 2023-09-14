@@ -335,7 +335,7 @@ async function fillEmailList(myMail, pageNumber = 1){
             });
             tab.appendChild(moreMessageButton);
         }
-        document.getElementById('totalItems').innerHTML = '<strong>' + res.totalItems + '</strong> messages in <strong>' + myMail.address + '</strong> mail box.';
+        document.getElementById('totalItems').innerHTML = '<strong>' + res.totalItems + '</strong> messages in <strong>' + myMail.address + '</strong> mailbox.';
         }
     catch(error){
         showError(error);

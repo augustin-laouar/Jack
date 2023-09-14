@@ -23,10 +23,6 @@ function showError(error){
 }
 
 function getTrContent(address){ 
-  var newAddress = address;
-  if(address.length > 30){
-    var newAddress = address.substring(0,30) + '...';
-  }
   var codeHTML = `
     <td>
       <div class="container">
@@ -34,8 +30,8 @@ function getTrContent(address){
           <div class="col-8">
             <div class="d-flex align-items-center">
               <div class="mx-2">
-                <div id="address-div" class="text-center">
-                    <p class="text-info">${newAddress}</p>
+                <div id="address-div" class="text-center" style=" max-width: 300px;overflow-x: auto;">
+                    <p class="text-info" style="white-space: nowrap;">${address}</p>
                 </div>
               </div>
             </div>
