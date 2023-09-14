@@ -25,6 +25,4 @@ Not used now.
 - Une seule variable pour les adresses mails/mdp (list format json) -> a voir plus tard
 - Amelioration : ne plus stocké les logs avec l'url mais avc une chaine aléatoire
 
-- Barre de recherche psw
-- Gérer les url trop longues psw
 - faire page help 

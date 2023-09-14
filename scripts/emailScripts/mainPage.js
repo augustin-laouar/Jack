@@ -124,8 +124,13 @@ document.addEventListener("DOMContentLoaded", function() {
       tools.logout(true);
     });
     var settingsButton = document.getElementById('settings');
-    settingsButton.addEventListener("click", async function(event){
+    settingsButton.addEventListener("click", function(){
       const url = browser.runtime.getURL('../../html/settings.html');
+      browser.tabs.create({ url });
+    });
+    const helpButton = document.getElementById('help');
+    helpButton.addEventListener("click", function(){
+      const url = browser.runtime.getURL('../../html/help.html');
       browser.tabs.create({ url });
     });
 });
