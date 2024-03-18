@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tools.storeConnexionDuration(connexionDurationSelect.value);
             showInfo('Connexion duration updated !');
         });
-        const loadDataButton = document.getElementById('load-data');
+        /*const loadDataButton = document.getElementById('load-data');
         loadDataButton.addEventListener('click', function(){
             const loadDataFile = document.getElementById('load-data-file');
             const pswCheckInput = document.getElementById('psw-check');
@@ -77,5 +77,5 @@ document.addEventListener('DOMContentLoaded', function() {
         exportDataButton.addEventListener('click', function(){
             const pswCheckInput = document.getElementById('psw-check');
             //TODO
-        });
+        });*/
 });

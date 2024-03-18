@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "../html/emails.html";
       }
       else{
-        document.getElementById('info').innerText = 'Login failed.';
+        const infoLabel = document.getElementById('info');
+        infoLabel.innerText = 'Login failed.';
         infoLabel.classList.remove('text-danger');
         infoLabel.classList.add('text-warning'); 
       }

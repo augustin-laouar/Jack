@@ -119,11 +119,11 @@ document.addEventListener("DOMContentLoaded", function() {
       fillAddressList();
     });
 
-    var logOutButton = document.getElementById('log-out');
+    const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
       tools.logout(true);
     });
-    var settingsButton = document.getElementById('settings');
+    const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){
       const url = browser.runtime.getURL('../../html/settings.html');
       browser.tabs.create({ url });
@@ -131,6 +131,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const helpButton = document.getElementById('help');
     helpButton.addEventListener("click", function(){
       const url = browser.runtime.getURL('../../html/help.html');
+      browser.tabs.create({ url });
+    });
+    const passwordButton = document.getElementById('password-button');
+    passwordButton.addEventListener("click", function(){
+      const url = browser.runtime.getURL('../../html/passwords.html');
       browser.tabs.create({ url });
     });
 });

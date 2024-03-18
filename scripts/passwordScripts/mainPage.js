@@ -38,15 +38,19 @@ function researchPassword(){
 
 }
 
-function getTrContent(url){ 
+function getTrContent(url, id){ 
   var codeHTML = `
-    <td>
-      <div style=" max-width: 150px;overflow-x: auto;">
-        <p class="text-info" style="white-space: nowrap;">${url}</p>
+    <td style="width: 350px;">
+      <div style=" max-width: 300px;overflow-x: auto;">
+        <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-url">${url}</p>
       </div>
     </td>
-    <td>
-      <button id="cp-username-button" class="btn btn-outline-info">Copy</button>
+    <td style="width: 250px;">
+      <div style="display: flex; align-items: center;">
+        <div style="width: 200px; overflow-x: auto;">
+          <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-username">${id}</p>
+        </div>
+      </div>
     </td>
     <td>
       <button id="cp-psw-button" class="btn btn-outline-info">Copy</button>
@@ -85,11 +89,21 @@ async function fillPasswordList(logsListParam = null, searching = false){
       for(const logs of logsList) {
         const logsData = await pswTools.getLogs(logs);   
         const trElement = document.createElement('tr');
-        trElement.innerHTML = getTrContent(logsData.url);
-        const cpUsernameButton = trElement.querySelector('#cp-username-button');
-        const cpPasswordButton = trElement.querySelector('#cp-psw-button');
+        trElement.innerHTML = getTrContent(logsData.url, logsData.id);
+        const copyUrl = trElement.querySelector('#cp-url')
+        const copyUsername = trElement.querySelector('#cp-username');
+        const copyPasswordButton = trElement.querySelector('#cp-psw-button');
         const deleteButton = trElement.querySelector('#delete-button');
-        cpUsernameButton.addEventListener('click', async function(){
+
+        copyUrl.addEventListener('click', async function(){
+          try{
+            copyToClipboard(logsData.url);
+          }
+          catch(error){
+            showError(error);
+          }
+        });
+        copyUsername.addEventListener('click', async function(){
           try{
             copyToClipboard(logsData.id);
           }
@@ -97,7 +111,7 @@ async function fillPasswordList(logsListParam = null, searching = false){
             showError(error);
           }
         });
-        cpPasswordButton.addEventListener('click', async function(){
+        copyPasswordButton.addEventListener('click', async function(){
           try{
             copyToClipboard(logsData.password);
           }
@@ -154,20 +168,7 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       url.value = '';
       fillPasswordList();
     });
-    const logOutButton = document.getElementById('log-out');
-    logOutButton.addEventListener("click", async function(){
-      tools.logout(true);
-    });
-    const settingsButton = document.getElementById('settings');
-    settingsButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/settings.html');
-      browser.tabs.create({ url });
-    });
-    const helpButton = document.getElementById('help');
-    helpButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/help.html');
-      browser.tabs.create({ url });
-    });
+
     const searchInput = document.getElementById('search');
     let timeout;
     searchInput.addEventListener("input", function() {
