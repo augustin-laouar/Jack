@@ -2,6 +2,18 @@ import * as pswTools from './tools.js';
 import * as tools from '../tools.js';
 import * as errorManager from '../exception/passwordError.js';
 
+function showErrorMessage(message, type) {
+  const infoLabel = document.getElementById('info');
+  infoLabel.innerHTML = message;
+  if(type === 1){
+    infoLabel.classList.remove('text-warning');
+    infoLabel.classList.add('text-danger'); //system error
+  }
+  if(type === 2){
+    infoLabel.classList.remove('text-danger');
+    infoLabel.classList.add('text-warning'); //user error
+  }
+}
 function showError(error){
   if(!(error instanceof errorManager.Error)){
     return;
@@ -56,10 +68,20 @@ function getTrContent(url, id){
       <button id="cp-psw-button" class="btn btn-outline-info">Copy</button>
     </td>
     <td>
+    <button id="edit-button" class="btn btn-secondary">Edit</button>
+    </td>
+    <td>
       <button id="delete-button" class="btn btn-danger">Delete</button>
     </td>
     `;
   return codeHTML;
+}
+
+function editPopUp(id, url, username, psw) {
+  browser.storage.local.set({ popupData: { id, url, username, psw } })
+    .then(() => {
+      window.open('../../html/editPsw.html', 'Edit', 'width=800,height=600,resizable=yes');
+    });
 }
 
 async function fillPasswordList(logsListParam = null, searching = false){
@@ -89,10 +111,11 @@ async function fillPasswordList(logsListParam = null, searching = false){
       for(const logs of logsList) {
         const logsData = await pswTools.getLogs(logs);   
         const trElement = document.createElement('tr');
-        trElement.innerHTML = getTrContent(logsData.url, logsData.id);
+        trElement.innerHTML = getTrContent(logsData.url, logsData.username);
         const copyUrl = trElement.querySelector('#cp-url')
         const copyUsername = trElement.querySelector('#cp-username');
         const copyPasswordButton = trElement.querySelector('#cp-psw-button');
+        const editButton = trElement.querySelector('#edit-button');
         const deleteButton = trElement.querySelector('#delete-button');
 
         copyUrl.addEventListener('click', async function(){
@@ -119,9 +142,17 @@ async function fillPasswordList(logsListParam = null, searching = false){
             showError(error);
           }
         });
+        editButton.addEventListener('click', async function(){
+          try{
+            editPopUp(logsData.id, logsData.url, logsData.username, logsData.password); 
+          }
+          catch(error){
+            showError(error);
+          }
+        });
         deleteButton.addEventListener('click', async function(){
           try{
-            pswTools.deleteLogs(logsData.url);
+            pswTools.deleteLogs(logsData.id);
             fillPasswordList();
           }
           catch(error){
@@ -154,16 +185,16 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     const pwdForm = document.getElementById("pwd-form");
     pwdForm.addEventListener("submit", async function(event) {
       event.preventDefault(); //on supprime le comportement par defaut de submit 
-      const id = document.getElementById("id");
+      const username = document.getElementById("username");
       const pwd = document.getElementById("password");
       const url = document.getElementById("url");
       try{
-        await pswTools.createLogs(url.value,id.value, pwd.value);
+        await pswTools.createLogs(url.value,username.value, pwd.value);
       }
       catch(error){
         showError(error);
       }
-      id.value = '';
+      username.value = '';
       pwd.value = '';
       url.value = '';
       fillPasswordList();
@@ -176,5 +207,16 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       timeout = setTimeout(researchPassword,1000);
     });
 
+    //Listen for messages from popup
+    browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+      if (message.action === "updatePswList") {
+        fillPasswordList();
+      }
+      if (message.action === "errorUpdatePsw") {
+        if(message.error){
+          showErrorMessage(message.error.message, message.error.type);
+        }
+      }
+    });
 
 });

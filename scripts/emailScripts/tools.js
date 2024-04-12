@@ -337,7 +337,7 @@ export async function storeAccount(emailId, myMail){ // not a secure function (n
     const jsonEmail = JSON.stringify(myMail);
     const aesKey = await pswTools.getDerivedKey();
     const encryptedJsonEmail = await pswTools.encryptWithAES(jsonEmail, aesKey);
-    localStorage.setItem(emailId, encryptedJsonEmail);
+    localStorage.setItem('e_' + emailId, encryptedJsonEmail);
   }
   catch{
     throw new errorManager.Error(2, 1, 'Error while storing account.');
@@ -375,7 +375,7 @@ export async function createAndStoreAccount(addr, psw){
     throw error;
   }
   var newId = generateNewId();
-  await storeAccount('email_' + newId, myMail);
+  await storeAccount(newId, myMail);
   pushIdInEmailList(newId);
 }
 
@@ -398,13 +398,13 @@ export async function createAndStoreRandomAccount(tryNumber = 0) {
     }
   }
   var newId = generateNewId();
-  await storeAccount('email_' + newId, myMail);
+  await storeAccount(newId, myMail);
   pushIdInEmailList(newId);
 }
 
 export async function getAccountStored(emailId){
   const aesKey = await pswTools.getDerivedKey();
-  const email = localStorage.getItem('email_' + emailId);
+  const email = localStorage.getItem('e_' + emailId);
   if(email === null){
     throw new errorManager.Error(4, 1, 'Error while getting account : Bad ID.');
   }
@@ -436,7 +436,7 @@ export async function deleteAccountStored(emailId) {
      }
   }
   storeEmailList(newEmailList);
-  localStorage.removeItem('email_' + emailId);
+  localStorage.removeItem('e_' + emailId);
   }
 
 

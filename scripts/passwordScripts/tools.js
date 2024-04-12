@@ -1,4 +1,6 @@
 import * as errorManager from '../exception/passwordError.js';
+const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
 
 //SIMPLE AES
 
@@ -121,17 +123,54 @@ export function deleteDerivedKey(){
 
 
   //LocalStorage
-  export async function storeLogs(url, id, psw){
+  /*export async function storeLogs(url, id, psw){
       const aesKey = await getDerivedKey();
       const encryptedPsw = await encryptWithAES(psw, aesKey);
       const encryptedId = await encryptWithAES(id, aesKey);
       localStorage.setItem("logs_"+url, encryptedId + ';' + encryptedPsw);
+  }*/
+  function generateRandomString(characters, length) {
+    let randomString = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters.charAt(randomIndex);
+    }
+    return randomString;
   }
 
-  export function deleteLogs(url){
-    localStorage.removeItem("logs_" + url);
+  function isInLogList(id, logsList){ 
+    if(logsList.includes(id)){
+      return true;
+    }
+    return false;
+  }
+
+  function generateNewId(){
     var logsList = getLogsList();
-    var index = logsList.indexOf(url);
+    var newId = generateRandomString(letterAndNumber,10);
+    while(isInLogList(newId, logsList)){
+      newId = generateRandomString(letterAndNumber, 10);
+    }
+    return newId;
+  }
+
+  export async function storeLogs(id, url, username, psw){
+    console.log(url);
+    console.log(username);
+    console.log(psw);
+
+    const aesKey = await getDerivedKey();
+    const encryptedUrl = await encryptWithAES(url, aesKey);
+    const encryptedUsername = await encryptWithAES(username, aesKey);
+    const encryptedPsw = await encryptWithAES(psw, aesKey);
+    localStorage.setItem("l_" + id , encryptedUrl + ';' + encryptedUsername + ';' + encryptedPsw);
+}
+
+
+  export function deleteLogs(id){
+    localStorage.removeItem("l_" + id);
+    var logsList = getLogsList();
+    var index = logsList.indexOf(id);
     if(index !== -1){
       logsList.splice(index, 1);
     }
@@ -140,17 +179,28 @@ export function deleteDerivedKey(){
 
 
 
-  export async function createLogs(url, id, psw) {
+  export async function createLogs(url, username, psw) {
     try{
-        addNewUrl(url);
-        await storeLogs(url, id, psw);
+        const newId = generateNewId();
+        pushIdInLogsList(newId);
+        await storeLogs(newId, url, username, psw);
     }
     catch(error){
       throw errorManager.Error(2,1);
     }
-  
   }
   
+  export async function udpateLogs(id, url, username, psw) {
+    try{
+      var logsList = getLogsList();
+      if(isInLogList(id, logsList)){
+        await storeLogs(id, url, username, psw);
+      }
+    }
+    catch(error){
+      throw errorManager.Error(2,1);
+    }
+  }
   export function storeLogsList(logsList) {
     // Convertir la liste en une chaîne de caractères
     const logsListStr = logsList.join(';');
@@ -169,25 +219,21 @@ export function deleteDerivedKey(){
     }
   }
   
-  export function addNewUrl(url) {
+  export function pushIdInLogsList(id) {
     var logsList = getLogsList();
-    // Vérification si l'URL existe déjà dans la liste
-    if (!logsList.includes(url)) {
-      logsList.push(url);
-      storeLogsList(logsList);
-      return true;
-    }
-    return false;
+    logsList.push(id);
+    storeLogsList(logsList);
   }
   
-  export async function getLogs(logsUrl){
-    var encryptedData = localStorage.getItem("logs_" + logsUrl);
+  export async function getLogs(id){
+    var encryptedData = localStorage.getItem("l_" + id);
     if(encryptedData === null){
       return null;
     }
     var encryptedData = encryptedData.split(';');
     var key = await getDerivedKey();
-    var id = await decryptWithAESKey(encryptedData[0], key);
-    var psw = await decryptWithAESKey(encryptedData[1], key);
-    return {url : logsUrl, id : id, password : psw};
+    const url = await decryptWithAESKey(encryptedData[0], key);
+    const username = await decryptWithAESKey(encryptedData[1], key);
+    const psw = await decryptWithAESKey(encryptedData[2], key);
+    return {id: id, url: url, username: username, password: psw};
   }

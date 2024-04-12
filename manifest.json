@@ -1,8 +1,8 @@
 {
-    "name": "Jack's Mails DEV-MODE",
-    "description": "Manage temporary e-mails address and passwords",
+    "name": "Jack's Mails",
+    "description": "Manage temporary e-mails address and passwords.",
     "manifest_version": 2,
-    "version" : "1.1",
+    "version" : "1.2",
     "author": "Augustin LAOUAR",
     "icons": {
         "48": "icons/jackthemail-nobg3.png"

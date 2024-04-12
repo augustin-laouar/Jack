@@ -169,19 +169,19 @@ export async function changePassword(newPsw){
   }
   const logsList = pswTools.getLogsList();
   var decryptedLogsList = [];
-  for(const logsUrl of logsList){
-    const logsDecrypted = await pswTools.getLogs(logsUrl);
-    const data = {url : logsUrl, logs : logsDecrypted};
+  for(const id of logsList){
+    const logsDecrypted = await pswTools.getLogs(id);
+    const data = {id: id, logs : logsDecrypted};
     decryptedLogsList.push(data);
   }
   await storeHashedPassword(newPsw);
   const newKey = await pswTools.generateDerivedKey(newPsw);
   await pswTools.storeDerivedKey(newKey);
   for(const data of decryptedEmailsList){
-    emailTools.storeAccount('email_' + data.id, data.email);
+    emailTools.storeAccount('e_' + data.id, data.email);
   }
   for(const data of decryptedLogsList){
-    pswTools.storeLogs(data.logs.url, data.logs.id, data.logs.password);
+    pswTools.storeLogs(data.id, data.logs.password, data.logs.username, data.logs.password);
   }
 }
 
