@@ -78,11 +78,22 @@ function getTrContent(url, id){
 }
 
 function editPopUp(id, url, username, psw) {
+  const screenWidth = window.screen.width;
+  const screenHeight = window.screen.height;
+  
+  const width = 500;
+  const height = 350;
+
+  const left = (screenWidth / 2) - (width / 2);
+  const top = (screenHeight / 2) - (height / 2);
+
   browser.storage.local.set({ popupData: { id, url, username, psw } })
     .then(() => {
-      window.open('../../html/editPsw.html', 'Edit', 'width=800,height=600,resizable=yes');
+      // Open the new window centered on the screen
+      window.open('../../html/editPsw.html', 'Edit', `width=${width},height=${height},resizable=yes,left=${left},top=${top}`);
     });
 }
+
 
 async function fillPasswordList(logsListParam = null, searching = false){
   try{

@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <title>Edit password</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../css/bootstrap.min.css">
+        <title>Edit password</title>
     </head>
     <body class="bg-dark text-light">
-        <form id ="pwd-form">
-            <div class ="m-1">
-                <input style="width:75%;" id="url" autocomplete="off" placeholder="Enter the associate url" required>
-            </div>
-            <div class ="m-1">
-                <input style="width:75%;" id="username" placeholder="Enter your username" required>
-            </div>
-            <div class ="m-1">
-                <input style="width:75%;" type="password" id="password" placeholder="Enter your password" required>
-            </div>
-            <div class="m-1" >
-                <button style="width:75%;" type="submit" class="btn btn-info">Save</button>
-            </div>
-        </form>
+        <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <form id="pwd-form" class="col-8 col-md-6">
+                <div class="mb-3">
+                    <label>URL :</label>
+                    <input class="form-control" id="url" autocomplete="off" placeholder="Enter the associate url" required>
+                </div>
+                <div class="mb-3">
+                    <label>Username :</label>
+                    <input class="form-control" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="mb-3">
+                    <label>Password :</label>
+                    <input class="form-control" type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-info w-100">Save</button>
+                </div>
+            </form>     
+        </div>
         <script type="module" src="../scripts/passwordScripts/editPsw.js"></script>
     </body>
 </html>
