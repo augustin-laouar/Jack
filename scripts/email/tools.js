@@ -1,5 +1,5 @@
-import * as pswTools from '../passwordScripts/tools.js';
 import * as errorManager from '../exception/mailError.js';
+import * as crypto from '../tools/crypto.js';
 
 export const baseUrl = 'https://api.mail.tm';
 const letterAndNumber = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -335,8 +335,8 @@ export function pushIdInEmailList(id) {
 export async function storeAccount(emailId, myMail){ // not a secure function (no verification). Be careful using it
   try{
     const jsonEmail = JSON.stringify(myMail);
-    const aesKey = await pswTools.getDerivedKey();
-    const encryptedJsonEmail = await pswTools.encryptWithAES(jsonEmail, aesKey);
+    const aesKey = await crypto.getDerivedKey();
+    const encryptedJsonEmail = await crypto.encryptWithAES(jsonEmail, aesKey);
     localStorage.setItem('e_' + emailId, encryptedJsonEmail);
   }
   catch{
@@ -388,6 +388,7 @@ export async function createAndStoreRandomAccount(tryNumber = 0) {
   var myMail;
   try{
     myMail = await createAccount(addr, psw);
+    console.log(myMail.id);
   }
   catch(error){
     if(tryNumber === 5){
@@ -403,12 +404,12 @@ export async function createAndStoreRandomAccount(tryNumber = 0) {
 }
 
 export async function getAccountStored(emailId){
-  const aesKey = await pswTools.getDerivedKey();
+  const aesKey = await crypto.getDerivedKey();
   const email = localStorage.getItem('e_' + emailId);
   if(email === null){
     throw new errorManager.Error(4, 1, 'Error while getting account : Bad ID.');
   }
-  const decryptedJsonEmail = await pswTools.decryptWithAESKey(email, aesKey);
+  const decryptedJsonEmail = await crypto.decryptWithAESKey(email, aesKey);
   return JSON.parse(decryptedJsonEmail);
 }
 
@@ -437,7 +438,7 @@ export async function deleteAccountStored(emailId) {
   }
   storeEmailList(newEmailList);
   localStorage.removeItem('e_' + emailId);
-  }
+}
 
 
 

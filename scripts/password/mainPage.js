@@ -1,6 +1,6 @@
 import * as pswTools from './tools.js';
-import * as tools from '../tools.js';
 import * as errorManager from '../exception/passwordError.js';
+import * as storage from '../tools/storage.js'
 
 function showErrorMessage(message, type) {
   const infoLabel = document.getElementById('info');
@@ -31,18 +31,15 @@ function showError(error){
   }
 }
 
-function researchPassword(){
+async function researchPassword(){
   try{
-    const logsList = pswTools.getLogsList();
-    if(logsList === null){
-      return;
-    }
+    const logs = await pswTools.getDecryptedLogs();
     if(logsList.length === 0){
       return;
     }
     const input = document.getElementById('search').value;
-    const logsListFiltred = logsList.filter(element => element.includes(input));
-    fillPasswordList(logsListFiltred, true);
+    const logsFiltred = logs.filter(element => element.content.url.includes(input));
+    fillPasswordList(logsFiltred, true);
   }
   catch(error){
     showError(error);
@@ -86,8 +83,7 @@ function editPopUp(id, url, username, psw) {
 
   const left = (screenWidth / 2) - (width / 2);
   const top = (screenHeight / 2) - (height / 2);
-
-  browser.storage.local.set({ popupData: { id, url, username, psw } })
+  storage.store({ popupData: { id, url, username, psw } })
     .then(() => {
       // Open the new window centered on the screen
       window.open('../../html/editPsw.html', 'Edit', `width=${width},height=${height},resizable=yes,left=${left},top=${top}`);
@@ -95,20 +91,20 @@ function editPopUp(id, url, username, psw) {
 }
 
 
-async function fillPasswordList(logsListParam = null, searching = false){
+async function fillPasswordList(logsParam = null, searching = false){
   try{
-    var logsList;
-    if(logsListParam === null){
-      logsList = pswTools.getLogsList();
+    var logs;
+    if(logsParam === null){
+      logs = await pswTools.getDecryptedLogs();
     }
     else{
-      logsList = logsListParam;
+      logs = logsParam;
     }
     const tab = document.querySelector('#tab-body');    
     const head = document.querySelector('#tab-head');
 
     tab.innerHTML = ''; 
-    if(logsList.length === 0){
+    if(logs.length === 0){
       head.innerHTML = '';
       if(searching){
         tab.innerHTML = '<p class ="lead">No matching URL.</p>'
@@ -119,10 +115,9 @@ async function fillPasswordList(logsListParam = null, searching = false){
     }
     else{
       head.innerHTML = '<tr><th scope="col">URL</th><th scope="col">Username</th><th scope="col">Password</th></tr>';
-      for(const logs of logsList) {
-        const logsData = await pswTools.getLogs(logs);   
+      for(const log of logs) {
         const trElement = document.createElement('tr');
-        trElement.innerHTML = getTrContent(logsData.url, logsData.username);
+        trElement.innerHTML = getTrContent(log.content.url, log.content.username);
         const copyUrl = trElement.querySelector('#cp-url')
         const copyUsername = trElement.querySelector('#cp-username');
         const copyPasswordButton = trElement.querySelector('#cp-psw-button');
@@ -131,7 +126,7 @@ async function fillPasswordList(logsListParam = null, searching = false){
 
         copyUrl.addEventListener('click', async function(){
           try{
-            copyToClipboard(logsData.url);
+            copyToClipboard(log.content.url);
           }
           catch(error){
             showError(error);
@@ -139,7 +134,7 @@ async function fillPasswordList(logsListParam = null, searching = false){
         });
         copyUsername.addEventListener('click', async function(){
           try{
-            copyToClipboard(logsData.id);
+            copyToClipboard(log.content.username);
           }
           catch(error){
             showError(error);
@@ -147,7 +142,7 @@ async function fillPasswordList(logsListParam = null, searching = false){
         });
         copyPasswordButton.addEventListener('click', async function(){
           try{
-            copyToClipboard(logsData.password);
+            copyToClipboard(log.content.password);
           }
           catch(error){
             showError(error);
@@ -155,7 +150,7 @@ async function fillPasswordList(logsListParam = null, searching = false){
         });
         editButton.addEventListener('click', async function(){
           try{
-            editPopUp(logsData.id, logsData.url, logsData.username, logsData.password); 
+            editPopUp(log.id, log.content.url, log.content.username, log.content.password); 
           }
           catch(error){
             showError(error);
@@ -163,7 +158,7 @@ async function fillPasswordList(logsListParam = null, searching = false){
         });
         deleteButton.addEventListener('click', async function(){
           try{
-            pswTools.deleteLogs(logsData.id);
+            await pswTools.deleteLog(log.id);
             fillPasswordList();
           }
           catch(error){
@@ -199,12 +194,12 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       const username = document.getElementById("username");
       const pwd = document.getElementById("password");
       const url = document.getElementById("url");
-      try{
-        await pswTools.createLogs(url.value,username.value, pwd.value);
-      }
+      //try{
+      await pswTools.addLog(url.value,username.value, pwd.value);
+      /*}
       catch(error){
         showError(error);
-      }
+      }*/
       username.value = '';
       pwd.value = '';
       url.value = '';

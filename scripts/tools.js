@@ -1,5 +1,6 @@
-import * as pswTools from './passwordScripts/tools.js';
-import * as emailTools from './emailScripts/tools.js';
+import * as pswTools from './password/tools.js';
+import * as emailStorage from './email/storage_tools.js';
+import * as crypto from './tools/crypto.js';
 /**
  * This file contains every tools we have to use in other modules
  */
@@ -105,8 +106,8 @@ export function isLogged() {
  export async function login(password){
   if (await validPassword(password)) {
     storeLastLogin();
-    const derivedKey = await pswTools.generateDerivedKey(password);
-    pswTools.storeDerivedKey(derivedKey);
+    const derivedKey = await crypto.generateDerivedKey(password);
+    crypto.storeDerivedKey(derivedKey);
     return true;
   }
   return false;
@@ -120,7 +121,7 @@ export function isLogged() {
     var toStore = new Date(now.getTime() - (parseInt(connexionDuration * 60 * 1000))); 
     localStorage.setItem('lastLogin', toStore.toISOString());
   }
-  pswTools.deleteDerivedKey();
+  crypto.deleteDerivedKey();
   window.location.href = '../html/login.html';
  }
 
@@ -160,29 +161,11 @@ export async function validPassword(psw) {
 
 //re encrypt all data
 export async function changePassword(newPsw){
-  const addressList = emailTools.getEmailList(); 
-  var decryptedEmailsList = [];
-  for(const emailId of addressList) {
-    const emailDecrypted = await emailTools.getAccountStored(emailId);
-    const data = {id : emailId, email : emailDecrypted};
-    decryptedEmailsList.push(data);
-  }
-  const logsList = pswTools.getLogsList();
-  var decryptedLogsList = [];
-  for(const id of logsList){
-    const logsDecrypted = await pswTools.getLogs(id);
-    const data = {id: id, logs : logsDecrypted};
-    decryptedLogsList.push(data);
-  }
+  const oldKey = await crypto.getDerivedKey();
+  const newKey = await crypto.generateDerivedKey(newPsw);
+  await emailStorage.encryptEmailsWithNewKey(oldKey, newKey);
   await storeHashedPassword(newPsw);
-  const newKey = await pswTools.generateDerivedKey(newPsw);
-  await pswTools.storeDerivedKey(newKey);
-  for(const data of decryptedEmailsList){
-    emailTools.storeAccount('e_' + data.id, data.email);
-  }
-  for(const data of decryptedLogsList){
-    pswTools.storeLogs(data.id, data.logs.password, data.logs.username, data.logs.password);
-  }
+  await crypto.storeDerivedKey(newKey);
 }
 
 export function storeConnexionDuration(connexionDuration){

@@ -1,5 +1,7 @@
-import * as emailTools from './tools.js';
 import * as errorManager from '../exception/mailError.js';
+import * as viewer from './view_tools.js';
+import * as api from './api_tools.js';
+import * as storage from './storage_tools.js';
 
 function showError(error){
     if(!(error instanceof errorManager.Error)){
@@ -19,9 +21,9 @@ function showError(error){
   }
 
 
-async function markAsRead(myMail, message, trElement) {
+async function markAsRead(email, message, trElement) {
     try{
-        await emailTools.marksAsRead(myMail, message.id);
+        await api.marksAsRead(email, message.id);
         trElement.querySelector('#messageSubject').classList.remove('fw-bolder');
         trElement.querySelector('#messageSubject').classList.remove('text-info');
         message.seen = true;
@@ -31,9 +33,10 @@ async function markAsRead(myMail, message, trElement) {
     }
 }
 
-async function markAsUnread(myMail, message, trElement) {
+async function markAsUnread(email, message, trElement) {
     try{
-        await emailTools.marksAsUnread(myMail, message.id);
+
+        await api.marksAsUnread(email, message.id);
         message.seen = false;
         trElement.querySelector('#messageSubject').classList.add('fw-bolder');
         trElement.querySelector('#messageSubject').classList.add('text-info');
@@ -47,10 +50,11 @@ async function markAsUnread(myMail, message, trElement) {
 async function loginAssociatedAccount() {
     try{
         const params = new URLSearchParams(window.location.search);
-        const emailId = params.get('emailId');
-        var email = await emailTools.getAccountStored(emailId);
-        email = await emailTools.login(email);
-        emailTools.storeAccount(emailId, email);
+        const id = params.get('emailId');
+        var email = await storage.getDecryptedEmail(id);
+        email = await api.login(email);
+        await storage.deleteEmail(id);
+        await storage.addEmail(email);
         return email;
     }
     catch(error){
@@ -93,7 +97,7 @@ async function fillAttachement(myMail, message) {
         var attachmentUrl = message.attachments[i].downloadUrl;
         var attachmentName = message.attachments[i].filename; 
         try{
-            var downloadUrl = await emailTools.downloadAttachment(attachmentUrl, myMail.token);      
+            var downloadUrl = await viewer.downloadAttachment(attachmentUrl, myMail.token);      
             var downloadLink = document.createElement('a');
             downloadLink.href = downloadUrl;
             downloadLink.download = attachmentName;
@@ -110,8 +114,8 @@ async function fillAttachement(myMail, message) {
 
 async function showMailContent(myMail, message) {
     try{
-        var m = await emailTools.getMessage(myMail, message.id);
-        const newHTML = await emailTools.messageToHtml(m, myMail.token);
+        var m = await api.getMessage(myMail, message.id);
+        const newHTML = await viewer.messageToHtml(m, myMail.token);
         var subject = document.getElementById("subject");
         var sender = document.getElementById("sender");
         var receiver = document.getElementById("receiver");
@@ -227,7 +231,7 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
     deleteMenuItem.style.cursor = "pointer";
     deleteMenuItem.addEventListener("click", async function() {
         try{
-            await emailTools.deleteMessage(myMail, message.id);
+            await api.deleteMessage(myMail, message.id);
             tab.removeChild(trElement);
             document.body.removeChild(customMenu);
             var showMailContainer = document.getElementById('showMailContainer');
@@ -294,7 +298,7 @@ function hideCustomMenu(event) {
 
 async function fillEmailList(myMail, pageNumber = 1){
     try{
-        var res = await emailTools.getMessages(myMail, pageNumber);
+        var res = await api.getMessages(myMail, pageNumber);
         var messages = res.messages;
         var tab = document.querySelector('#tab-body');
         tab.innerHTML = '';
@@ -360,7 +364,6 @@ function wait(ms) {
   
 async function onPeriod(ms, email){
     while(true){
-        console.log('autorefresh');
         fillEmailList(email);
         await wait(ms);
     }

@@ -1,13 +1,13 @@
 import * as pswTools from './tools.js';
+import * as storage from '../tools/storage.js'
 
 async function fillInputs() {
-  const data = await browser.storage.local.get('popupData');
+  const data = await storage.read('popupData');
   const { id, url, username, psw } = data.popupData;
   document.getElementById('url').value = url;
   document.getElementById('username').value = username;
   document.getElementById('password').value = psw;
-
-  browser.storage.local.remove('popupData');
+  storage.remove('popupData');
   return id;
 }
 
@@ -20,7 +20,7 @@ window.onload = async function() {
     const username = document.getElementById("username").value;
     const pwd = document.getElementById("password").value;
     try {
-      await pswTools.udpateLogs(id, url, username, pwd);
+      await pswTools.modifyLog(id, url, username, pwd);
       browser.runtime.sendMessage({ action: "updatePswList" });
       window.close();
     } catch (error) {

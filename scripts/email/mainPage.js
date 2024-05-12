@@ -1,7 +1,5 @@
-import * as emailTools from './tools.js';
 import * as errorManager from '../exception/mailError.js';
-import * as tools from '../tools.js';
-
+import * as storage from './storage_tools.js';
 
 
 function showError(error){
@@ -52,27 +50,26 @@ function getTrContent(address){
 }
 async function fillAddressList(){
   try{
-    const addressList = emailTools.getEmailList(); 
+    const emails = await storage.getDecrytpedEmails(); 
     const tab = document.querySelector('#tab-body');
     tab.innerHTML = ''; 
-    if(addressList.length === 0){
+    if(emails.length === 0){
       tab.innerHTML = '<p class="lead">No address for the moment.</p>';
     }
     else{
-      for(const emailId of addressList) {
-        var myMail = await emailTools.getEmailAddressAssociated(emailId);
+      for(const email of emails) {
         const trElement = document.createElement('tr');
-        trElement.innerHTML = getTrContent(myMail);
+        trElement.innerHTML = getTrContent(email.email.address);
         const addressDiv = trElement.querySelector('#address-div');
         addressDiv.style.cursor = 'pointer';
         addressDiv.addEventListener('click', function(){
-          const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(emailId);
+          const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(email.id);
           browser.tabs.create({ url });
         });
         const deleteButton = trElement.querySelector('#delete-button');
         deleteButton.addEventListener('click', async function(){
           try{
-            await emailTools.deleteAccountStored(emailId);
+            await storage.deleteEmail(email.id);
             fillAddressList();
           }
           catch(error){
@@ -98,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var addressInput = document.getElementById("email");
       var passwordInput = document.getElementById("password");
       try{
-        await emailTools.createAndStoreAccount(addressInput.value, passwordInput.value);
+        await storage.createEmail(addressInput.value, passwordInput.value);
       }
       catch(error){
         showError(error);
@@ -111,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const randomAddressButton = document.getElementById("randomAddress");
     randomAddressButton.addEventListener("click", async function(event){
       try{
-        await emailTools.createAndStoreRandomAccount();
+        await storage.createRandomEmail();
       }
       catch(error){
         showError(error);
