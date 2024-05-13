@@ -32,4 +32,4 @@
 - Modifier le reste du code pour ne plus utiliser 
 - ChangePassword : bug
 - stocker le hashedpsw dans la mémoire extension
-- Bug logout ne fonctionne pas 
+- Bug impossible de se connecter. Problème vient surement du fait que il n'arrive pas a obtenir le bon résultat dans la fonction checkLogin

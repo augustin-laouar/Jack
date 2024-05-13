@@ -1,6 +1,7 @@
-import * as pswTools from './password/tools.js';
+import * as logsTools from './password/tools.js';
 import * as emailStorage from './email/storage_tools.js';
 import * as crypto from './tools/crypto.js';
+import * as storage from './tools/storage.js';
 /**
  * This file contains every tools we have to use in other modules
  */
@@ -141,7 +142,7 @@ async function hashPassword(psw) {
 export async function storeHashedPassword(psw) {
   try {
     const hashedpsw = await hashPassword(psw);
-    localStorage.setItem('password', hashedpsw);
+    await storage.store({ password:hashedpsw });
   } catch (error) {
     console.error('Error:', error); //todo
   }
@@ -150,7 +151,8 @@ export async function storeHashedPassword(psw) {
 export async function validPassword(psw) {
   try {
     const hashedpsw = await hashPassword(psw);
-    const storedHash = localStorage.getItem('password');
+    const data = await storage.read('password');
+    const storedHash = data.password;
     return hashedpsw === storedHash;
   } catch (error) {
     console.error('Error:', error); //todo
@@ -164,6 +166,7 @@ export async function changePassword(newPsw){
   const oldKey = await crypto.getDerivedKey();
   const newKey = await crypto.generateDerivedKey(newPsw);
   await emailStorage.encryptEmailsWithNewKey(oldKey, newKey);
+  await logsTools.encryptLogsWithNewKey(oldKey, newKey);
   await storeHashedPassword(newPsw);
   await crypto.storeDerivedKey(newKey);
 }
@@ -180,12 +183,12 @@ export function getConnexionDuration(){ // in minutes
   return parseFloat(localStorage.getItem('connexionDuration'));
 }
 
-export function isFirstConnexion(){
-  const passwordHashed = localStorage.getItem('password');
-  if(passwordHashed === null){
-    return true;
+export async function isFirstLogin(){
+  const data = await storage.read('password');
+  if(data && 'password' in data) {
+    return false;
   }
-  return false;
+  return true;
 }
 
 

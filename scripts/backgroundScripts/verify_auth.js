@@ -6,7 +6,7 @@ function wait(ms) {
 async function onPeriod(ms){
   var counter = 0;
   while(true) {
-    if(tools.isFirstConnexion()){
+    if(tools.isFirstLogin()){
       window.location.href = '../html/firstConnection.html';
     }
     else{
@@ -27,21 +27,22 @@ async function onPeriod(ms){
 
 }
 
-//log verification before loading the page
-
-if(!tools.isLogged()){
-  if(tools.isFirstConnexion()){
-    window.location.href = '../html/firstConnection.html';
-  }
-  else{
-    if(!tools.isLogged()){
-      window.location.href = '../html/login.html';
-      tools.logout();
+async function checkLogin() {
+  if (!tools.isLogged()) {
+    const firstCon = await tools.isFirstLogin();
+    console.log(firstCon);
+    if (firstCon) {
+      window.location.href = '../html/firstConnection.html';
+    } else {
+      if (!tools.isLogged()) {
+        window.location.href = '../html/login.html';
+        tools.logout();
+      }
     }
   }
 }
 
-
+checkLogin();
 document.addEventListener("DOMContentLoaded", function() {
   onPeriod(1000);
 });

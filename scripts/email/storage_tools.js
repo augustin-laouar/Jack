@@ -180,7 +180,6 @@ export const maxEmailNumber = 10;
             id: element.id,
             email: newEncryption
         };
-
         newEmails.push(newElement);
     }
     await storage.store({ emails: newEmails });
