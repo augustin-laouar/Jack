@@ -24,12 +24,12 @@
 - Modifier le stockage des listes (psw et email) : tout est stocké dans le même objet. Plus de stockage d'email/password et de liste d'id séparément.
 - Séparer les fichiers en plusieurs sous fichier => Un fichier par fonctionnalité
 - Simplifier la gestions des Erreurs. Cela pourrait être un simple message + un code pour savoir quoi affiché à l'utilisateur
-
+- Lors de création d'email, inutile de spécifier le password du compte.
+- Modifier la fonction storage.read => Retourner null si la data n'existe pas, sinon renvoyé directement la donnée (sans devoir faire data.email par exemple)
+- Changer les 'connexion' par 'connection'
 
 
 ## Etat actuel
 - Modification de la méthode de stockage des credentials et emails
 - Modifier le reste du code pour ne plus utiliser 
-- ChangePassword : bug
 - stocker le hashedpsw dans la mémoire extension
-- Bug impossible de se connecter. Problème vient surement du fait que il n'arrive pas a obtenir le bon résultat dans la fonction checkLogin

@@ -171,7 +171,8 @@ export async function modifyLog(id, url, username, password) {
 
 // Re encrypt all passwords
 
-export async function encryptLogsWithNewKey(oldKey, newKey) {
+export async function encryptLogsWithNewKey(oldKey) {
+  const key = await crypto.getDerivedKey();
   const encryptedLogs = await getLogs();
   var newLogs = [];
   if(encryptedLogs === null) {
@@ -182,9 +183,9 @@ export async function encryptLogsWithNewKey(oldKey, newKey) {
     const username = await crypto.decryptWithAES(element.content.username, oldKey);
     const password = await crypto.decryptWithAES(element.content.password, oldKey);
 
-    const newUrl = await crypto.encryptWithAES(url, newKey);
-    const newUsername = await crypto.encryptWithAES(username, newKey);
-    const newPassword = await crypto.encryptWithAES(password, newKey);
+    const newUrl = await crypto.encryptWithAES(url, key);
+    const newUsername = await crypto.encryptWithAES(username, key);
+    const newPassword = await crypto.encryptWithAES(password, key);
 
     const newElement = {
       id: element.id,

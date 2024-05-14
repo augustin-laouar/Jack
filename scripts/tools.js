@@ -2,77 +2,14 @@ import * as logsTools from './password/tools.js';
 import * as emailStorage from './email/storage_tools.js';
 import * as crypto from './tools/crypto.js';
 import * as storage from './tools/storage.js';
-/**
- * This file contains every tools we have to use in other modules
- */
-
-
-
-//COOKIE
-export function createCookie(name, value, url, minutes) {
-    const milliseconds = minutes * 60 * 1000;
-    const expirationDate = new Date(Date.now() + milliseconds).getTime() / 1000;
-    
-    const cookie = {
-      //url: browser.extension.getURL(""), // associate url is local
-      url: url,
-      name: name,
-      value: value,
-      expirationDate: expirationDate
-    };
-    
-    browser.cookies.set(cookie)
-      .then(() => {
-        console.log('Le cookie a été créé avec succès.'); //TODO gérer les erreurs
-      })
-      .catch((error) => {
-        console.error('Erreur lors de la création du cookie :', error);
-      });
-  }
-
-export function getCookie(name, url) {
-    const query = { 
-        url: url,
-        name: name
-     };
-
-    return browser.cookies.get(query)
-        .then((cookie) => {
-        if (cookie) {
-            return cookie.value;
-        } else {
-            return null;
-        }
-        })
-        .catch((error) => {
-        console.error('Erreur lors de la récupération du cookie :', error);
-        return null;
-        });
-  }  
-
-export function deleteCookie(name, url) {
-    const query = { 
-        url: url,
-        name: name
-     };
-  
-    return browser.cookies.remove(query)
-      .then((details) => {
-        return details;
-      })
-      .catch((error) => {
-        console.error('Erreur lors de la suppression du cookie :', error);
-        return false;
-      });
-  }
-
 
   //Login
-  function sessionExpired(minutes) {
-    const storedDate = localStorage.getItem('lastLogin');
-    if(storedDate === null){
+  async function sessionExpired(minutes) {
+    const data = await storage.read('lastLogin');
+    if(!(data && 'lastLogin' in data)) {
       return true;
     }
+    const storedDate = data.lastLogin;
     if (storedDate) {
       const currentDate = new Date();
       const storedDateObj = new Date(storedDate);
@@ -92,14 +29,16 @@ export function deleteCookie(name, url) {
 
 export function storeLastLogin() {
     const currentDate = new Date();
-    localStorage.setItem('lastLogin', currentDate.toISOString());
+    storage.store({ lastLogin:currentDate.toISOString() })
  }
 
-export function isLogged() {
-    if(sessionExpired(getConnexionDuration())){
-        return false;
-    }
-    return true;
+export async function isLogged() {
+  const connDuration = await getConnexionDuration();
+  const res = await sessionExpired(connDuration);
+  if(res){
+      return false;
+  }
+  return true;
 
  }
 
@@ -115,12 +54,12 @@ export function isLogged() {
  }
 
 //set lastLogin to an expired value, and delete derivedKey
- export function logout(logoutButtonUsed = false) {
+ export async function logout(logoutButtonUsed = false) {
   if(logoutButtonUsed){
     var now = new Date();
-    const connexionDuration = getConnexionDuration();
+    const connexionDuration = await getConnexionDuration();
     var toStore = new Date(now.getTime() - (parseInt(connexionDuration * 60 * 1000))); 
-    localStorage.setItem('lastLogin', toStore.toISOString());
+    storage.store({ lastLogin:toStore.toISOString()})
   }
   crypto.deleteDerivedKey();
   window.location.href = '../html/login.html';
@@ -141,8 +80,8 @@ async function hashPassword(psw) {
 
 export async function storeHashedPassword(psw) {
   try {
-    const hashedpsw = await hashPassword(psw);
-    await storage.store({ password:hashedpsw });
+    const hash = await hashPassword(psw);
+    storage.store({ password:hash });
   } catch (error) {
     console.error('Error:', error); //todo
   }
@@ -150,10 +89,10 @@ export async function storeHashedPassword(psw) {
 
 export async function validPassword(psw) {
   try {
-    const hashedpsw = await hashPassword(psw);
+    const hash = await hashPassword(psw);
     const data = await storage.read('password');
     const storedHash = data.password;
-    return hashedpsw === storedHash;
+    return hash === storedHash;
   } catch (error) {
     console.error('Error:', error); //todo
     return false;
@@ -165,22 +104,27 @@ export async function validPassword(psw) {
 export async function changePassword(newPsw){
   const oldKey = await crypto.getDerivedKey();
   const newKey = await crypto.generateDerivedKey(newPsw);
-  await emailStorage.encryptEmailsWithNewKey(oldKey, newKey);
-  await logsTools.encryptLogsWithNewKey(oldKey, newKey);
   await storeHashedPassword(newPsw);
   await crypto.storeDerivedKey(newKey);
+  await emailStorage.encryptEmailsWithNewKey(oldKey);
+  await logsTools.encryptLogsWithNewKey(oldKey);
 }
 
 export function storeConnexionDuration(connexionDuration){
   try {
-    localStorage.setItem('connexionDuration', connexionDuration);
+    storage.store( {connexionDuration:connexionDuration })
   } catch (error) {
     //todo
   }
 } 
 
-export function getConnexionDuration(){ // in minutes
-  return parseFloat(localStorage.getItem('connexionDuration'));
+export async function getConnexionDuration(){ // in minutes
+  const data = await storage.read('connexionDuration');
+  if(!(data && 'connexionDuration' in data)) {
+    return 0;
+  }
+  const duration = data.connexionDuration;
+  return parseFloat(duration);
 }
 
 export async function isFirstLogin(){

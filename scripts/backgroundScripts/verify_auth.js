@@ -1,4 +1,20 @@
 import * as tools from '../tools.js';
+
+async function checkLogin() {
+  const firstCon = await tools.isFirstLogin();
+
+  if(firstCon){
+    window.location.href = '../html/firstConnection.html';
+  }
+  else{
+    const isLogged = await tools.isLogged();
+    if(!isLogged){
+      window.location.href = '../html/login.html';
+      tools.logout();
+    }
+  }
+}
+
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -6,15 +22,7 @@ function wait(ms) {
 async function onPeriod(ms){
   var counter = 0;
   while(true) {
-    if(tools.isFirstLogin()){
-      window.location.href = '../html/firstConnection.html';
-    }
-    else{
-      if(!tools.isLogged()){
-        window.location.href = '../html/login.html';
-        tools.logout();
-      }
-    }
+   await checkLogin();
    if(document.getElementById('info').innerHTML !== '')
       counter ++;
   
@@ -25,21 +33,6 @@ async function onPeriod(ms){
     await wait(ms);
   }
 
-}
-
-async function checkLogin() {
-  if (!tools.isLogged()) {
-    const firstCon = await tools.isFirstLogin();
-    console.log(firstCon);
-    if (firstCon) {
-      window.location.href = '../html/firstConnection.html';
-    } else {
-      if (!tools.isLogged()) {
-        window.location.href = '../html/login.html';
-        tools.logout();
-      }
-    }
-  }
 }
 
 checkLogin();

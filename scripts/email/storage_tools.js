@@ -20,7 +20,6 @@ export const maxEmailNumber = 10;
     }
     var decryptedEmails = [];
     const key = await crypto.getDerivedKey();
-
     for(const element of encryptedEmails) {
         const email = await crypto.decryptWithAES(element.email, key);
         const jsonEmail = JSON.parse(email);
@@ -166,16 +165,16 @@ export const maxEmailNumber = 10;
   }
 
   // Re encrypt all
-  export async function encryptEmailsWithNewKey(oldKey, newKey) {
+  export async function encryptEmailsWithNewKey(oldKey) {
+    const key = await crypto.getDerivedKey();
     const encryptedEmails = await getEmails();
     var newEmails = [];
     if(encryptedEmails === null) {
         return;
     }
-
     for(const element of encryptedEmails) {
         const email = await crypto.decryptWithAES(element.email, oldKey);
-        const newEncryption = await crypto.encryptWithAES(email, newKey);
+        const newEncryption = await crypto.encryptWithAES(email, key);
         const newElement = {
             id: element.id,
             email: newEncryption
@@ -183,4 +182,5 @@ export const maxEmailNumber = 10;
         newEmails.push(newElement);
     }
     await storage.store({ emails: newEmails });
+
   }
