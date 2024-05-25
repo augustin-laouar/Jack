@@ -53,12 +53,12 @@ document.addEventListener('DOMContentLoaded', function() {
             newPsw.value = '';
             newPswConfirm.value = '';
         });
-        const changeConnexionDurationForm = document.getElementById('change-connexion-duration');
-        changeConnexionDurationForm.addEventListener('submit', function(event){
+        const changeConnDurationForm = document.getElementById('change-connection-duration');
+        changeConnDurationForm.addEventListener('submit', function(event){
             event.preventDefault();
-            const connexionDurationSelect = document.getElementById('connexion-duration-value');
-            tools.storeConnexionDuration(connexionDurationSelect.value);
-            showInfo('Connexion duration updated !');
+            const connDurationSelect = document.getElementById('connection-duration-value');
+            tools.storeConnexionDuration(connDurationSelect.value);
+            showInfo('Connection duration updated !');
         });
         /*const loadDataButton = document.getElementById('load-data');
         loadDataButton.addEventListener('click', function(){

@@ -42,7 +42,7 @@ export function storeLastLogin() {
 
 export async function isLogged() {
   try {
-    const connDuration = await getConnexionDuration();
+    const connDuration = await getConnectionDuration();
     const res = await sessionExpired(connDuration);
     if(res){
       return false;
@@ -78,8 +78,8 @@ export async function isLogged() {
   try{
     if(logoutButtonUsed){
       var now = new Date();
-      const connexionDuration = await getConnexionDuration();
-      var toStore = new Date(now.getTime() - (parseInt(connexionDuration * 60 * 1000))); 
+      const connectionDuration = await getConnectionDuration();
+      var toStore = new Date(now.getTime() - (parseInt(connectionDuration * 60 * 1000))); 
       storage.store({ lastLogin:toStore.toISOString()})
       .catch(e => {
         error.castError(e, false);
@@ -143,16 +143,16 @@ export async function changePassword(newPsw){
   }
 }
 
-export function storeConnexionDuration(connexionDuration){
-    storage.store( {connexionDuration:connexionDuration })
+export function storeConnexionDuration(connectionDuration){
+    storage.store( {connectionDuration:connectionDuration })
     .catch(e => {
       throw error.castError(e, false);
     });
 } 
 
-export async function getConnexionDuration(){ // in minutes
+export async function getConnectionDuration(){ // in minutes
   try {
-    const duration = await storage.read('connexionDuration');
+    const duration = await storage.read('connectionDuration');
     if(duration === null) {
       return 0;
     }
