@@ -1,5 +1,4 @@
 import * as tools from './tools.js';
-import * as errorManager from './exception/settingsError.js';
 import * as error from './exception/error.js';
 
 function showError(e){

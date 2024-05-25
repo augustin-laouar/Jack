@@ -110,7 +110,7 @@ async function hashPassword(psw) {
 export async function storeHashedPassword(psw) {
   try {
     const hash = await hashPassword(psw);
-    storage.store({ password:hash });
+    storage.store({ masterPswHash:hash });
   } 
   catch (e) {
     throw error.castError(e, false);
@@ -120,7 +120,7 @@ export async function storeHashedPassword(psw) {
 export async function validPassword(psw) {
   try {
     const hash = await hashPassword(psw);
-    const storedHash = await storage.read('password');
+    const storedHash = await storage.read('masterPswHash');
     return hash === storedHash;
   } catch (e) {
     throw error.castError(e, false);
@@ -165,7 +165,7 @@ export async function getConnexionDuration(){ // in minutes
 
 export async function isFirstLogin(){
   try {
-    const hash = await storage.read('password');
+    const hash = await storage.read('masterPswHash');
     if(hash === null) {
       return true;
     }

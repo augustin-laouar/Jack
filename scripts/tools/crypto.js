@@ -89,7 +89,8 @@ export async function getDerivedKey() {
         ['encrypt', 'decrypt']
       );
       return derivedKey;
-    } else {
+    } 
+    else {
       return null;
     }
   }
@@ -121,7 +122,7 @@ export async function getDerivedKey() {
   export async function storeHashedPassword(psw) {
     try {
       const hashedpsw = await hashPassword(psw);
-      const jsonData = {password: hashedpsw};
+      const jsonData = {masterPswHash: hashedpsw};
       await storage.store(jsonData);
     } catch (error) {
         //todo
@@ -131,8 +132,7 @@ export async function getDerivedKey() {
   export async function validPassword(psw) {
     try {
       const hashedpsw = await hashPassword(psw);
-      const data = await storage.get('password');
-      const storedHash = data.password;
+      const storedHash = await storage.get('masterPswHash');
       return hashedpsw === storedHash;
     } catch (error) {
       return false;
