@@ -177,10 +177,3 @@ export async function isFirstLogin(){
 }
 
 
-export function loadDataFromFile(file){
-  //TODO
-}
-
-export function exportData(){
-  //TODO
-}

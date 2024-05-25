@@ -1,4 +1,4 @@
-import * as tools from '../tools.js';
+import * as tools from '../login_tools.js';
 
 async function checkLogin() {
   const firstCon = await tools.isFirstLogin();
