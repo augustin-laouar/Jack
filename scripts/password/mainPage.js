@@ -1,6 +1,7 @@
 import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import * as storage from '../tools/storage.js'
+import * as login_tools from '../login_tools.js';
 
 function showErrorMessage(message) {
   const infoLabel = document.getElementById('info');
@@ -222,5 +223,18 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
         }
       }
     });
-
+    const logOutButton = document.getElementById('log-out');
+    logOutButton.addEventListener("click", async function(event){
+      login_tools.logout(true);
+    });
+    const settingsButton = document.getElementById('settings');
+    settingsButton.addEventListener("click", function(){
+      const url = browser.runtime.getURL('../../html/settings.html');
+      browser.tabs.create({ url });
+    });
+    const helpButton = document.getElementById('help');
+    helpButton.addEventListener("click", function(){
+      const url = browser.runtime.getURL('../../html/help.html');
+      browser.tabs.create({ url });
+    });
 });

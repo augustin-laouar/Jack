@@ -1,5 +1,5 @@
 import * as storage from './storage_tools.js';
-import * as tools from '../login_tools.js';
+import * as login_tools from '../login_tools.js';
 import * as error from '../exception/error.js';
 
 function showError(e){
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      tools.logout(true);
+      login_tools.logout(true);
     });
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){
