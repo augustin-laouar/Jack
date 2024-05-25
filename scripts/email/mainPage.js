@@ -84,9 +84,8 @@ document.addEventListener("DOMContentLoaded", function() {
     addEmailForm.addEventListener("submit", async function(event) {
       event.preventDefault();
       var addressInput = document.getElementById("email");
-      var passwordInput = document.getElementById("password");
       try{
-        await storage.createEmail(addressInput.value, passwordInput.value);
+        await storage.createEmail(addressInput.value);
       }
       catch(error){
         showError(error);

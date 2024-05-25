@@ -2,7 +2,7 @@ import * as error from '../exception/error.js';
 import * as crypto from '../tools/crypto.js';
 import * as storage from '../tools/storage.js';
 import * as api from './api_tools.js';
-import * as id from '../tools/id.js';
+import * as random from '../tools/rand_char.js';
 
 export const maxEmailNumber = 10;
 
@@ -126,11 +126,12 @@ export const maxEmailNumber = 10;
     return true;
   }
   
-  export async function createEmail(addr, psw){
+  export async function createEmail(addr){
     if(!canCreateEmail()){
       throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
+      const psw = random.generate(10);
       const email = await api.createAccount(addr, psw);
       await addEmail(email);
     }
@@ -144,8 +145,8 @@ export const maxEmailNumber = 10;
       throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
-        var addr = id.generateAlphaNumeric(10);
-        var psw = id.generateAlphaNumeric(10);
+        var addr = random.generateAlphaNumeric(10);
+        var psw = random.generateAlphaNumeric(10);
         const email = await api.createAccount(addr, psw);
         await addEmail(email);
     }

@@ -1,6 +1,6 @@
 import * as storage from '../tools/storage.js';
 import * as crypto from '../tools/crypto.js';
-import * as generator from '../tools/id.js';
+import * as generator from '../tools/rand_char.js';
 import * as error from '../exception/error.js';
  /*
   Format logs :
