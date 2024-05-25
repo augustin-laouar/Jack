@@ -149,8 +149,7 @@ export async function addLog(url, username, password) {
     var id = generator.generate(15);
     while(!isUniqueId(id, logs)){
       id = generator.generate(15);
-    }
-
+    }  
     const log = {
       id: id,
       content: {
@@ -159,7 +158,6 @@ export async function addLog(url, username, password) {
         password: encryptedPassword
       }
     };
-
     if (logs === null) { //if it's first time we store logs
       const newLogs = {
         logs: [

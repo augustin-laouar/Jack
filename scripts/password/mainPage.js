@@ -18,11 +18,25 @@ function showError(e){
 async function researchPassword(){
   try{
     const logs = await pswTools.getDecryptedLogs();
-    if(logsList.length === 0){
+    if(logs.length === 0){
       return;
     }
     const input = document.getElementById('search').value;
-    const logsFiltred = logs.filter(element => element.content.url.includes(input));
+    const searchMethod = document.getElementById('search-method').value;
+    let logsFiltred;
+
+    if (searchMethod === 'url') {
+        logsFiltred = logs.filter(element => element.content.url.includes(input));
+    } 
+    else if (searchMethod === 'username') {
+      logsFiltred = logs.filter(element => element.content.username.includes(input));
+    } 
+    else if (searchMethod === 'all') {
+      logsFiltred = logs.filter(element => 
+        element.content.url.includes(input) || element.content.username.includes(input)
+      );
+    }
+    
     fillPasswordList(logsFiltred, true);
   }
   catch(error){
@@ -194,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     let timeout;
     searchInput.addEventListener("input", function() {
       clearTimeout(timeout);
-      timeout = setTimeout(researchPassword,1000);
+      timeout = setTimeout(researchPassword,100);
     });
 
     //Listen for messages from popup
