@@ -3,7 +3,7 @@ import * as storage from '../tools/storage.js'
 
 async function fillInputs() {
   const data = await storage.read('popupData');
-  const { id, url, username, psw } = data.popupData;
+  const { id, url, username, psw } = data;
   document.getElementById('url').value = url;
   document.getElementById('username').value = username;
   document.getElementById('password').value = psw;

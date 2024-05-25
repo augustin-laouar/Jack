@@ -1,42 +1,36 @@
 import * as tools from './tools.js';
 import * as errorManager from './exception/settingsError.js';
+import * as error from './exception/error.js';
 
-function showError(error){
-    if(!(error instanceof errorManager.Error)){
-      return;
+function showError(e){
+    if(!(e instanceof error.Error)){
+        return;
     }
-    const errorStr = error.details;
+    const message = error.errorToString(e);
     const infoLabel = document.getElementById('info');
-    infoLabel.innerHTML = errorStr;
-    if(error.type === 1){
-      infoLabel.className = 'text-danger';
-    }
-    if(error.type === 2){
-        infoLabel.className = 'text-warning';
+    infoLabel.innerHTML = message;
+    infoLabel.className = 'text-warning';
+}
 
-    }
-  }
-
-  function showInfo(message){
+function showInfo(message){
     const infoLabel = document.getElementById('info');
     infoLabel.innerHTML = message;
     infoLabel.className = 'text-info ';
 
-  }
+}
 
 async function changePassword(oldPsw, newPsw, newPswConfirm){
-    if(newPsw !== newPswConfirm){
-        throw new errorManager.Error(2, 'Passwords are not the same.');
-    }
-    if(await tools.validPassword(oldPsw) === false){
-        throw new errorManager.Error(2, 'Your current password is unvalid.');
-
-    }
-    try{    
+    try{
+        if(newPsw !== newPswConfirm){
+            throw new error.Error('Passwords are not the same.', true);
+        }
+        if(await tools.validPassword(oldPsw) === false){
+            throw new error.Error('Your current password is invalid.', true);
+        }
         await tools.changePassword(newPsw);
     }
-    catch(error){
-        throw new errorManager.Error(1, 'Unexpected error.');
+    catch(e){
+        throw error.castError(e, false);
     }
 }
 

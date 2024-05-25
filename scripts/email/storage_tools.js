@@ -1,4 +1,4 @@
-import * as errorManager from '../exception/mailError.js';
+import * as error from '../exception/error.js';
 import * as crypto from '../tools/crypto.js';
 import * as storage from '../tools/storage.js';
 import * as api from './api_tools.js';
@@ -7,11 +7,8 @@ import * as id from '../tools/id.js';
 export const maxEmailNumber = 10;
 
   export async function getEmails() {
-    const data = await storage.read('emails');
-    if(data && 'emails' in data) {
-      return data.emails;
-    }
-    return null;
+    const emails = await storage.read('emails');
+    return emails;
   }
 
   export async function decryptEmails(encryptedEmails) {
@@ -92,16 +89,17 @@ export const maxEmailNumber = 10;
   }
 
   export async function getEmail(id) {
-    const data = await storage.read('emails');
-    if(data && 'emails' in data) {
-        for(const element of data.emails) {
-          if(element.id === id){
-            return element.email;
-          }
-        }
+    const emails = await storage.read('emails');
+    if(emails === null) {
+      return null;
+    }
+    for(const element of emails) {
+      if(element.id === id){
+        return element.email;
+      }
     }
     return null;
-    }
+  }
 
   export async function decryptEmail(email) {
     const key = await crypto.getDerivedKey();
@@ -130,23 +128,20 @@ export const maxEmailNumber = 10;
   
   export async function createEmail(addr, psw){
     if(!canCreateEmail()){
-      throw new errorManager.Error(3, 2, 'Can\'t create account.');
+      throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
       const email = await api.createAccount(addr, psw);
       await addEmail(email);
     }
-    catch(error){
-      if(error instanceof errorManager.Error){
-        error.details = 'This address is maybe already taken.';
-      }
-      throw error;
+    catch(e){
+      throw error.castError(e, false);
     }
   }
   
   export async function createRandomEmail(tryNumber = 0) { 
     if(!canCreateEmail()){
-      throw new errorManager.Error(3, 2, 'Can\'t create account.');
+      throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
         var addr = id.generateAlphaNumeric(10);
@@ -154,9 +149,9 @@ export const maxEmailNumber = 10;
         const email = await api.createAccount(addr, psw);
         await addEmail(email);
     }
-    catch(error){
+    catch(e){
       if(tryNumber === 5){
-        throw new errorManager.Error(4, 1, 'Error while creating random account.');
+        throw error.castError(e, false);
       }
       else{
         await createRandomEmail(tryNumber + 1);

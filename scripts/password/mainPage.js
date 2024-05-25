@@ -1,34 +1,18 @@
 import * as pswTools from './tools.js';
-import * as errorManager from '../exception/passwordError.js';
+import * as error from '../exception/error.js';
 import * as storage from '../tools/storage.js'
 
-function showErrorMessage(message, type) {
+function showErrorMessage(message) {
   const infoLabel = document.getElementById('info');
   infoLabel.innerHTML = message;
-  if(type === 1){
-    infoLabel.classList.remove('text-warning');
-    infoLabel.classList.add('text-danger'); //system error
-  }
-  if(type === 2){
-    infoLabel.classList.remove('text-danger');
-    infoLabel.classList.add('text-warning'); //user error
-  }
 }
-function showError(error){
-  if(!(error instanceof errorManager.Error)){
+function showError(e){
+  if(!(e instanceof error.Error)){
     return;
   }
-  const errorStr = errorManager.errorToString(error);
+  const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = errorStr;
-  if(error.type === 1){
-    infoLabel.classList.remove('text-warning');
-    infoLabel.classList.add('text-danger'); //system error
-  }
-  if(error.type === 2){
-    infoLabel.classList.remove('text-danger');
-    infoLabel.classList.add('text-warning'); //user error
-  }
+  infoLabel.innerHTML = message;
 }
 
 async function researchPassword(){
@@ -181,8 +165,8 @@ async function fillPasswordList(logsParam = null, searching = false){
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
-  } catch (error) {
-    throw errorManager.Error(1,1,'Error while copying to clipboard.');
+  } catch (e) {
+    throw new error.Error('Error copying to clipboard.', true);
   }
 }
 

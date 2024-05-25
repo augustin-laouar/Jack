@@ -76,8 +76,7 @@ export async function storeDerivedKey(derivedKey) {
 }
 
 export async function getDerivedKey() {
-    const data = await storage.read('derivedKey');
-    const derivedKeyString = data.derivedKey;
+    const derivedKeyString = await storage.read('derivedKey');
     if (derivedKeyString) {
       const keyData = new Uint8Array(derivedKeyString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
       const derivedKey = await window.crypto.subtle.importKey(

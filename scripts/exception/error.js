@@ -18,3 +18,15 @@ export function errorToString(error) {
         return 'Unexpected error.';
     }
 }
+
+export function castError(error, show = false) {
+    if(error instanceof Error){
+        return error;
+    }
+    if ('message' in error) {
+        return new Error(error.message, show);
+    } 
+    else {
+        return new Error('Unexpected Error.', show);
+    }
+}

@@ -1,23 +1,14 @@
-import * as errorManager from '../exception/mailError.js';
 import * as storage from './storage_tools.js';
 import * as tools from '../tools.js';
+import * as error from '../exception/error.js';
 
-function showError(error){
-  if(!(error instanceof errorManager.Error)){
-    console.log(error);
+function showError(e){
+  if(!(e instanceof error.Error)){
     return;
   }
-  const errorStr = errorManager.errorToString(error);
+  const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = errorStr;
-  if(error.type === 1){
-    infoLabel.classList.remove('text-warning');
-    infoLabel.classList.add('text-danger'); //system error
-  }
-  if(error.type === 2){
-    infoLabel.classList.remove('text-danger');
-    infoLabel.classList.add('text-warning'); //user error
-  }
+  infoLabel.innerHTML = message;
 }
 
 function getTrContent(address){ 
