@@ -2,6 +2,12 @@ import * as storage from './storage_tools.js';
 import * as login_tools from '../login_tools.js';
 import * as error from '../exception/error.js';
 
+function showInfo(message){
+  const infoLabel = document.getElementById('info');
+  infoLabel.innerHTML = message;
+  infoLabel.className = 'text-info';
+}
+
 function showError(e){
   if(!(e instanceof error.Error)){
     return;
@@ -9,7 +15,19 @@ function showError(e){
   const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
   infoLabel.innerHTML = message;
+  infoLabel.className = 'text-warning';
 }
+
+function showPopupError(e){
+  if(!(e instanceof error.Error)){
+    return;
+  }
+  const message = error.errorToString(e);
+  const infoLabel = document.getElementById('info-popup');
+  infoLabel.innerHTML = message;
+}
+
+
 
 function getTrContent(address){ 
   var codeHTML = `
@@ -19,7 +37,7 @@ function getTrContent(address){
           <div class="col-8">
             <div class="d-flex align-items-center">
               <div class="mx-2">
-                <div id="address-div" class="text-center" style=" max-width: 300px;overflow-x: auto;">
+                <div id="address-div" class="text-center" style=" max-width: 280px;overflow-x: auto;">
                     <p class="text-info" style="white-space: nowrap;">${address}</p>
                 </div>
               </div>
@@ -77,18 +95,26 @@ async function fillAddressList(){
 
 }
 
+function closeAddPopup()  {
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('add-popup');
+  overlay.classList.add('hidden');
+  popup.classList.add('hidden');
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
-    var addEmailForm = document.getElementById("add-email");
+    var addEmailForm = document.getElementById("add-email-form");
     addEmailForm.addEventListener("submit", async function(event) {
       event.preventDefault();
       var addressInput = document.getElementById("email");
       try{
         await storage.createEmail(addressInput.value);
+        closeAddPopup();
+        showInfo('Email created !');
       }
       catch(error){
-        showError(error);
+        showPopupError(error);
       }
       fillAddressList();
       addressInput.value = '';
@@ -99,9 +125,11 @@ document.addEventListener("DOMContentLoaded", function() {
     randomAddressButton.addEventListener("click", async function(event){
       try{
         await storage.createRandomEmail();
+        closeAddPopup();
+        showInfo('Email created !');
       }
       catch(error){
-        showError(error);
+        showPopupError(error);
       }
       fillAddressList();
     });

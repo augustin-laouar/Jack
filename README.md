@@ -15,7 +15,7 @@
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
-
+- Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 
 ## Tache actuel
 - Review email style
