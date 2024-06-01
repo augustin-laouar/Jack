@@ -13,20 +13,20 @@
 <body class="bg-dark text-light">
   <div class="container">
     <h1 class="display-3"><img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="mx-auto" style="max-height:100px;"> Settings</h1>
-    <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px; width:70%"></div>
-    <div class ="row" style="overflow-y:scroll; max-height:80vh;">
+    <div class="border-top"  style="margin-top : 10px; width:70%"></div>
+    <div class ="row mb-3" style="overflow-y:scroll; max-height:75vh;">
       <div class = "col-5">
             <h2 class = "display-5">Security</h2>
             <p class="lead">Change my password</p>
             <form id="change-password" class ="mb-3">
               <div class="mb-1">
-                <input type="password" class="form-control dark-input" id="old-psw" placeholder="Your current password" style ="width:60%;">
+                <input type="password" class="form-control dark-input" id="old-psw" placeholder="Your current password" style ="width:50%;">
               </div>
               <div class="mb-1">
-                <input type="password" class="form-control dark-input" id="new-psw" placeholder="Your new password" style ="width:60%;">
+                <input type="password" class="form-control dark-input" id="new-psw" placeholder="Your new password" style ="width:50%;">
               </div>
               <div class="mb-1">
-                <input type="password" class="form-control dark-input" id="new-psw-confirm" placeholder="Confirm your new password" style ="width:60%;">
+                <input type="password" class="form-control dark-input" id="new-psw-confirm" placeholder="Confirm your new password" style ="width:50%;">
               </div>
               <button type="submit" class="btn btn-info">Change</button>
             </form>
@@ -34,7 +34,7 @@
             <form id="change-connection-duration" class="mb-3">
               <div class="mb-1">
                 <label class="form-label" >Keep connection alive for :</label>
-                <select class="form-select dark-select" id="connection-duration-value" style ="width:60%;">
+                <select class="form-select dark-select" id="connection-duration-value" style ="width:50%;">
                   <option value="0.5">30 seconds</option>
                   <option value="1">1 minute</option>
                   <option value="3" selected="selected">3 minutes (recommended)</option>
@@ -44,21 +44,20 @@
               </div>
               <button type="submit" class="btn btn-info">Apply</button>
             </form>
-            <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px;"></div>
+            <!-- DATA -->
+            <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px;"></div>              
             <h3 class = "display-5">Data</h3>
-            <p class ="lead">Import data from JSON a file</p>
-            <div class="input-group mb-3">
-              <input type="file" class="form-control" id="data-to-load-file">
-              <button class="btn btn-info" id="load-data">Load</button>
-            </div>
-            <p class ="lead">Export data to a JSON file</p>
-            <button class="btn btn-info" id="export-data">Export</button>
-      </div>
-      <div class = "col-1"></div>
-      <div class ="col-3">
-        <p id="info"></p>
+            <p>Todo : write description</p>
+            <p class ="lead">Import account from a Jack's Mails configuration file</p>
+            <input type="file" class="form-control dark-input mb-1" id="import-account-file" style="width: 60%; font-size: 0.9em;">
+            <input type="password" class="form-control dark-input mb-1" id="import-psw" placeholder="File's password" style ="width:50%;">
+            <button class="btn btn-info" id="import-account">Load</button>
+            <p class ="lead">Export account</p>
+            <input type="password" class="form-control dark-input mb-1" id="export-psw" placeholder="Your password" style ="width:50%;">
+            <button class="btn btn-info" id="export-account">Export</button>
       </div>
     </div>
+    <p id="info"></p>
   </div>
 </body>
 </html>

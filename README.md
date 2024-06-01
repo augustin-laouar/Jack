@@ -8,13 +8,17 @@
 - Ajouter du sel dans le hash du psw
 - Nouveau CSS 
 - edit password avec fake popup
+- changer logs/passwords par credentials
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Export/Import config
+Export/Import config
+- Export done
+- Faire l'import
+
 
 ## Terminé
 - Stocker logs via des ids et non url 

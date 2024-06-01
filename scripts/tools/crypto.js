@@ -121,6 +121,17 @@ export async function getDerivedKey() {
     await storage.store(jsonData);
   }
   
+  export async function isValidHash(psw, hash) {
+    try {
+      const hashedpsw = await hashPassword(psw);
+      return hashedpsw === hash;
+    }
+    catch(error) {
+      return false;
+    }
+  }
+
+
   export async function validPassword(psw) {
     try {
       const hashedpsw = await hashPassword(psw);

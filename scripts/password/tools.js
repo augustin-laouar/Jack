@@ -146,9 +146,9 @@ export async function addLog(url, username, password) {
     const encryptedUrl = await crypto.encryptWithAES(url, key);
     const encrytedUsername = await crypto.encryptWithAES(username, key);
     const encryptedPassword = await crypto.encryptWithAES(password, key);   
-    var id = generator.generate(15);
+    var id = generator.generateAlphaNumeric(15);
     while(!isUniqueId(id, logs)){
-      id = generator.generate(15);
+      id = generator.generateAlphaNumeric(15);
     }  
     const log = {
       id: id,

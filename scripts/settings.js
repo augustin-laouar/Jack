@@ -1,5 +1,6 @@
 import * as tools from './login_tools.js';
 import * as error from './exception/error.js';
+import * as export_tools from './export.js';
 
 function showError(e){
     if(!(e instanceof error.Error)){
@@ -33,7 +34,23 @@ async function changePassword(oldPsw, newPsw, newPswConfirm){
     }
 }
 
+async function export_account(password) {
+    if(await tools.validPassword(password) === false){
+        throw new error.Error('Your current password is invalid.', true);
+    }
+    try{
+        await export_tools.export_account();
+    }
+    catch(e) {
+        throw new error.Error('Unexpected error while exporting your account.', true);
+    }
+}
 
+async function import_account(jsonfile, password) {
+    //Appel popup "etes vous sur"
+    //Verification du password
+    //Appel de la fonction de export.js
+}
 
 document.addEventListener('DOMContentLoaded', function() {
         const changePswForm = document.getElementById('change-password');
@@ -60,15 +77,31 @@ document.addEventListener('DOMContentLoaded', function() {
             tools.storeConnexionDuration(connDurationSelect.value);
             showInfo('Connection duration updated !');
         });
-        /*const loadDataButton = document.getElementById('load-data');
-        loadDataButton.addEventListener('click', function(){
-            const loadDataFile = document.getElementById('load-data-file');
-            const pswCheckInput = document.getElementById('psw-check');
-            //TODO
+
+        const importAccountButton = document.getElementById('import-account');
+        importAccountButton.addEventListener('click', async function(){
+            const importAccountFile = document.getElementById('import-account-file');
+            const pswCheckInput = document.getElementById('import-psw');
+            if(importAccountFile.files.length === 0) {
+                showError(error.Error('Please select a file.', true));
+            }
+            try {
+                const file = importAccountFile.files[0];
+                await import_account(file,pswCheckInput.value);
+            }
+            catch(e) {
+                showError(e);
+            }
         });
-        const exportDataButton = document.getElementById('export-data');
-        exportDataButton.addEventListener('click', function(){
-            const pswCheckInput = document.getElementById('psw-check');
-            //TODO
-        });*/
+
+        const exportDataButton = document.getElementById('export-account');
+        exportDataButton.addEventListener('click', async function(){
+            const pswCheckInput = document.getElementById('export-psw');
+            try {
+                await export_account(pswCheckInput.value);
+            }
+            catch(e) {
+                showError(e);
+            }
+        });
 });
