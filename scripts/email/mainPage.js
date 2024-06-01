@@ -37,16 +37,21 @@ function getTrContent(address){
           <div class="col-8">
             <div class="d-flex align-items-center">
               <div class="mx-2">
-                <div id="address-div" class="text-center" style=" max-width: 280px;overflow-x: auto;">
-                    <p class="text-info" style="white-space: nowrap;">${address}</p>
+                <div id="address-div" class="text-center" style=" max-width: 280px;overflow-x: auto; vertical-align:middle;">
+                    <p class="text-info" style="white-space: nowrap; vertical-align:middle;">${address}</p>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-4">
             <div class="d-flex align-items-center justify-content-center">
-              <div class="text-center">
-                <button id="delete-button" class="btn btn-danger">Delete</button>
+              <div class="d-flex justify-content-center text-center">
+                <button id="copy-button" class="btn btn-dark">
+                  <img src="../svg-images/copy.svg" alt="Delete Icon" style="width: 20px; height: 20px;">
+                </button> 
+                <button id="delete-button" class="btn btn-dark">
+                  <img src="../svg-images/delete.svg" alt="Delete Icon" style="width: 20px; height: 20px;">
+                </button>                
               </div>
             </div>
           </div>
@@ -57,6 +62,15 @@ function getTrContent(address){
 
 
 }
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    throw new error.Error('Error copying to clipboard.', true);
+  }
+}
+
 async function fillAddressList(){
   try{
     const emails = await storage.getDecrytpedEmails(); 
@@ -75,7 +89,17 @@ async function fillAddressList(){
           const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(email.id);
           browser.tabs.create({ url });
         });
+        const copyButton = trElement.querySelector('#copy-button');
         const deleteButton = trElement.querySelector('#delete-button');
+        copyButton.addEventListener('click', async function(){
+          try{
+            copyToClipboard(email.email.address);
+            showInfo('Copied !')
+          }
+          catch(error){
+            showError(error);
+          }
+        });
         deleteButton.addEventListener('click', async function(){
           try{
             await storage.deleteEmail(email.id);

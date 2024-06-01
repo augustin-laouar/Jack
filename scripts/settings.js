@@ -14,7 +14,7 @@ function showError(e){
 function showInfo(message){
     const infoLabel = document.getElementById('info');
     infoLabel.innerHTML = message;
-    infoLabel.className = 'text-info ';
+    infoLabel.className = 'text-info';
 
 }
 

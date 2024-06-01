@@ -109,24 +109,16 @@ export async function getDerivedKey() {
   async function hashPassword(psw) {
     const encoder = new TextEncoder();
     const data = encoder.encode(psw);
-    try {
-      const hash = await window.crypto.subtle.digest('SHA-512', data);
-      const hashArray = Array.from(new Uint8Array(hash));
-      const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-      return hashHex;
-    } catch (error) {
-      throw error;
-    }
+    const hash = await window.crypto.subtle.digest('SHA-512', data);
+    const hashArray = Array.from(new Uint8Array(hash));
+    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+    return hashHex;
   }
 
   export async function storeHashedPassword(psw) {
-    try {
-      const hashedpsw = await hashPassword(psw);
-      const jsonData = {masterPswHash: hashedpsw};
-      await storage.store(jsonData);
-    } catch (error) {
-        //todo
-    }
+    const hashedpsw = await hashPassword(psw);
+    const jsonData = {masterPswHash: hashedpsw};
+    await storage.store(jsonData);
   }
   
   export async function validPassword(psw) {

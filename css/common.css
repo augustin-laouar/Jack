@@ -1,0 +1,34 @@
+.dark-input {
+    background-color: #343a40; /* Dark background */
+    color: #ffffff; /* White text */
+    border-color: #343a40; /* Dark border */
+}
+
+.dark-input:focus {
+    background-color: #343a40; /* Keep dark background on focus */
+    color: #ffffff; /* Keep white text on focus */
+    border-color: #343a40; /* Keep dark border on focus */
+    box-shadow: none; /* Remove default focus shadow */
+}
+
+.dark-input::placeholder {
+    color: rgba(255, 255, 255, 0.6); /* Less white placeholder text */
+}
+
+
+.dark-select {
+    background-color: #343a40; /* Dark background */
+    color: #ffffff; /* White text */
+    border: 1px solid #343a40; /* Dark border */
+    appearance: none; /* Remove default arrow */
+    padding: 0.375rem 2rem 0.375rem 0.75rem; /* Adjust padding for custom arrow */
+    background-image: url('../svg-images/down-arrow.svg');
+    background-position: right 0.75rem center;
+    background-size: 8px 10px;
+}
+
+.dark-select option {
+
+    background-color: #343a40; /* Dark background for options */
+    color: #ffffff; /* White text for options */
+}

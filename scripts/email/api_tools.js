@@ -101,7 +101,7 @@ export async function sendRequest(url, method, params, token) {
       }
       var contentType = 'application/json';
       if(method === 'PATCH'){
-        contentType = 'application/ld+json';
+        contentType = 'application/merge-patch+json';
       }
       const requestOptions = {
         method: method,

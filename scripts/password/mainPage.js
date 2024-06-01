@@ -61,13 +61,19 @@ function getTrContent(url, id){
       </div>
     </td>
     <td>
-      <button id="cp-psw-button" class="btn btn-outline-info">Copy</button>
+      <button id="cp-psw-button" class="btn btn-dark">
+        <img src="../svg-images/copy.svg" alt="Copy" style="width: 20px; height: 20px;">
+      </button>
     </td>
     <td>
-    <button id="edit-button" class="btn btn-secondary">Edit</button>
+      <button id="edit-button" class="btn btn-dark">
+        <img src="../svg-images/edit.svg" alt="Copy" style="width: 20px; height: 20px;">
+      </button>
     </td>
     <td>
-      <button id="delete-button" class="btn btn-danger">Delete</button>
+      <button id="delete-button" class="btn btn-dark">
+        <img src="../svg-images/delete.svg" alt="Copy" style="width: 20px; height: 20px;">
+      </button>
     </td>
     `;
   return codeHTML;
@@ -106,10 +112,10 @@ async function fillPasswordList(logsParam = null, searching = false){
     if(logs.length === 0){
       head.innerHTML = '';
       if(searching){
-        tab.innerHTML = '<p class ="lead">No matching URL.</p>'
+        tab.innerHTML = '<p class ="lead">No matching result.</p>'
       }
       else{
-        tab.innerHTML = '<p class ="lead">No password saved for the moment.</p>'
+        tab.innerHTML = '<p class ="lead">No credentials saved for the moment.</p>'
       }
     }
     else{
@@ -193,16 +199,16 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       const username = document.getElementById("username");
       const pwd = document.getElementById("password");
       const url = document.getElementById("url");
-      //try{
-      await pswTools.addLog(url.value,username.value, pwd.value);
-      /*}
+      try{
+        await pswTools.addLog(url.value,username.value, pwd.value);
+        username.value = '';
+        pwd.value = '';
+        url.value = '';
+        fillPasswordList();
+      }
       catch(error){
         showError(error);
-      }*/
-      username.value = '';
-      pwd.value = '';
-      url.value = '';
-      fillPasswordList();
+      }
     });
 
     const searchInput = document.getElementById('search');
@@ -211,7 +217,10 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
       clearTimeout(timeout);
       timeout = setTimeout(researchPassword,100);
     });
-
+    const searchMethod = document.getElementById('search-method');
+    searchMethod.addEventListener('change', function() {
+      researchPassword();
+    });
     //Listen for messages from popup
     browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       if (message.action === "updatePswList") {
