@@ -57,11 +57,11 @@ export async function generateDerivedKey(password) {
     const first32Bytes = hashArray.slice(0, 32);
     const keyBytes = new Uint8Array(first32Bytes)
     const key = await window.crypto.subtle.importKey(
-      "raw", // Format de la clé : bytes bruts
+      'raw', // Format de la clé : bytes bruts
       keyBytes, // Suite de bytes passée en paramètre
-      { name: "AES-CBC" }, // Algorithme AES-CBC
+      { name: 'AES-CBC' }, // Algorithme AES-CBC
       true, // exportable
-      ["encrypt", "decrypt"] // Opérations autorisées avec la clé
+      ['encrypt', 'decrypt'] // Opérations autorisées avec la clé
     );
     return key;
   }
@@ -69,7 +69,7 @@ export async function generateDerivedKey(password) {
 export async function storeDerivedKey(derivedKey) {
     const derivedKeyData = await window.crypto.subtle.exportKey('raw', derivedKey);
     const derivedKeyString = Array.from(new Uint8Array(derivedKeyData))
-      .map(byte => byte.toString(32).padStart(2, '0'))
+      .map(byte => byte.toString(16).padStart(2, '0'))
       .join('');
     const jsonData = {derivedKey: derivedKeyString};
     await storage.store(jsonData);
