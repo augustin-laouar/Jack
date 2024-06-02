@@ -133,7 +133,11 @@ document.addEventListener("DOMContentLoaded", function() {
       event.preventDefault();
       var addressInput = document.getElementById("email");
       try{
-        await storage.createEmail(addressInput.value);
+        if (addressInput.value.trim() === "") { //Generate a random address
+          await storage.createRandomEmail();
+        } else {
+          await storage.createEmail(addressInput.value);
+        }
         closeAddPopup();
         showInfo('Email created !');
       }
@@ -141,23 +145,8 @@ document.addEventListener("DOMContentLoaded", function() {
         showPopupError(error);
       }
       fillAddressList();
-      addressInput.value = '';
-      passwordInput.value = '';
-      
+      addressInput.value = '';      
     });
-    const randomAddressButton = document.getElementById("randomAddress");
-    randomAddressButton.addEventListener("click", async function(event){
-      try{
-        await storage.createRandomEmail();
-        closeAddPopup();
-        showInfo('Email created !');
-      }
-      catch(error){
-        showPopupError(error);
-      }
-      fillAddressList();
-    });
-
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
       login_tools.logout(true);

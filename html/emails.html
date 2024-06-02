@@ -65,18 +65,15 @@
   <div id="overlay" class="hidden"></div>
   <div id="add-popup" class="hidden">
     <div class="popup-content bg-dark text-light rounded p-3 text-center">
-      <p class="display-5">New email address</p>
+      <p class="display-6">New email address</p>
         <span id="close-add-popup" class="close-btn">&times;</span>
+        <p class="lead" style="font-size:0.9em;">Leave email name empty to generate a random address !</p>
         <form id="add-email-form">
             <div class="m-1">
-              <input id="email" autocomplete="off" placeholder="Enter an email name" required class="form-control dark-input d-block mx-auto" style="width: 70%;">            <div>
-                <button type="submit" class="btn btn-info mt-2 d-block mx-auto" style="width: 70%;">Generate with a specific name</button>
+              <input id="email" autocomplete="off" placeholder="Email name (optional)" class="form-control dark-input d-block mx-auto" style="width: 80%; placeholder::placeholder { font-size: 0.7em; }">
+              <button type="submit" class="btn btn-info mt-2 d-block mx-auto" style="width: 80%;">Generate</button>
             </div>
         </form>
-        <br>
-        <h3 class="display-6">Or, if you are lazy...</h3>
-        <button type="button" class="btn btn-info mt-2 d-block mx-auto" id="randomAddress" style="width: 70%;">Generate with a random name</button>
-        <br>
         <p id="info-popup" class="text-warning mt-2"></p>
     </div>
   </div>
