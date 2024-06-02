@@ -106,7 +106,7 @@ export async function getDerivedKey() {
 
   // HASH
   //TODO : Add salt
-  async function hashPassword(psw) {
+  export async function hashPassword(psw) {
     const encoder = new TextEncoder();
     const data = encoder.encode(psw);
     const hash = await window.crypto.subtle.digest('SHA-512', data);
@@ -117,7 +117,7 @@ export async function getDerivedKey() {
 
   export async function storeHashedPassword(psw) {
     const hashedpsw = await hashPassword(psw);
-    const jsonData = {masterPswHash: hashedpsw};
+    const jsonData = { masterPswHash: hashedpsw };
     await storage.store(jsonData);
   }
   
@@ -135,7 +135,7 @@ export async function getDerivedKey() {
   export async function validPassword(psw) {
     try {
       const hashedpsw = await hashPassword(psw);
-      const storedHash = await storage.get('masterPswHash');
+      const storedHash = await storage.read('masterPswHash');
       return hashedpsw === storedHash;
     } catch (error) {
       return false;

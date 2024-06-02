@@ -1,6 +1,7 @@
 import * as tools from './login_tools.js';
 import * as error from './exception/error.js';
 import * as export_tools from './export.js';
+import * as crypto from './tools/crypto.js';
 
 function showError(e){
     if(!(e instanceof error.Error)){
@@ -24,7 +25,7 @@ async function changePassword(oldPsw, newPsw, newPswConfirm){
         if(newPsw !== newPswConfirm){
             throw new error.Error('Passwords are not the same.', true);
         }
-        if(await tools.validPassword(oldPsw) === false){
+        if(await crypto.validPassword(oldPsw) === false){
             throw new error.Error('Your current password is invalid.', true);
         }
         await tools.changePassword(newPsw);
@@ -34,24 +35,8 @@ async function changePassword(oldPsw, newPsw, newPswConfirm){
     }
 }
 
-async function export_account(password) {
-    if(await tools.validPassword(password) === false){
-        throw new error.Error('Your current password is invalid.', true);
-    }
-    try{
-        await export_tools.export_account();
-    }
-    catch(e) {
-        throw new error.Error('Unexpected error while exporting your account.', true);
-    }
-}
 
-async function import_account(jsonfile, password) {
-    //Appel popup "etes vous sur"
-    //Verification du password
-    //Appel de la fonction de export.js
-}
-
+//MAIN
 document.addEventListener('DOMContentLoaded', function() {
         const changePswForm = document.getElementById('change-password');
         changePswForm.addEventListener('submit', async function(event) {
@@ -82,12 +67,18 @@ document.addEventListener('DOMContentLoaded', function() {
         importAccountButton.addEventListener('click', async function(){
             const importAccountFile = document.getElementById('import-account-file');
             const pswCheckInput = document.getElementById('import-psw');
+            const keepCurrPsw = document.getElementById('import-keep-psw');
             if(importAccountFile.files.length === 0) {
-                showError(error.Error('Please select a file.', true));
+                showError(new error.Error('Please select an account file to import.', true));
+                return;
+            }
+            if (!confirm('Do you want to import this account file? Your current data will be lost.')) {
+                return;
             }
             try {
                 const file = importAccountFile.files[0];
-                await import_account(file,pswCheckInput.value);
+                await export_tools.import_account(file,pswCheckInput.value, keepCurrPsw.checked);
+                showInfo('Account imported with success !');
             }
             catch(e) {
                 showError(e);
@@ -97,11 +88,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const exportDataButton = document.getElementById('export-account');
         exportDataButton.addEventListener('click', async function(){
             const pswCheckInput = document.getElementById('export-psw');
-            try {
-                await export_account(pswCheckInput.value);
+            try{
+                await export_tools.export_account(pswCheckInput.value);
             }
             catch(e) {
-                showError(e);
+                showError(new error.Error('Unexpected error while exporting your account.', true));
             }
         });
 });

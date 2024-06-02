@@ -1,4 +1,5 @@
 import * as tools from './login_tools.js';
+import * as crypto from './tools/crypto.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     var form = document.getElementById("create-psw-form");
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       try{
-        await tools.storeHashedPassword(password);
+        await crypto.storeHashedPassword(password);
         tools.storeConnexionDuration(3);
         window.location.href = "../html/login.html";
       }

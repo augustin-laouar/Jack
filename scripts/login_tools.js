@@ -57,7 +57,7 @@ export async function isLogged() {
  //verify password, generate and store the derived key based on the password
  export async function login(password){
   try{
-    if (await validPassword(password)) {
+    if (await crypto.validPassword(password)) {
       storeLastLogin();
       const derivedKey = await crypto.generateDerivedKey(password);
       crypto.storeDerivedKey(derivedKey)
@@ -93,47 +93,12 @@ export async function isLogged() {
   }
  }
 
-async function hashPassword(psw) {
-  try {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(psw);
-    const hash = await window.crypto.subtle.digest('SHA-512', data);
-    const hashArray = Array.from(new Uint8Array(hash));
-    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-    return hashHex;
-  } 
-  catch (e) {
-    throw error.castError(e, false);
-  }
-}
-
-export async function storeHashedPassword(psw) {
-  try {
-    const hash = await hashPassword(psw);
-    storage.store({ masterPswHash:hash });
-  } 
-  catch (e) {
-    throw error.castError(e, false);
-  }
-}
-
-export async function validPassword(psw) {
-  try {
-    const hash = await hashPassword(psw);
-    const storedHash = await storage.read('masterPswHash');
-    return hash === storedHash;
-  } catch (e) {
-    throw error.castError(e, false);
-  }
-}
-
-
 //re encrypt all data
 export async function changePassword(newPsw){
   try {
     const oldKey = await crypto.getDerivedKey();
     const newKey = await crypto.generateDerivedKey(newPsw);
-    await storeHashedPassword(newPsw);
+    await crypto.storeHashedPassword(newPsw);
     await crypto.storeDerivedKey(newKey);
     await emailStorage.encryptEmailsWithNewKey(oldKey);
     await logsTools.encryptLogsWithNewKey(oldKey);

@@ -9,6 +9,8 @@
 - Nouveau CSS 
 - edit password avec fake popup
 - changer logs/passwords par credentials
+- faire un bouton de reset account
+
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
@@ -18,8 +20,8 @@
 Export/Import config
 - Export done
 - Faire l'import
-
-
+- Modifier export pour ne plus avoir de fonction dans settings.js
+- Changer le style pour que ce soit plus propre : ouverture de popups pour import et export.
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

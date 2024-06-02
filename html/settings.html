@@ -49,8 +49,12 @@
             <h3 class = "display-5">Data</h3>
             <p>Todo : write description</p>
             <p class ="lead">Import account from a Jack's Mails configuration file</p>
-            <input type="file" class="form-control dark-input mb-1" id="import-account-file" style="width: 60%; font-size: 0.9em;">
+            <input type="file"  accept=".json" class="form-control dark-input mb-1" id="import-account-file" style="width: 60%; font-size: 0.9em;">
             <input type="password" class="form-control dark-input mb-1" id="import-psw" placeholder="File's password" style ="width:50%;">
+            <div class="form-check">
+              <label class="mb-1" for="import-keep-psw">Keep my current password</label>
+              <input class="mb-1" type="checkbox" id="import-keep-psw">
+          </div>
             <button class="btn btn-info" id="import-account">Load</button>
             <p class ="lead">Export account</p>
             <input type="password" class="form-control dark-input mb-1" id="export-psw" placeholder="Your password" style ="width:50%;">
