@@ -1,24 +1,33 @@
-import * as errorManager from '../exception/mailError.js';
 import * as storage from './storage_tools.js';
-import * as tools from '../tools.js';
+import * as login_tools from '../login_tools.js';
+import * as error from '../exception/error.js';
 
-function showError(error){
-  if(!(error instanceof errorManager.Error)){
-    console.log(error);
+function showInfo(message){
+  const infoLabel = document.getElementById('info');
+  infoLabel.innerHTML = message;
+  infoLabel.className = 'text-info';
+}
+
+function showError(e){
+  if(!(e instanceof error.Error)){
     return;
   }
-  const errorStr = errorManager.errorToString(error);
+  const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = errorStr;
-  if(error.type === 1){
-    infoLabel.classList.remove('text-warning');
-    infoLabel.classList.add('text-danger'); //system error
-  }
-  if(error.type === 2){
-    infoLabel.classList.remove('text-danger');
-    infoLabel.classList.add('text-warning'); //user error
-  }
+  infoLabel.innerHTML = message;
+  infoLabel.className = 'text-warning';
 }
+
+function showPopupError(e){
+  if(!(e instanceof error.Error)){
+    return;
+  }
+  const message = error.errorToString(e);
+  const infoLabel = document.getElementById('info-popup');
+  infoLabel.innerHTML = message;
+}
+
+
 
 function getTrContent(address){ 
   var codeHTML = `
@@ -28,16 +37,21 @@ function getTrContent(address){
           <div class="col-8">
             <div class="d-flex align-items-center">
               <div class="mx-2">
-                <div id="address-div" class="text-center" style=" max-width: 300px;overflow-x: auto;">
-                    <p class="text-info" style="white-space: nowrap;">${address}</p>
+                <div id="address-div" class="text-center" style=" max-width: 280px;overflow-x: auto; vertical-align:middle;">
+                    <p class="text-info" style="white-space: nowrap; vertical-align:middle;">${address}</p>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-4">
             <div class="d-flex align-items-center justify-content-center">
-              <div class="text-center">
-                <button id="delete-button" class="btn btn-danger">Delete</button>
+              <div class="d-flex justify-content-center text-center">
+                <button id="copy-button" class="btn btn-dark">
+                  <img src="../svg-images/copy.svg" alt="Delete Icon" style="width: 20px; height: 20px;">
+                </button> 
+                <button id="delete-button" class="btn btn-dark">
+                  <img src="../svg-images/delete.svg" alt="Delete Icon" style="width: 20px; height: 20px;">
+                </button>                
               </div>
             </div>
           </div>
@@ -48,6 +62,15 @@ function getTrContent(address){
 
 
 }
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    throw new error.Error('Error copying to clipboard.', true);
+  }
+}
+
 async function fillAddressList(){
   try{
     const emails = await storage.getDecrytpedEmails(); 
@@ -66,7 +89,17 @@ async function fillAddressList(){
           const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(email.id);
           browser.tabs.create({ url });
         });
+        const copyButton = trElement.querySelector('#copy-button');
         const deleteButton = trElement.querySelector('#delete-button');
+        copyButton.addEventListener('click', async function(){
+          try{
+            copyToClipboard(email.email.address);
+            showInfo('Copied !')
+          }
+          catch(error){
+            showError(error);
+          }
+        });
         deleteButton.addEventListener('click', async function(){
           try{
             await storage.deleteEmail(email.id);
@@ -86,39 +119,37 @@ async function fillAddressList(){
 
 }
 
+function closeAddPopup()  {
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('add-popup');
+  overlay.classList.add('hidden');
+  popup.classList.add('hidden');
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
-    var addEmailForm = document.getElementById("add-email");
+    var addEmailForm = document.getElementById("add-email-form");
     addEmailForm.addEventListener("submit", async function(event) {
       event.preventDefault();
       var addressInput = document.getElementById("email");
-      var passwordInput = document.getElementById("password");
       try{
-        await storage.createEmail(addressInput.value, passwordInput.value);
+        if (addressInput.value.trim() === "") { //Generate a random address
+          await storage.createRandomEmail();
+        } else {
+          await storage.createEmail(addressInput.value);
+        }
+        closeAddPopup();
+        showInfo('Email created !');
       }
       catch(error){
-        showError(error);
+        showPopupError(error);
       }
       fillAddressList();
-      addressInput.value = '';
-      passwordInput.value = '';
-      
+      addressInput.value = '';      
     });
-    const randomAddressButton = document.getElementById("randomAddress");
-    randomAddressButton.addEventListener("click", async function(event){
-      try{
-        await storage.createRandomEmail();
-      }
-      catch(error){
-        showError(error);
-      }
-      fillAddressList();
-    });
-
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      tools.logout(true);
+      login_tools.logout(true);
     });
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){

@@ -1,20 +1,13 @@
-import * as tools from './tools.js';
+import * as tools from './login_tools.js';
+import * as error from './exception/error.js';
 
-function showError(error){
-  if(!(error instanceof errorManager.Error)){
+function showError(e){
+  if(!(e instanceof error.Error)){
     return;
   }
-  const errorStr = errorManager.errorToString(error);
+  const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = errorStr;
-  if(error.type === 1){
-    infoLabel.classList.remove('text-warning');
-    infoLabel.classList.add('text-danger'); //system error
-  }
-  if(error.type === 2){
-    infoLabel.classList.remove('text-danger');
-    infoLabel.classList.add('text-warning'); //user error
-  }
+  infoLabel.innerHTML = message;
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -29,8 +22,6 @@ document.addEventListener("DOMContentLoaded", function() {
       else{
         const infoLabel = document.getElementById('info');
         infoLabel.innerText = 'Login failed.';
-        infoLabel.classList.remove('text-danger');
-        infoLabel.classList.add('text-warning'); 
       }
     });
   }

@@ -1,4 +1,4 @@
-import * as errorManager from '../exception/mailError.js';
+import * as error from '../exception/error.js';
 
 export const baseUrl = 'https://api.mail.tm';
 
@@ -101,7 +101,7 @@ export async function sendRequest(url, method, params, token) {
       }
       var contentType = 'application/json';
       if(method === 'PATCH'){
-        contentType = 'application/ld+json';
+        contentType = 'application/merge-patch+json';
       }
       const requestOptions = {
         method: method,
@@ -127,16 +127,15 @@ export async function sendRequest(url, method, params, token) {
       }
       catch{
         data = null;
-      }
-      const statusCode = response.status;
-  
+      }  
       if (response.ok) {
         return data;
       } else {
-        throw new errorManager.Error(1, 1, 'Status code : ' + statusCode);
+        const message = 'Send Request : \n Request : ' + requestOptions + '\n' + 'Response : ' + response + '\n';
+        throw new error.Error(message, false);
       }
-    } catch (error) {
-      throw new errorManager.Error(1, 1, 'Unexpected error.');
+    } catch (e) {
+      throw error.castError(e, false);
     }
   }
 
@@ -155,12 +154,17 @@ export async function login(myMail){ //recupere le token qui permet de s'authent
 
 
 export async function createAccount(addr, psw){
-  var dom = await getDomains();
-  var newAddr = addr + '@' + dom;
-  const params = { address: newAddr, password: psw };
-  var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
-  var currMail = new MailAccount(res.address, psw, res.id, res.createdAt);
-  return currMail;
+  try {
+    var dom = await getDomains();
+    var newAddr = addr + '@' + dom;
+    const params = { address: newAddr, password: psw };
+    var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
+    var currMail = new MailAccount(res.address, psw, res.id, res.createdAt);
+    return currMail;
+  }
+  catch(e) {
+    throw new error.Error('Error creating the email address. The address name must consist only of alphanumeric characters.', true);
+  }
 }
 
 export async function getAccount(myMail) {

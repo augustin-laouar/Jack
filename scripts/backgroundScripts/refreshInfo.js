@@ -8,7 +8,7 @@ function wait(ms) {
      if(document.getElementById('info').innerHTML !== '')
         counter ++;
     
-      if(counter == 5){ 
+      if(counter == 30){ 
         document.getElementById('info').innerHTML = '';
         counter = 0;
       }

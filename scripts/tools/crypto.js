@@ -57,11 +57,11 @@ export async function generateDerivedKey(password) {
     const first32Bytes = hashArray.slice(0, 32);
     const keyBytes = new Uint8Array(first32Bytes)
     const key = await window.crypto.subtle.importKey(
-      "raw", // Format de la clé : bytes bruts
+      'raw', // Format de la clé : bytes bruts
       keyBytes, // Suite de bytes passée en paramètre
-      { name: "AES-CBC" }, // Algorithme AES-CBC
+      { name: 'AES-CBC' }, // Algorithme AES-CBC
       true, // exportable
-      ["encrypt", "decrypt"] // Opérations autorisées avec la clé
+      ['encrypt', 'decrypt'] // Opérations autorisées avec la clé
     );
     return key;
   }
@@ -69,15 +69,14 @@ export async function generateDerivedKey(password) {
 export async function storeDerivedKey(derivedKey) {
     const derivedKeyData = await window.crypto.subtle.exportKey('raw', derivedKey);
     const derivedKeyString = Array.from(new Uint8Array(derivedKeyData))
-      .map(byte => byte.toString(32).padStart(2, '0'))
+      .map(byte => byte.toString(16).padStart(2, '0'))
       .join('');
     const jsonData = {derivedKey: derivedKeyString};
     await storage.store(jsonData);
 }
 
 export async function getDerivedKey() {
-    const data = await storage.read('derivedKey');
-    const derivedKeyString = data.derivedKey;
+    const derivedKeyString = await storage.read('derivedKey');
     if (derivedKeyString) {
       const keyData = new Uint8Array(derivedKeyString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
       const derivedKey = await window.crypto.subtle.importKey(
@@ -90,7 +89,8 @@ export async function getDerivedKey() {
         ['encrypt', 'decrypt']
       );
       return derivedKey;
-    } else {
+    } 
+    else {
       return null;
     }
   }
@@ -106,34 +106,36 @@ export async function getDerivedKey() {
 
   // HASH
   //TODO : Add salt
-  async function hashPassword(psw) {
+  export async function hashPassword(psw) {
     const encoder = new TextEncoder();
     const data = encoder.encode(psw);
-    try {
-      const hash = await window.crypto.subtle.digest('SHA-512', data);
-      const hashArray = Array.from(new Uint8Array(hash));
-      const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-      return hashHex;
-    } catch (error) {
-      throw error;
-    }
+    const hash = await window.crypto.subtle.digest('SHA-512', data);
+    const hashArray = Array.from(new Uint8Array(hash));
+    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+    return hashHex;
   }
 
   export async function storeHashedPassword(psw) {
-    try {
-      const hashedpsw = await hashPassword(psw);
-      const jsonData = {password: hashedpsw};
-      await storage.store(jsonData);
-    } catch (error) {
-        //todo
-    }
+    const hashedpsw = await hashPassword(psw);
+    const jsonData = { masterPswHash: hashedpsw };
+    await storage.store(jsonData);
   }
   
+  export async function isValidHash(psw, hash) {
+    try {
+      const hashedpsw = await hashPassword(psw);
+      return hashedpsw === hash;
+    }
+    catch(error) {
+      return false;
+    }
+  }
+
+
   export async function validPassword(psw) {
     try {
       const hashedpsw = await hashPassword(psw);
-      const data = await storage.get('password');
-      const storedHash = data.password;
+      const storedHash = await storage.read('masterPswHash');
       return hashedpsw === storedHash;
     } catch (error) {
       return false;

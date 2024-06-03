@@ -4,8 +4,12 @@ export async function store(jsonValue) {
 
 export async function read(key) {
     const data = await browser.storage.local.get(key);
-    return data;
-}
+    if(data && key in data) {
+        return data[key];
+    }
+    return null;
+} 
+
 
 export async function remove(key) {
     browser.storage.local.remove(key);

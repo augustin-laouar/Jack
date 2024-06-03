@@ -1,24 +1,33 @@
 # Jack's Mails
 
-
 ## todo
-- Stocker logs via des ids et non url x
-- Modification du password x
-- Export/Import config
 - Ajouter sur chrome
-- Review email style
-- Code refactoring
-- Ajouter la possibilitée de filtrer avec le username
+- Rajouter la possibilité de clic droit pour utiliser une email directement
+- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
+- ajouter petit bouton copier à côter du nom de l'email
+- Ajouter du sel dans le hash du psw
+- Nouveau CSS 
+- edit password avec fake popup
+- changer logs/passwords par credentials
+- faire un bouton de reset account
 
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
-
-## Step 
-- Simplifier la gestions des Erreurs. Cela pourrait être un simple message + un code pour savoir quoi affiché à l'utilisateur
+- Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
+- Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
+## Tache actuel
+Export/Import config
+- Export done
+- Faire l'import
+- Modifier export pour ne plus avoir de fonction dans settings.js
+- Changer le style pour que ce soit plus propre : ouverture de popups pour import et export.
+## Terminé
+- Stocker logs via des ids et non url 
+- Modification du password 
+- Code refactoring 
 - Lors de création d'email, inutile de spécifier le password du compte.
-- Modifier la fonction storage.read => Retourner null si la data n'existe pas, sinon renvoyé directement la donnée (sans devoir faire data.email par exemple)
-- Changer les 'connexion' par 'connection'
-
-
-## Etat actuel
+- Ajouter la possibilitée de filtrer avec le username
+- Ajouter barre des tâches dans password.html
+- Icons
+- email page design

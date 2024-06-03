@@ -1,24 +1,16 @@
-import * as errorManager from '../exception/mailError.js';
+import * as error from '../exception/error.js';
 import * as viewer from './view_tools.js';
 import * as api from './api_tools.js';
 import * as storage from './storage_tools.js';
 
-function showError(error){
-    if(!(error instanceof errorManager.Error)){
+function showError(e){
+    if(!(e instanceof error.Error)){
       return;
     }
-    const errorStr = errorManager.errorToString(error);
+    const message = error.errorToString(e);
     const infoLabel = document.getElementById('info');
-    infoLabel.innerHTML = errorStr;
-    if(error.type === 1){
-      infoLabel.classList.remove('text-warning');
-      infoLabel.classList.add('text-danger'); //system error
-    }
-    if(error.type === 2){
-      infoLabel.classList.remove('text-danger');
-      infoLabel.classList.add('text-warning'); //user error
-    }
-  }
+    infoLabel.innerHTML = message;
+}
 
 
 async function markAsRead(email, message, trElement) {

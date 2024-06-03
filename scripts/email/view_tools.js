@@ -1,5 +1,4 @@
-import * as errorManager from '../exception/mailError.js';
-
+import * as error from '../exception/error.js';
 
 export async function downloadMessage(myMail, myMessage) {
     const requestOptions = {
@@ -14,7 +13,7 @@ export async function downloadMessage(myMail, myMessage) {
     }
     const response = await fetch(baseUrl + myMessage.downloadUrl, requestOptions);
     if(!response.ok){
-      throw new errorManager.Error(1, 1, response.statusText);
+      throw new error.Error('Error downloading the message.', true);
     }
     const htmlContent = await response.text();
     return htmlContent;
@@ -56,7 +55,7 @@ export async function downloadMessage(myMail, myMessage) {
   
     const response = await fetch(url, { headers });
     if(!response.ok){
-      throw new errorManager.Error(1, 1, response.statusText);
+      throw new error.Error('Error downloading the message.', true);
     }
     const blob = await response.blob();
   
@@ -70,7 +69,7 @@ export async function downloadMessage(myMail, myMessage) {
       };
   
       reader.onerror = () => {
-        reject('Unexpected error.');
+        reject(error.Error('Error downloading the message.', true));
       };
     });
   }
@@ -136,7 +135,7 @@ export async function downloadMessage(myMail, myMessage) {
   
     const response = await fetch(baseUrl + url, { headers });
     if(!response.ok){
-      throw new errorManager.Error(1, 1, response.statusText);
+      throw new error.Error("Error downloading email's attachments.", true);
     }
     const blob = await response.blob();
     const downloadUrl = URL.createObjectURL(blob);

@@ -1,50 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+  <title>Jack's Mails</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/login.css">
   <script type="module" src="../scripts/backgroundScripts/refreshInfo.js"></script>
-  <style>
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      border-radius: 5px;
-    }
-
-    .container h2 {
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .form-group input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 3px;
-      border: 1px solid #ccc;
-    }
-
-    .form-group .submit-btn {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      color: #fff;
-      background-color: #007bff;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body class="bg-dark text-light">
   <div class="container text-center">
@@ -57,7 +17,7 @@
       <div class="form-group">
         <button type="submit" class="submit-btn" style="width:150px;">Login</button>
       </div>
-      <p id="info"></p>
+      <p id="info" class="text-warning"></p>
     </form>
 
     <script type="module" src ="../scripts/login.js"></script>

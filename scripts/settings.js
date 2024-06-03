@@ -1,47 +1,42 @@
-import * as tools from './tools.js';
-import * as errorManager from './exception/settingsError.js';
+import * as tools from './login_tools.js';
+import * as error from './exception/error.js';
+import * as export_tools from './export.js';
+import * as crypto from './tools/crypto.js';
 
-function showError(error){
-    if(!(error instanceof errorManager.Error)){
-      return;
+function showError(e){
+    if(!(e instanceof error.Error)){
+        return;
     }
-    const errorStr = error.details;
-    const infoLabel = document.getElementById('info');
-    infoLabel.innerHTML = errorStr;
-    if(error.type === 1){
-      infoLabel.className = 'text-danger';
-    }
-    if(error.type === 2){
-        infoLabel.className = 'text-warning';
-
-    }
-  }
-
-  function showInfo(message){
+    const message = error.errorToString(e);
     const infoLabel = document.getElementById('info');
     infoLabel.innerHTML = message;
-    infoLabel.className = 'text-info ';
+    infoLabel.className = 'text-warning';
+}
 
-  }
+function showInfo(message){
+    const infoLabel = document.getElementById('info');
+    infoLabel.innerHTML = message;
+    infoLabel.className = 'text-info';
+
+}
 
 async function changePassword(oldPsw, newPsw, newPswConfirm){
-    if(newPsw !== newPswConfirm){
-        throw new errorManager.Error(2, 'Passwords are not the same.');
-    }
-    if(await tools.validPassword(oldPsw) === false){
-        throw new errorManager.Error(2, 'Your current password is unvalid.');
-
-    }
-    try{    
+    try{
+        if(newPsw !== newPswConfirm){
+            throw new error.Error('Passwords are not the same.', true);
+        }
+        if(await crypto.validPassword(oldPsw) === false){
+            throw new error.Error('Your current password is invalid.', true);
+        }
         await tools.changePassword(newPsw);
     }
-    catch(error){
-        throw new errorManager.Error(1, 'Unexpected error.');
+    catch(e){
+        throw error.castError(e, false);
     }
 }
 
 
-
+//MAIN
 document.addEventListener('DOMContentLoaded', function() {
         const changePswForm = document.getElementById('change-password');
         changePswForm.addEventListener('submit', async function(event) {
@@ -60,22 +55,44 @@ document.addEventListener('DOMContentLoaded', function() {
             newPsw.value = '';
             newPswConfirm.value = '';
         });
-        const changeConnexionDurationForm = document.getElementById('change-connexion-duration');
-        changeConnexionDurationForm.addEventListener('submit', function(event){
+        const changeConnDurationForm = document.getElementById('change-connection-duration');
+        changeConnDurationForm.addEventListener('submit', function(event){
             event.preventDefault();
-            const connexionDurationSelect = document.getElementById('connexion-duration-value');
-            tools.storeConnexionDuration(connexionDurationSelect.value);
-            showInfo('Connexion duration updated !');
+            const connDurationSelect = document.getElementById('connection-duration-value');
+            tools.storeConnexionDuration(connDurationSelect.value);
+            showInfo('Connection duration updated !');
         });
-        /*const loadDataButton = document.getElementById('load-data');
-        loadDataButton.addEventListener('click', function(){
-            const loadDataFile = document.getElementById('load-data-file');
-            const pswCheckInput = document.getElementById('psw-check');
-            //TODO
+
+        const importAccountButton = document.getElementById('import-account');
+        importAccountButton.addEventListener('click', async function(){
+            const importAccountFile = document.getElementById('import-account-file');
+            const pswCheckInput = document.getElementById('import-psw');
+            const keepCurrPsw = document.getElementById('import-keep-psw');
+            if(importAccountFile.files.length === 0) {
+                showError(new error.Error('Please select an account file to import.', true));
+                return;
+            }
+            if (!confirm('Do you want to import this account file? Your current data will be lost.')) {
+                return;
+            }
+            try {
+                const file = importAccountFile.files[0];
+                await export_tools.import_account(file,pswCheckInput.value, keepCurrPsw.checked);
+                showInfo('Account imported with success !');
+            }
+            catch(e) {
+                showError(e);
+            }
         });
-        const exportDataButton = document.getElementById('export-data');
-        exportDataButton.addEventListener('click', function(){
-            const pswCheckInput = document.getElementById('psw-check');
-            //TODO
-        });*/
+
+        const exportDataButton = document.getElementById('export-account');
+        exportDataButton.addEventListener('click', async function(){
+            const pswCheckInput = document.getElementById('export-psw');
+            try{
+                await export_tools.export_account(pswCheckInput.value);
+            }
+            catch(e) {
+                showError(new error.Error('Unexpected error while exporting your account.', true));
+            }
+        });
 });
