@@ -2,13 +2,13 @@ import * as storage from './storage_tools.js';
 import * as login_tools from '../login_tools.js';
 import * as error from '../exception/error.js';
 
-function showInfo(message){
+export function showInfo(message){
   const infoLabel = document.getElementById('info');
   infoLabel.innerHTML = message;
   infoLabel.className = 'text-info';
 }
 
-function showError(e){
+export function showError(e){
   if(!(e instanceof error.Error)){
     return;
   }
@@ -71,7 +71,7 @@ async function copyToClipboard(text) {
   }
 }
 
-async function fillAddressList(){
+export async function fillAddressList(){
   try{
     const emails = await storage.getDecrytpedEmails(); 
     const tab = document.querySelector('#tab-body');
@@ -119,34 +119,10 @@ async function fillAddressList(){
 
 }
 
-function closeAddPopup()  {
-  const overlay = document.getElementById('overlay');
-  const popup = document.getElementById('add-popup');
-  overlay.classList.add('hidden');
-  popup.classList.add('hidden');
-}
+
 
 document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
-    var addEmailForm = document.getElementById("add-email-form");
-    addEmailForm.addEventListener("submit", async function(event) {
-      event.preventDefault();
-      var addressInput = document.getElementById("email");
-      try{
-        if (addressInput.value.trim() === "") { //Generate a random address
-          await storage.createRandomEmail();
-        } else {
-          await storage.createEmail(addressInput.value);
-        }
-        closeAddPopup();
-        showInfo('Email created !');
-      }
-      catch(error){
-        showPopupError(error);
-      }
-      fillAddressList();
-      addressInput.value = '';      
-    });
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
       login_tools.logout(true);

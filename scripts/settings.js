@@ -36,6 +36,14 @@ async function changePassword(oldPsw, newPsw, newPswConfirm){
 }
 
 
+function closeAddPopup()  {
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById('password-popup');
+    overlay.classList.add('hidden');
+    popup.classList.add('hidden');
+}
+
+
 //MAIN
 document.addEventListener('DOMContentLoaded', function() {
         const changePswForm = document.getElementById('change-password');

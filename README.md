@@ -10,7 +10,7 @@
 - edit password avec fake popup
 - changer logs/passwords par credentials
 - faire un bouton de reset account
-
+- choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
@@ -18,10 +18,9 @@
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
 Export/Import config
-- Export done
-- Faire l'import
-- Modifier export pour ne plus avoir de fonction dans settings.js
 - Changer le style pour que ce soit plus propre : ouverture de popups pour import et export.
+
+TODO : finir popup pour addEmail.
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

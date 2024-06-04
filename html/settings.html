@@ -8,11 +8,13 @@
   <script type="module" src="../scripts/settings.js"></script>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/popup.css">
   <title>Jack's Mails : Settings</title>
+  <link rel="icon" type="image/png" href="../icons/favicon.ico">
 </head>
 <body class="bg-dark text-light">
   <div class="container">
-    <h1 class="display-3"><img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="mx-auto" style="max-height:100px;"> Settings</h1>
+    <h1 class="display-3"><img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="mx-auto" style="max-height:100px;">Settings</h1>
     <div class="border-top"  style="margin-top : 10px; width:70%"></div>
     <div class ="row mb-3" style="overflow-y:scroll; max-height:75vh;">
       <div class = "col-5">
@@ -60,6 +62,18 @@
             <input type="password" class="form-control dark-input mb-1" id="export-psw" placeholder="Your password" style ="width:50%;">
             <button class="btn btn-info" id="export-account">Export</button>
       </div>
+
+        <!-- CONFIRM PASSWORD POPUP -->
+      <div id="overlay" class="hidden"></div>
+      <div id="password-popup" class="hidden">
+        <div class="popup-content bg-dark text-light rounded p-3 text-center">
+          <p class="display-6">Confirm your password</p>
+            <span id="close-popup" class="close-btn">&times;</span>
+            <input type="password" class="form-control dark-input" id="old-psw" placeholder="Your current password" style ="width:50%;">
+            <p id="info-popup" class="text-warning mt-2"></p>
+        </div>
+      </div>
+
     </div>
     <p id="info"></p>
   </div>

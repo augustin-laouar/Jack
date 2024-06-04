@@ -5,14 +5,12 @@
   <script type="module" src="../scripts/backgroundScripts/verify_auth.js"></script>
   <script type="module" src="../scripts/backgroundScripts/refreshInfo.js"></script>
   <script type="module" src="../scripts/backgroundScripts/refreshTimer.js"></script>
-
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/email.css">
   <link rel="stylesheet" href="../css/popup.css">
   <link rel="stylesheet" href="../css/common.css">
-
-  
   <title>Jack's Mails</title>
+  <link rel="icon" type="image/png" href="../icons/favicon.ico">
 </head>
 <body class="bg-dark text-light overflow-x-hidden">
   <div class="container-fluid bg-dark" style="margin-top: 5px;">
@@ -63,18 +61,10 @@
   
   <!-- Popup Modal Structure -->
   <div id="overlay" class="hidden"></div>
-  <div id="add-popup" class="hidden">
+  <div id="popup" class="hidden">
     <div class="popup-content bg-dark text-light rounded p-3 text-center">
-      <p class="display-6">New email address</p>
-        <span id="close-add-popup" class="close-btn">&times;</span>
-        <p class="lead" style="font-size:0.9em;">Leave email name empty to generate a random address !</p>
-        <form id="add-email-form">
-            <div class="m-1">
-              <input id="email" autocomplete="off" placeholder="Email name (optional)" class="form-control dark-input d-block mx-auto" style="width: 80%; placeholder::placeholder { font-size: 0.7em; }">
-              <button type="submit" class="btn btn-info mt-2 d-block mx-auto" style="width: 80%;">Generate</button>
-            </div>
-        </form>
-        <p id="info-popup" class="text-warning mt-2"></p>
+      <span id="close-popup" class="close-btn">&times;</span>
+      <div id="popup-content"></div>
     </div>
   </div>
 

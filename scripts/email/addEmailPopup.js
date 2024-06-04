@@ -1,23 +1,75 @@
+import * as popup from '../popup.js';
+import { fillAddressList, showInfo } from './mainPage.js';
+import * as storage from './storage_tools.js';
+import * as error from '../exception/error.js';
+
+function closeAddPopup() {
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById('popup');
+
+    overlay.classList.add('hidden');
+    popup.classList.add('hidden');
+}
+
+
+function addPopupContent()  {
+    return `
+      <p class="display-6">New email address</p>
+      <p class="lead" style="font-size:0.9em;">Leave email name empty to generate a random address !</p>
+      <form id="add-email-form">
+          <div class="m-1">
+            <input id="email-name" autocomplete="off" placeholder="Email name (optional)" class="form-control dark-input d-block mx-auto" style="width: 80%; placeholder::placeholder { font-size: 0.7em; }">
+            <button type="submit" class="btn btn-info mt-2 d-block mx-auto" style="width: 80%;">Generate</button>
+          </div>
+      </form>
+      <p id="info-popup" class="text-warning mt-2" style="font-size: 0.8em;"></p>
+    `;
+}
+
+function showPopupInfo(message, warning = false) {
+    const infoLabel = document.getElementById('info-popup');
+    infoLabel.innerHTML = message;
+    if(warning) {
+        infoLabel.classList.remove('text-info');
+        infoLabel.classList.add('text-warning');
+    }
+    else {
+        infoLabel.classList.remove('text-warning');
+        infoLabel.classList.add('text-info');
+    }
+}
+
+function showPopupError(e){
+    if(!(e instanceof error.Error)){
+      return;
+    }
+    const message = error.errorToString(e);
+    showPopupInfo(message, true);
+}
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    const openPopupBtn = document.getElementById('add-email-button');
-    const closePopupBtn = document.getElementById('close-add-popup');
-    const overlay = document.getElementById('overlay');
-    const popup = document.getElementById('add-popup');
-
-    openPopupBtn.addEventListener('click', function () {
-        overlay.classList.remove('hidden');
-        popup.classList.remove('hidden');
-    });
-
-    closePopupBtn.addEventListener('click', function () {
-        overlay.classList.add('hidden');
-        popup.classList.add('hidden');
-    });
-
-    overlay.addEventListener('click', function () {
-        overlay.classList.add('hidden');
-        popup.classList.add('hidden');
+    popup.initClosePopupEvent();
+    popup.initOpenPopupEvent('add-email-button');
+    popup.fillPopupContent(addPopupContent());
+    const popupContent = document.getElementById('popup-content');
+    const addEmailForm = popupContent.querySelector('#add-email-form');
+    addEmailForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const addressInput = popupContent.querySelector('#email-name');
+        try{
+            if (addressInput.value.trim() === "") { //Generate a random address
+                await storage.createRandomEmail();
+            } else {
+                await storage.createEmail(addressInput.value);
+            }
+            addressInput.value = '';      
+            closeAddPopup();
+            showInfo('Email created !');
+            fillAddressList();
+        }
+        catch(error){
+            showPopupError(error);
+        }
     });
 });
