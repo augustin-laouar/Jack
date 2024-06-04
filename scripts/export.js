@@ -30,12 +30,18 @@ async function get_json() {
     return jsonData;
 }
 
-export async function export_account(password) {
+export async function export_account(password, givenFileName) {
     if(await crypto.validPassword(password) === false){
         throw new error.Error('Your current password is invalid.', true);
     }
     const jsonObject = await get_json();
-    const filename = 'account.json';
+    var filename;
+    if(givenFileName === '') {
+        filename = 'jack-mail-data.json';
+    }
+    else {
+        filename = givenFileName + '.json';
+    }
 
     const jsonStr = JSON.stringify(jsonObject, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });

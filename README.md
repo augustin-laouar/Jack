@@ -17,10 +17,8 @@
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-Export/Import config
-- Changer le style pour que ce soit plus propre : ouverture de popups pour import et export.
-
-TODO : finir popup pour addEmail.
+- Couleur text-button
+- Utiliser ce bouton partout ou il y a des boutons avec du texte
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -30,3 +28,5 @@ TODO : finir popup pour addEmail.
 - Ajouter barre des tâches dans password.html
 - Icons
 - email page design
+- import/export 
+- Style settings page

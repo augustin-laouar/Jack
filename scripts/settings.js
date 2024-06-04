@@ -2,6 +2,7 @@ import * as tools from './login_tools.js';
 import * as error from './exception/error.js';
 import * as export_tools from './export.js';
 import * as crypto from './tools/crypto.js';
+import * as popup from './popup.js';
 
 function showError(e){
     if(!(e instanceof error.Error)){
@@ -20,87 +21,205 @@ function showInfo(message){
 
 }
 
-async function changePassword(oldPsw, newPsw, newPswConfirm){
-    try{
-        if(newPsw !== newPswConfirm){
-            throw new error.Error('Passwords are not the same.', true);
-        }
-        if(await crypto.validPassword(oldPsw) === false){
-            throw new error.Error('Your current password is invalid.', true);
-        }
-        await tools.changePassword(newPsw);
+function showPopupInfo(message, warning = false) {
+    const infoLabel = document.getElementById('popup-info');
+    infoLabel.innerHTML = message;
+    if(warning) {
+        infoLabel.classList.remove('text-info');
+        infoLabel.classList.add('text-warning');
     }
-    catch(e){
-        throw error.castError(e, false);
+    else {
+        infoLabel.classList.remove('text-warning');
+        infoLabel.classList.add('text-info');
     }
 }
 
-
-function closeAddPopup()  {
-    const overlay = document.getElementById('overlay');
-    const popup = document.getElementById('password-popup');
-    overlay.classList.add('hidden');
-    popup.classList.add('hidden');
+function showPopupError(e){
+    if(!(e instanceof error.Error)){
+      return;
+    }
+    const message = error.errorToString(e);
+    showPopupInfo(message, true);
 }
 
+
+function changePasswordContent() {
+    return `
+    <div class="container d-flex justify-content-center align-items-center flex-column">
+        <p class="lead text-center">Change password</p>
+        <form id="change-password-form" class="d-flex flex-column align-items-center">
+            <input required type="password" class="form-control dark-input mb-1" id="current-psw" placeholder="Current password" autocomplete="off">
+            <input required type="password" class="form-control dark-input mb-1" id="new-psw" placeholder="New password" autocomplete="off">
+            <input required type="password" class="form-control dark-input mb-1" id="new-psw-confirm" placeholder="Confirm new password" autocomplete="off">
+            <button type="submit" class="text-button">Change</button>
+        </form>
+        <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
+    </div>
+
+  `;
+}
+
+async function changePassword() {
+    popup.initClosePopupEvent();
+    popup.fillPopupContent(changePasswordContent());
+    popup.openPopup();
+    popup.setPopupSize(300, 300);
+    const popupContent = document.getElementById('popup-content');
+    const changePswForm = popupContent.querySelector('#change-password-form');
+    const currentPsw = popupContent.querySelector('#current-psw');
+    const newPsw = popupContent.querySelector('#new-psw');
+    const newPswConfirm = popupContent.querySelector('#new-psw-confirm');
+    currentPsw.value = '';
+    newPsw.value = '';
+    newPswConfirm.value = '';
+    changePswForm.addEventListener('submit', async function(event) {
+        try {
+            event.preventDefault();
+            if(newPsw.value === '' || newPsw.value === null) {
+                return;
+            }
+            if (await crypto.validPassword(currentPsw.value) === false) {
+                showPopupInfo('Wrong current password.', true);
+            }
+            else if(newPsw.value !== newPswConfirm.value){
+                showPopupInfo('Passwords are not the same.', true);
+            }
+            else {
+                await tools.changePassword(newPsw.value);
+                popup.closePopup();
+                showInfo('Password updated !');
+            }
+            currentPsw.value = '';
+            newPsw.value = '';
+            newPswConfirm.value = '';
+        }
+        catch(e) {
+            showPopupError(e);
+        }
+    });
+}
+
+
+function passwordConfirmPopupContent(optionalContent) {
+    return `
+      <p class="lead">Confirm your password</p>
+      `
+      + 
+      optionalContent 
+      +
+      `
+      <form id="confirm-psw-form">
+          <div class="m-1">
+            <input placeholder="Enter your password" type="password" id="confirm-psw-input" autocomplete="off" class="form-control dark-input d-block mx-auto" style="width: 80%;">
+            <button type="submit" class="text-button mt-2 d-block mx-auto" style="width: 80%;">Confirm</button>
+          </div>
+      </form>
+      <p id="popup-info" class="mt-2" style="font-size: 0.8em;"></p>
+    `;
+}
+
+async function askForPasswordConfirm(optionalContent) {
+    popup.initClosePopupEvent();
+    popup.fillPopupContent(passwordConfirmPopupContent(optionalContent));
+    popup.openPopup();
+    const popupContent = document.getElementById('popup-content');
+    const confirmPswForm = popupContent.querySelector('#confirm-psw-form');
+    const confirmPswInput = popupContent.querySelector('#confirm-psw-input');
+
+    return new Promise((resolve, reject) => {
+        confirmPswForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const givenPsw = confirmPswInput.value;
+            try {
+                if (await crypto.validPassword(givenPsw) === false) {
+                    showPopupInfo('Invalid password.', true);
+                    confirmPswInput.value = '';
+                } else {
+                    popup.closePopup();
+                    resolve(givenPsw);
+                }
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
+}
+
+function confirmFilePswContent() {
+    return `
+    <p class="lead">Import data</p>
+    <p class="lead" style="font-size: 0.9em;">Your current data will be deleted and replaced with the data from the imported file.</p>
+    <form id="confirm-file-psw-form">
+        <div class="m-1">
+          <input placeholder="File's password" type="password" id="confirm-file-psw-input" autocomplete="off" class="form-control dark-input d-block mx-auto" style="width: 80%;">
+          <button type="submit" class="text-button mt-2 d-block mx-auto" style="width: 80%;">Import</button>
+        </div>
+    </form>
+    <p id="popup-info" class="mt-2" style="font-size: 0.8em;"></p>
+  `;
+}
+
+async function confirmFilePsw() {
+    popup.initClosePopupEvent();
+    popup.fillPopupContent(confirmFilePswContent());
+    popup.openPopup();
+    const popupContent = document.getElementById('popup-content');
+    const confirmFilePswForm = popupContent.querySelector('#confirm-file-psw-form');
+    const confirmFilePswInput = popupContent.querySelector('#confirm-file-psw-input');
+
+    return new Promise((resolve, reject) => {
+        confirmFilePswForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const givenPsw = confirmFilePswInput.value;
+            resolve(givenPsw);
+            popup.closePopup();
+        });
+    });
+}
 
 //MAIN
 document.addEventListener('DOMContentLoaded', function() {
-        const changePswForm = document.getElementById('change-password');
-        changePswForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const oldPsw = document.getElementById('old-psw');
-            const newPsw = document.getElementById('new-psw');
-            const newPswConfirm = document.getElementById('new-psw-confirm');
-            try{
-                await changePassword(oldPsw.value, newPsw.value, newPswConfirm.value);
-                showInfo('Password updated !');
-            }
-            catch(error){
-                showError(error);
-            }
-            oldPsw.value = '';
-            newPsw.value = '';
-            newPswConfirm.value = '';
-        });
-        const changeConnDurationForm = document.getElementById('change-connection-duration');
-        changeConnDurationForm.addEventListener('submit', function(event){
-            event.preventDefault();
-            const connDurationSelect = document.getElementById('connection-duration-value');
-            tools.storeConnexionDuration(connDurationSelect.value);
-            showInfo('Connection duration updated !');
-        });
+    const changePswButton = document.getElementById('change-psw');
+    changePswButton.addEventListener('click', async function() {
+        changePassword();
+    });
+    const changeConnDurationForm = document.getElementById('change-connection-duration');
+    changeConnDurationForm.addEventListener('submit', function(event){
+        event.preventDefault();
+        const connDurationSelect = document.getElementById('connection-duration-value');
+        tools.storeConnexionDuration(connDurationSelect.value);
+        showInfo('Connection duration updated !');
+    });
 
-        const importAccountButton = document.getElementById('import-account');
-        importAccountButton.addEventListener('click', async function(){
-            const importAccountFile = document.getElementById('import-account-file');
-            const pswCheckInput = document.getElementById('import-psw');
-            const keepCurrPsw = document.getElementById('import-keep-psw');
-            if(importAccountFile.files.length === 0) {
-                showError(new error.Error('Please select an account file to import.', true));
-                return;
-            }
-            if (!confirm('Do you want to import this account file? Your current data will be lost.')) {
-                return;
-            }
-            try {
-                const file = importAccountFile.files[0];
-                await export_tools.import_account(file,pswCheckInput.value, keepCurrPsw.checked);
-                showInfo('Account imported with success !');
-            }
-            catch(e) {
-                showError(e);
-            }
-        });
+    const importAccountButton = document.getElementById('import-account');
+    importAccountButton.addEventListener('click', async function(){
+        const importAccountFile = document.getElementById('import-account-file');
+        const keepCurrPsw = document.getElementById('import-keep-psw');
+        if(importAccountFile.files.length === 0) {
+            showError(new error.Error('Please select an account file to import.', true));
+            return;
+        }
+        try {
+            const file = importAccountFile.files[0];
+            const filePassword = await confirmFilePsw();
+            await export_tools.import_account(file,filePassword, keepCurrPsw.checked);
+            showInfo('Account imported with success !');
+        }
+        catch(e) {
+            showError(e);
+        }
+    });
 
-        const exportDataButton = document.getElementById('export-account');
-        exportDataButton.addEventListener('click', async function(){
-            const pswCheckInput = document.getElementById('export-psw');
-            try{
-                await export_tools.export_account(pswCheckInput.value);
-            }
-            catch(e) {
-                showError(new error.Error('Unexpected error while exporting your account.', true));
-            }
-        });
+    const exportDataButton = document.getElementById('export-account');
+    exportDataButton.addEventListener('click', async function(){
+        try{
+            const warningMessage = '<p class="lead" style="font-size:0.9em;">This file will be protected by your current master password.</p>'
+            const password = await askForPasswordConfirm(warningMessage); 
+            const fileName = document.getElementById('export-file-name').value;
+            await export_tools.export_account(password, fileName);
+        }
+        catch(e) {
+            showError(new error.Error('Unexpected error while exporting your account.', true));
+        }
+    });
 });

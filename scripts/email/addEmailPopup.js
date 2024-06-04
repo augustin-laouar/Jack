@@ -3,15 +3,6 @@ import { fillAddressList, showInfo } from './mainPage.js';
 import * as storage from './storage_tools.js';
 import * as error from '../exception/error.js';
 
-function closeAddPopup() {
-    const overlay = document.getElementById('overlay');
-    const popup = document.getElementById('popup');
-
-    overlay.classList.add('hidden');
-    popup.classList.add('hidden');
-}
-
-
 function addPopupContent()  {
     return `
       <p class="display-6">New email address</p>
@@ -50,8 +41,11 @@ function showPopupError(e){
 
 document.addEventListener("DOMContentLoaded", function() {
     popup.initClosePopupEvent();
-    popup.initOpenPopupEvent('add-email-button');
     popup.fillPopupContent(addPopupContent());
+    const addEmailButton = document.getElementById('add-email-button');
+    addEmailButton.addEventListener('click', function() {
+        popup.openPopup();
+    });
     const popupContent = document.getElementById('popup-content');
     const addEmailForm = popupContent.querySelector('#add-email-form');
     addEmailForm.addEventListener("submit", async function(event) {
@@ -64,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 await storage.createEmail(addressInput.value);
             }
             addressInput.value = '';      
-            closeAddPopup();
+            popup.closePopup();
             showInfo('Email created !');
             fillAddressList();
         }

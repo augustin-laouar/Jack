@@ -28,7 +28,21 @@
 }
 
 .dark-select option {
-
     background-color: #343a40; /* Dark background for options */
     color: #ffffff; /* White text for options */
+}
+
+.transparent-button {
+    background-color: rgb(33, 37, 41);
+}
+
+.text-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: rgb(18, 182, 207);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
 }
