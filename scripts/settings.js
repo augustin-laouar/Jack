@@ -3,6 +3,7 @@ import * as error from './exception/error.js';
 import * as export_tools from './export.js';
 import * as crypto from './tools/crypto.js';
 import * as popup from './popup.js';
+import { reset } from './reset.js';
 
 function showError(e){
     if(!(e instanceof error.Error)){
@@ -51,7 +52,7 @@ function changePasswordContent() {
             <input required type="password" class="form-control dark-input mb-1" id="current-psw" placeholder="Current password" autocomplete="off">
             <input required type="password" class="form-control dark-input mb-1" id="new-psw" placeholder="New password" autocomplete="off">
             <input required type="password" class="form-control dark-input mb-1" id="new-psw-confirm" placeholder="Confirm new password" autocomplete="off">
-            <button type="submit" class="text-button">Change</button>
+            <button type="submit" class="confirm-button">Change password</button>
         </form>
         <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
     </div>
@@ -100,7 +101,7 @@ async function changePassword() {
 }
 
 
-function passwordConfirmPopupContent(optionalContent) {
+function passwordConfirmPopupContent(optionalContent, buttonText = 'Confirm') {
     return `
       <p class="lead">Confirm your password</p>
       `
@@ -111,16 +112,16 @@ function passwordConfirmPopupContent(optionalContent) {
       <form id="confirm-psw-form">
           <div class="m-1">
             <input placeholder="Enter your password" type="password" id="confirm-psw-input" autocomplete="off" class="form-control dark-input d-block mx-auto" style="width: 80%;">
-            <button type="submit" class="text-button mt-2 d-block mx-auto" style="width: 80%;">Confirm</button>
+            <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 80%;">` + buttonText + `</button>
           </div>
       </form>
       <p id="popup-info" class="mt-2" style="font-size: 0.8em;"></p>
     `;
 }
 
-async function askForPasswordConfirm(optionalContent) {
+async function askForPasswordConfirm(optionalContent, buttonText) {
     popup.initClosePopupEvent();
-    popup.fillPopupContent(passwordConfirmPopupContent(optionalContent));
+    popup.fillPopupContent(passwordConfirmPopupContent(optionalContent, buttonText));
     popup.openPopup();
     const popupContent = document.getElementById('popup-content');
     const confirmPswForm = popupContent.querySelector('#confirm-psw-form');
@@ -148,11 +149,11 @@ async function askForPasswordConfirm(optionalContent) {
 function confirmFilePswContent() {
     return `
     <p class="lead">Import data</p>
-    <p class="lead" style="font-size: 0.9em;">Your current data will be deleted and replaced with the data from the imported file.</p>
+    <p class="text-warning" style="font-size: 0.9em;">Your current data will be deleted and replaced with the data from the imported file.</p>
     <form id="confirm-file-psw-form">
         <div class="m-1">
           <input placeholder="File's password" type="password" id="confirm-file-psw-input" autocomplete="off" class="form-control dark-input d-block mx-auto" style="width: 80%;">
-          <button type="submit" class="text-button mt-2 d-block mx-auto" style="width: 80%;">Import</button>
+          <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 80%;">Import</button>
         </div>
     </form>
     <p id="popup-info" class="mt-2" style="font-size: 0.8em;"></p>
@@ -213,13 +214,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportDataButton = document.getElementById('export-account');
     exportDataButton.addEventListener('click', async function(){
         try{
-            const warningMessage = '<p class="lead" style="font-size:0.9em;">This file will be protected by your current master password.</p>'
-            const password = await askForPasswordConfirm(warningMessage); 
+            const warningMessage = '<p style="font-size:0.9em;">This file will be protected by your current master password.</p>'
+            const buttonText = 'Export';
+            const password = await askForPasswordConfirm(warningMessage, buttonText); 
             const fileName = document.getElementById('export-file-name').value;
             await export_tools.export_account(password, fileName);
         }
         catch(e) {
             showError(new error.Error('Unexpected error while exporting your account.', true));
         }
+    });
+
+    const resetDataButton = document.getElementById('reset-data');
+    resetDataButton.addEventListener('click', async function() {
+        const warningMessage = '<p class="text-warning" style="font-size:0.9em;">Warning: Resetting will permanently delete all your data and cannot be undone.</p>'
+        const buttonText = 'Reset';
+        const password = await askForPasswordConfirm(warningMessage, buttonText); 
+        await reset(password);
     });
 });

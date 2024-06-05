@@ -10,7 +10,7 @@ function addPopupContent()  {
       <form id="add-email-form">
           <div class="m-1">
             <input id="email-name" autocomplete="off" placeholder="Email name (optional)" class="form-control dark-input d-block mx-auto" style="width: 80%; placeholder::placeholder { font-size: 0.7em; }">
-            <button type="submit" class="btn btn-info mt-2 d-block mx-auto" style="width: 80%;">Generate</button>
+            <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 80%;">Generate</button>
           </div>
       </form>
       <p id="info-popup" class="text-warning mt-2" style="font-size: 0.8em;"></p>

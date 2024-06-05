@@ -36,13 +36,61 @@
     background-color: rgb(33, 37, 41);
 }
 
+.transparent-button:hover {
+    transform: scale(1.1); 
+}
+
+.transparent-button:active {
+    transform: scale(0.98); 
+}
+
 .text-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px; /* Texte plus petit */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Police plus élégante */
+    font-weight: 500; /* Moins audacieux */
+    text-align: center; /* Centre le texte dans le bouton */
+    text-transform: none; /* Pas de majuscules pour un look plus subtil */
+    color: #fff;
+    background-color: #343a40;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Ajoute des transitions pour un effet de survol */
+}
+
+/* Ajoute des effets de survol */
+.text-button:hover {
+    background-color: #495057;
+    transform: scale(1.02); /* Légère agrandissement au survol */
+}
+
+/* Ajoute un état actif */
+.text-button:active {
+    background-color: #212529;
+    transform: scale(0.98); /* Légère réduction lors du clic */
+}
+
+/* Ajoute un état désactivé */
+.text-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+
+.confirm-button {
     width: 100%;
     padding: 10px;
     font-size: 16px;
     color: #fff;
-    background-color: rgb(18, 182, 207);
+    background-color: rgb(13, 202, 240, 0.8);
     border: none;
-    border-radius: 3px;
+    border-radius: 0.375rem;
     cursor: pointer;
+}
+
+.confirm-button:hover {
+    background-color: rgb(13, 202, 240, 0.9);
 }
