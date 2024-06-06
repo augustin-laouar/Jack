@@ -61,17 +61,17 @@ function getTrContent(url, id){
       </div>
     </td>
     <td>
-      <button id="cp-psw-button" class="btn btn-dark">
+      <button id="cp-psw-button" class="btn transparent-button">
         <img src="../svg-images/copy.svg" alt="Copy" style="width: 20px; height: 20px;">
       </button>
     </td>
     <td>
-      <button id="edit-button" class="btn btn-dark">
+      <button id="edit-button" class="btn transparent-button">
         <img src="../svg-images/edit.svg" alt="Copy" style="width: 20px; height: 20px;">
       </button>
     </td>
     <td>
-      <button id="delete-button" class="btn btn-dark">
+      <button id="delete-button" class="btn transparent-button">
         <img src="../svg-images/delete.svg" alt="Copy" style="width: 20px; height: 20px;">
       </button>
     </td>

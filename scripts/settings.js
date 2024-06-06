@@ -184,14 +184,12 @@ document.addEventListener('DOMContentLoaded', function() {
     changePswButton.addEventListener('click', async function() {
         changePassword();
     });
-    const changeConnDurationForm = document.getElementById('change-connection-duration');
-    changeConnDurationForm.addEventListener('submit', function(event){
-        event.preventDefault();
-        const connDurationSelect = document.getElementById('connection-duration-value');
-        tools.storeConnexionDuration(connDurationSelect.value);
+    const sessionValiditySelect = document.getElementById('session-validity-select');
+    sessionValiditySelect.addEventListener('change', function() {
+        const sessionValidityValue = sessionValiditySelect.value;
+        tools.storeConnexionDuration(sessionValidityValue);
         showInfo('Connection duration updated !');
     });
-
     const importAccountButton = document.getElementById('import-account');
     importAccountButton.addEventListener('click', async function(){
         const importAccountFile = document.getElementById('import-account-file');

@@ -21,21 +21,16 @@
         <h2 class = "display-6">Security</h2>
         <p class ="lead mb-1">Master password</p>
         <button id="change-psw" class="text-button" style="width:40%;">Change master password</button>
-        <p class ="lead mt-3 mb-1">Connexion duration</p>
+        <p class ="lead mt-3 mb-1">Session validity</p>
         <form id="change-connection-duration" class="mb-3">
-          <label class="form-label" >Keep connection alive for :</label>
-          <div class="d-flex align-items-center mb-1">
-            <select class="form-select dark-select me-1" id="connection-duration-value" style ="width:50%;">
-              <option value="0.5">30 seconds</option>
-              <option value="1">1 minute</option>
-              <option value="3" selected="selected">3 minutes (recommended)</option>
-              <option value="5">5 minutes</option>
-              <option value="10">10 minutes</option>
-            </select>  
-            <button type="submit" class="btn transparent-button">
-              <img src="../svg-images/update.svg" alt="Change" style="width: 25px; height: 25px;">
-            </button>        
-          </div>
+          <label class="form-label" >Keep session alive for :</label>
+          <select class="form-select dark-select mb-1" id="session-validity-select" style ="width:40%;">
+            <option value="0.5">30 seconds</option>
+            <option value="1">1 minute</option>
+            <option value="3" selected="selected">3 minutes (recommended)</option>
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+          </select>  
         </form>
         <!-- DATA -->
         <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px;"></div>              
@@ -43,7 +38,7 @@
         <p class ="lead mb-1">Import data from a file</p>
         <div class="d-flex align-items-center mb-1">
           <input type="file"  accept=".json" class="form-control dark-input mb-1" id="import-account-file" style="width: 60%; font-size: 0.9em;">
-          <button class="btn transparent-button" id="import-account">
+          <button class="btn transparent-button ms-1" id="import-account">
             <img src="../svg-images/import.svg" alt="Change" style="width: 25px; height: 25px;">
           </button>
         </div>
@@ -54,7 +49,7 @@
         <p class ="lead mt-3 mb-1">Export local data</p>
         <div class="d-flex align-items-center mb-1">
           <input placeholder="File name (optional)" id="export-file-name" class="form-control dark-input" style="width: 60%;">
-          <button class="btn transparent-button" id="export-account">
+          <button class="btn transparent-button ms-1" id="export-account">
             <img src="../svg-images/export.svg" alt="Change" style="width: 25px; height: 25px;">
           </button>
         </div>

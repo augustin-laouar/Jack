@@ -8,16 +8,15 @@
 - Ajouter du sel dans le hash du psw
 - Nouveau CSS 
 - edit password avec fake popup
-- changer logs/passwords par credentials
-- choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
+- changer logs/passwords par credentials / connectionDuration par sessionValidity
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Style css general
--> mettre les boutons copiers/delete etc ... des listes emails et password avec la classe transparent button
+- choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
+
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -30,3 +29,4 @@
 - import/export 
 - Style settings page
 - faire un bouton de reset account
+- style css button
