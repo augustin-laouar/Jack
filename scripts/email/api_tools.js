@@ -142,8 +142,13 @@ export async function sendRequest(url, method, params, token) {
 
 export async function getDomains() {
       const response = await sendRequest(baseUrl + '/domains', 'GET', null);
-      return response["hydra:member"][0].domain;
-  }
+      const list = response['hydra:member'];
+      let domains = [];
+      list.forEach(element => {
+        domains.push(element.domain)
+      });
+      return domains;
+}
 
 export async function login(myMail){ //recupere le token qui permet de s'authentifier sur les futurs requests
     const params = {address : myMail.address, password : myMail.password};
@@ -155,9 +160,7 @@ export async function login(myMail){ //recupere le token qui permet de s'authent
 
 export async function createAccount(addr, psw){
   try {
-    var dom = await getDomains();
-    var newAddr = addr + '@' + dom;
-    const params = { address: newAddr, password: psw };
+    const params = { address: addr, password: psw };
     var res = await sendRequest(baseUrl + '/accounts', 'POST', params);
     var currMail = new MailAccount(res.address, psw, res.id, res.createdAt);
     return currMail;
