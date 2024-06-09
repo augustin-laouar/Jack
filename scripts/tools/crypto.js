@@ -103,41 +103,46 @@ export async function getDerivedKey() {
     storage.store(jsonData);
   }
   
+  //HASH WITH SALT
+function generateSalt(length = 16) {
+    const array = new Uint8Array(length);
+    window.crypto.getRandomValues(array);
+    return Array.from(array).map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
 
-  // HASH
-  //TODO : Add salt
-  export async function hashPassword(psw) {
+export async function hashPassword(psw, salt) {
     const encoder = new TextEncoder();
-    const data = encoder.encode(psw);
+    const data = encoder.encode(psw + salt);
     const hash = await window.crypto.subtle.digest('SHA-512', data);
     const hashArray = Array.from(new Uint8Array(hash));
     const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
     return hashHex;
-  }
+}
 
-  export async function storeHashedPassword(psw) {
-    const hashedpsw = await hashPassword(psw);
-    const jsonData = { masterPswHash: hashedpsw };
+export async function storeHashedPassword(psw) {
+    const salt = generateSalt();
+    const hashedPsw = await hashPassword(psw, salt);
+    const combinedHash = `${salt}:${hashedPsw}`;
+    const jsonData = { masterPswHash: combinedHash };
     await storage.store(jsonData);
-  }
-  
-  export async function isValidHash(psw, hash) {
-    try {
-      const hashedpsw = await hashPassword(psw);
-      return hashedpsw === hash;
-    }
-    catch(error) {
-      return false;
-    }
-  }
+}
 
-
-  export async function validPassword(psw) {
+export async function isValidHash(psw, combinedHash) {
     try {
-      const hashedpsw = await hashPassword(psw);
-      const storedHash = await storage.read('masterPswHash');
-      return hashedpsw === storedHash;
+        const [salt, hash] = combinedHash.split(':');
+        const hashedPsw = await hashPassword(psw, salt);
+        return hashedPsw === hash;
     } catch (error) {
-      return false;
+        return false;
     }
+}
+
+export async function validPassword(psw) {
+  try {
+    const storedHash = await storage.read('masterPswHash');
+    const isValid = await isValidHash(psw, storedHash);
+    return isValid;
+  } catch (error) {
+    return false;
   }
+}

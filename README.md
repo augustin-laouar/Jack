@@ -5,7 +5,6 @@
 - Rajouter la possibilité de clic droit pour utiliser une email directement
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
 - ajouter petit bouton copier à côter du nom de l'email
-- Ajouter du sel dans le hash du psw
 - Nouveau CSS 
 - edit password avec fake popup
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
@@ -15,8 +14,7 @@
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
-
+- Ajouter du sel dans le hash du psw
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -30,3 +28,4 @@
 - Style settings page
 - faire un bouton de reset account
 - style css button
+- choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
