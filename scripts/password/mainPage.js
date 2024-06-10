@@ -90,13 +90,12 @@ function editPopUp(id, url, username, psw) {
   const top = (screenHeight / 2) - (height / 2);
   storage.store({ popupData: { id, url, username, psw } })
     .then(() => {
-      // Open the new window centered on the screen
       window.open('../../html/editPsw.html', 'Edit', `width=${width},height=${height},resizable=yes,left=${left},top=${top}`);
     });
 }
 
 
-async function fillPasswordList(logsParam = null, searching = false){
+export async function fillPasswordList(logsParam = null, searching = false){
   try{
     var logs;
     if(logsParam === null){
@@ -193,24 +192,6 @@ async function copyToClipboard(text) {
 
 document.addEventListener("DOMContentLoaded", function() { //on attend que la page se charge
     fillPasswordList();
-    const pwdForm = document.getElementById("pwd-form");
-    pwdForm.addEventListener("submit", async function(event) {
-      event.preventDefault(); //on supprime le comportement par defaut de submit 
-      const username = document.getElementById("username");
-      const pwd = document.getElementById("password");
-      const url = document.getElementById("url");
-      try{
-        await pswTools.addLog(url.value,username.value, pwd.value);
-        username.value = '';
-        pwd.value = '';
-        url.value = '';
-        fillPasswordList();
-      }
-      catch(error){
-        showError(error);
-      }
-    });
-
     const searchInput = document.getElementById('search');
     let timeout;
     searchInput.addEventListener("input", function() {

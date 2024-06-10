@@ -6,15 +6,16 @@
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
 - ajouter petit bouton copier à côter du nom de l'email
 - Nouveau CSS 
-- edit password avec fake popup
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
+- Champ description, nom etc pour les passwords
+- style tableau password
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Ajouter du sel dans le hash du psw
+- edit password avec fake popup
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -29,3 +30,4 @@
 - faire un bouton de reset account
 - style css button
 - choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
+- Ajouter du sel dans le hash du psw
