@@ -7,15 +7,16 @@
 - ajouter petit bouton copier à côter du nom de l'email
 - Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
-- Champ description, nom etc pour les passwords
 - style tableau password
+- génération de mdp aléatoire pour credentials
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- edit password avec fake popup
+- Champ description, nom etc pour les passwords
+- Add/edit password avec fake popup
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

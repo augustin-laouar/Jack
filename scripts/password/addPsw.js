@@ -7,9 +7,11 @@ function addPopupContent()  {
       <div class="container d-flex justify-content-center align-items-center flex-column">
         <p class="display-6 text-center">New credentials</p>
         <form id="add-psw-form" class="d-flex flex-column align-items-center">
+            <input required class="form-control dark-input mb-1" id="title" placeholder="Title" autocomplete="off">
             <input  class="form-control dark-input mb-1" id="url" placeholder="Associate URL" autocomplete="off">
             <input required class="form-control dark-input mb-1" id="username" placeholder="Username" autocomplete="off">
             <input required type="password" class="form-control dark-input mb-1" id="password" placeholder="Password" autocomplete="off">
+            <textarea class="form-controldark-input mb-1" id="description" rows="3" placeholder="Description"></textarea>
             <button type="submit" class="confirm-button">Save</button>
         </form>
         <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
@@ -49,18 +51,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     const addPasswordForm = popupContent.querySelector('#add-psw-form');
     addPasswordForm.addEventListener("submit", async function(event) {
         event.preventDefault(); //on supprime le comportement par defaut de submit 
+        const title = popupContent.querySelector('#title');
         const username = popupContent.querySelector('#url');
         const pwd = popupContent.querySelector('#username');
         const url = popupContent.querySelector('#password');
+        const description = popupContent.querySelector('#description');
         try{
-            await pswTools.addLog(url.value,username.value, pwd.value);
+            await pswTools.addLog(title.value, url.value,username.value, pwd.value, description.value);
+            title.value = '';
             username.value = '';
             pwd.value = '';
             url.value = '';
+            description.value = '';
             fillPasswordList();
         }
         catch(error){
-            showError(error);
+            showPopupError(error);
         }
     
     });

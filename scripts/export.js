@@ -136,20 +136,26 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
                 newEmails.push(newElement);
             }
             for(const element of logs) {
+                const title = await crypto.decryptWithAES(element.content.title, otherKey);
                 const url = await crypto.decryptWithAES(element.content.url, otherKey);
                 const username = await crypto.decryptWithAES(element.content.username, otherKey);
                 const password = await crypto.decryptWithAES(element.content.password, otherKey);
-            
+                const description = await crypto.decryptWithAES(element.content.description, otherKey);
+
+                const newTitle = await crypto.encryptWithAES(title, currentKey);
                 const newUrl = await crypto.encryptWithAES(url, currentKey);
                 const newUsername = await crypto.encryptWithAES(username, currentKey);
                 const newPassword = await crypto.encryptWithAES(password, currentKey);
-            
+                const newDescription = await crypto.encryptWithAES(description, currentKey);
+
                 const newElement = {
                     id: element.id,
                     content: {
-                    url: newUrl,
-                    username: newUsername,
-                    password: newPassword
+                        title: newTitle,
+                        url: newUrl,
+                        username: newUsername,
+                        password: newPassword,
+                        description: newDescription
                     }
                 };
                 newLogs.push(newElement);

@@ -46,18 +46,21 @@ async function researchPassword(){
 
 }
 
-function getTrContent(url, id){ 
+function getTrContent(title, url, username, description){ 
   var codeHTML = `
-    <td style="width: 350px;">
-      <div style=" max-width: 300px;overflow-x: auto;">
+    <td>
+      <div style="max-width: 150px; overflow-y: auto;">
+        <p class="text-info" style="white-space: nowrap;">${title}</p>
+      </div>
+    </td>
+    <td>
+      <div style="max-width: 250px; overflow-y: auto;">
         <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-url">${url}</p>
       </div>
     </td>
-    <td style="width: 250px;">
-      <div style="display: flex; align-items: center;">
-        <div style="width: 200px; overflow-x: auto;">
-          <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-username">${id}</p>
-        </div>
+    <td>
+      <div style="max-width: 150px; overflow-y: auto;">
+          <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-username">${username}</p>
       </div>
     </td>
     <td>
@@ -66,18 +69,24 @@ function getTrContent(url, id){
       </button>
     </td>
     <td>
+      <div style="max-width: 300px; overflow-y: auto;">
+          <p class="text-info" style="white-space: nowrap;" id="cp-description">${description}</p>
+      </div>
+    </td>
+    <td>
       <button id="edit-button" class="btn transparent-button">
-        <img src="../svg-images/edit.svg" alt="Copy" style="width: 20px; height: 20px;">
+        <img src="../svg-images/edit.svg" alt="Edit" style="width: 20px; height: 20px;">
       </button>
     </td>
     <td>
       <button id="delete-button" class="btn transparent-button">
-        <img src="../svg-images/delete.svg" alt="Copy" style="width: 20px; height: 20px;">
+        <img src="../svg-images/delete.svg" alt="Delete" style="width: 20px; height: 20px;">
       </button>
     </td>
     `;
   return codeHTML;
 }
+
 
 function editPopUp(id, url, username, psw) {
   const screenWidth = window.screen.width;
@@ -97,18 +106,18 @@ function editPopUp(id, url, username, psw) {
 
 export async function fillPasswordList(logsParam = null, searching = false){
   try{
-    var logs;
+    var credentials;
     if(logsParam === null){
-      logs = await pswTools.getDecryptedLogs();
+      credentials = await pswTools.getDecryptedLogs();
     }
     else{
-      logs = logsParam;
+      credentials = logsParam;
     }
     const tab = document.querySelector('#tab-body');    
     const head = document.querySelector('#tab-head');
 
     tab.innerHTML = ''; 
-    if(logs.length === 0){
+    if(credentials.length === 0){
       head.innerHTML = '';
       if(searching){
         tab.innerHTML = '<p class ="lead">No matching result.</p>'
@@ -118,10 +127,10 @@ export async function fillPasswordList(logsParam = null, searching = false){
       }
     }
     else{
-      head.innerHTML = '<tr><th scope="col">URL</th><th scope="col">Username</th><th scope="col">Password</th></tr>';
-      for(const log of logs) {
+      head.innerHTML = '<tr><th scope="col">Title</th><th scope="col">URL</th><th scope="col">Username</th><th scope="col">Password</th><th scope="col">Description</th></tr>';
+      for(const credential of credentials) {
         const trElement = document.createElement('tr');
-        trElement.innerHTML = getTrContent(log.content.url, log.content.username);
+        trElement.innerHTML = getTrContent(credential.content.title, credential.content.url, credential.content.username, credential.content.description);
         const copyUrl = trElement.querySelector('#cp-url')
         const copyUsername = trElement.querySelector('#cp-username');
         const copyPasswordButton = trElement.querySelector('#cp-psw-button');
@@ -130,7 +139,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
 
         copyUrl.addEventListener('click', async function(){
           try{
-            copyToClipboard(log.content.url);
+            copyToClipboard(credential.content.url);
           }
           catch(error){
             showError(error);
@@ -138,7 +147,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
         });
         copyUsername.addEventListener('click', async function(){
           try{
-            copyToClipboard(log.content.username);
+            copyToClipboard(credential.content.username);
           }
           catch(error){
             showError(error);
@@ -146,7 +155,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
         });
         copyPasswordButton.addEventListener('click', async function(){
           try{
-            copyToClipboard(log.content.password);
+            copyToClipboard(credential.content.password);
           }
           catch(error){
             showError(error);
@@ -154,7 +163,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
         });
         editButton.addEventListener('click', async function(){
           try{
-            editPopUp(log.id, log.content.url, log.content.username, log.content.password); 
+            editPopUp(credential.id, credential.content.url, credential.content.username, credential.content.password); 
           }
           catch(error){
             showError(error);
@@ -162,7 +171,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
         });
         deleteButton.addEventListener('click', async function(){
           try{
-            await pswTools.deleteLog(log.id);
+            await pswTools.deleteLog(credential.id);
             fillPasswordList();
           }
           catch(error){
