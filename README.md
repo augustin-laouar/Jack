@@ -15,7 +15,6 @@
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Champ description, nom etc pour les passwords
 - Add/edit password avec fake popup
 ## Terminé
 - Stocker logs via des ids et non url 
@@ -32,3 +31,4 @@
 - style css button
 - choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
 - Ajouter du sel dans le hash du psw
+- Champ description et titre pour les passwords

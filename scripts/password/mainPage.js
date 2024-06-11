@@ -26,6 +26,9 @@ async function researchPassword(){
     const searchMethod = document.getElementById('search-method').value;
     let logsFiltred;
 
+    if (searchMethod === 'title') {
+      logsFiltred = logs.filter(element => element.content.title.includes(input));
+    } 
     if (searchMethod === 'url') {
         logsFiltred = logs.filter(element => element.content.url.includes(input));
     } 
@@ -34,7 +37,10 @@ async function researchPassword(){
     } 
     else if (searchMethod === 'all') {
       logsFiltred = logs.filter(element => 
-        element.content.url.includes(input) || element.content.username.includes(input)
+        element.content.title.includes(input) ||
+        element.content.url.includes(input) || 
+        element.content.username.includes(input) || 
+        element.content.description.includes(input)
       );
     }
     
