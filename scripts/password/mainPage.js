@@ -52,6 +52,21 @@ async function researchPassword(){
 
 }
 
+function sortByTitle(credentials) {
+  return credentials.sort((a, b) => {
+      const titleA = a.content.title.toLowerCase();
+      const titleB = b.content.title.toLowerCase();
+
+      if (titleA < titleB) {
+          return -1;
+      }
+      if (titleA > titleB) {
+          return 1;
+      }
+      return 0;
+  });
+}
+
 function getTrContent(title, url, username, description){ 
   var codeHTML = `
     <td>
@@ -102,6 +117,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
     else{
       credentials = logsParam;
     }
+    credentials = sortByTitle(credentials);
     const tab = document.querySelector('#tab-body');    
     const head = document.querySelector('#tab-head');
 
