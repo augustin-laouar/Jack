@@ -9,6 +9,9 @@
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - style tableau password
 - génération de mdp aléatoire pour credentials
+- Ajouter le nom des boutons au survol
+- sort psw by title
+- password generator
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
@@ -16,6 +19,7 @@
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
 - Add/edit password avec fake popup
+psw confirm
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

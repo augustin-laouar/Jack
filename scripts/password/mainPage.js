@@ -1,6 +1,6 @@
 import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
-import * as storage from '../tools/storage.js'
+import { editCredential } from './editPsw.js';
 import * as login_tools from '../login_tools.js';
 
 function showErrorMessage(message) {
@@ -93,23 +93,6 @@ function getTrContent(title, url, username, description){
   return codeHTML;
 }
 
-
-function editPopUp(id, url, username, psw) {
-  const screenWidth = window.screen.width;
-  const screenHeight = window.screen.height;
-  
-  const width = 500;
-  const height = 350;
-
-  const left = (screenWidth / 2) - (width / 2);
-  const top = (screenHeight / 2) - (height / 2);
-  storage.store({ popupData: { id, url, username, psw } })
-    .then(() => {
-      window.open('../../html/editPsw.html', 'Edit', `width=${width},height=${height},resizable=yes,left=${left},top=${top}`);
-    });
-}
-
-
 export async function fillPasswordList(logsParam = null, searching = false){
   try{
     var credentials;
@@ -169,7 +152,13 @@ export async function fillPasswordList(logsParam = null, searching = false){
         });
         editButton.addEventListener('click', async function(){
           try{
-            editPopUp(credential.id, credential.content.url, credential.content.username, credential.content.password); 
+            editCredential(
+              credential.id, 
+              credential.content.title, 
+              credential.content.url, 
+              credential.content.username, 
+              credential.content.password, 
+              credential.content.description); 
           }
           catch(error){
             showError(error);
