@@ -7,19 +7,16 @@
 - ajouter petit bouton copier à côter du nom de l'email
 - Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
-- style tableau password
-- génération de mdp aléatoire pour credentials
 - Ajouter le nom des boutons au survol
-- sort psw by title
-- password generator
+- bouton pour afficher le mot de passe lors de l'édition
 ## Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Add/edit password avec fake popup
-psw confirm
+- Robustesse du mot de passe
+- password generator personalisé : Ou mettre le bouton pour gérer cela ? Credentials ou settings?
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -36,3 +33,7 @@ psw confirm
 - choix du nom de domaine => On peut voir une liste de domaines à côté du nom que l'on choisit pour l'addresse mail.
 - Ajouter du sel dans le hash du psw
 - Champ description et titre pour les passwords
+- Add/edit password avec fake popup
+- sort psw by title
+- style tableau password
+- génération de mdp aléatoire pour credentials

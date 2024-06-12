@@ -2,21 +2,54 @@ import * as popup from '../popup.js';
 import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
+import { getRandomPassword } from './generator.js';
+
 function addPopupContent()  {
     return `
-      <div class="container d-flex justify-content-center align-items-center flex-column">
-        <p class="lead text-center">New credentials</p>
-        <form id="add-psw-form" class="d-flex flex-column align-items-center" style="width: 80%;">
-            <input required class="form-control dark-input mb-1" id="title" placeholder="Title" autocomplete="off">
-            <input  class="form-control dark-input mb-1" id="url" placeholder="Associate URL" autocomplete="off">
-            <input  class="form-control dark-input mb-1" id="username" placeholder="Username" autocomplete="off">
-            <input required type="password" class="form-control dark-input mb-1" id="password" placeholder="Password" autocomplete="off">
-            <input required type="password" class="form-control dark-input mb-1" id="password-confirm" placeholder="Confirm password" autocomplete="off">
-            <textarea class="form-control dark-input mb-1" id="description" rows="3" placeholder="Description"></textarea>
-            <button type="submit" class="confirm-button">Save</button>
-        </form>
-        <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
-    </div>
+        <div class="container d-flex justify-content-center align-items-center flex-column">
+            <p class="lead text-center">New credentials</p>
+            <form id="add-psw-form" class="d-flex flex-column" style="width: 90%;">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input required class="form-control dark-input" id="title" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="url">Associate URL</label>
+                    <input class="form-control dark-input" id="url" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input class="form-control dark-input" id="username" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control dark-input" id="description" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input required type="password" class="form-control dark-input" id="password" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="password-confirm">Confirm password</label>
+                    <input required type="password" class="form-control dark-input" id="password-confirm" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="generator-div">Password generator</label>
+                    <div class="d-flex" id="generator-div"> 
+                        <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em; width: 300%;">
+                            <option value="default">Default generator</option>
+                        </select>
+                        <button id="generate-password" type="button" class="btn transparent-button">
+                            <img src="../svg-images/launch.svg" alt="Generate" style="width: 20px; height: 20px;">
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="confirm-button" style="width:30%;">Save</button>
+                </div>
+            </form>
+            <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
+        </div>
     `;
 }
 
@@ -47,16 +80,20 @@ document.addEventListener("DOMContentLoaded", async function() {
     addPswButton.addEventListener('click', async function() {
         popup.fillPopupContent(addPopupContent());
         popup.openPopup();
+
         const popupContent = document.getElementById('popup-content');
         const addPasswordForm = popupContent.querySelector('#add-psw-form');
+        const title = popupContent.querySelector('#title');
+        const url = popupContent.querySelector('#url');
+        const username = popupContent.querySelector('#username');
+        const psw = popupContent.querySelector('#password');
+        const pswConfirm = popupContent.querySelector('#password-confirm');
+        const description = popupContent.querySelector('#description');
+        const generatePassword = popupContent.querySelector('#generate-password');
+        const selectGenerator = popupContent.querySelector('#select-generator');
+
         addPasswordForm.addEventListener("submit", async function(event) {
             event.preventDefault();
-            const title = popupContent.querySelector('#title');
-            const url = popupContent.querySelector('#url');
-            const username = popupContent.querySelector('#username');
-            const psw = popupContent.querySelector('#password');
-            const pswConfirm = popupContent.querySelector('#password-confirm');
-            const description = popupContent.querySelector('#description');
             try{
                 if(psw.value !== pswConfirm.value) {
                     showPopupInfo('Passwords are not the same.', true);
@@ -76,5 +113,12 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
         
         });
+
+        generatePassword.addEventListener('click', function() {
+            const password = getRandomPassword(selectGenerator.value);
+            psw.value = password;
+            pswConfirm.value = password;
+        });
+
     });
 });
