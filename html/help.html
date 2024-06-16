@@ -3,13 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <script type="module" src="../scripts/backgroundScripts/verify_auth.js"></script>
+  <script type="module" src="../scripts/backgroundScripts/refreshTimer.js"></script>
+  <script type="module" src="../scripts/about.js"></script>
+
   <title>Jack's Mails : About</title>
   <link rel="icon" type="image/png" href="../icons/favicon.ico">
 </head>
 <body class="bg-dark text-light">
   <div class="container">
-    <h1 class="display-3"><img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="mx-auto" style="max-height:100px;">About Jack's Mails</h1>
-    <div class="border-top"  style="margin-top : 10px; width:70%"></div>
+    <div class="row d-flex align-items-center">
+      <div class="col">
+        <div class="d-flex align-items-center">
+          <img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="me-2" style="max-height:100px;">
+          <h1 class="display-3">About Jack's Mails</h1>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="d-flex align-items-center">
+          <a href="./passwords.html" class="btn transparent-button" id="help">
+            <img src="../svg-images/password.svg" alt="Credentials" style="width: 20px; height: 20px;">
+          </a>
+          <a href="./settings.html" class="btn transparent-button" id="settings">
+            <img src="../svg-images/settings.svg" alt="Settings" style="width: 20px; height: 20px;">
+          </a>
+          <a href="login.html" class="btn transparent-button" id="log-out">
+            <img src="../svg-images/logout.svg" alt="Log out" style="width: 20px; height: 20px;">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="border-top"  style="margin-top : 10px; margin-bottom : 10px; width:100%"></div>
     <div class ="row" style="overflow-y:scroll; max-height:80vh;">
         <div class ="col-6">
             <h4 class ="display-6">What is Jack's Mails ?</h4>

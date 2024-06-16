@@ -2,7 +2,7 @@ import * as popup from '../popup.js';
 import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
-import { getRandomPassword } from './generator.js';
+import { getRandomPassword, getGenerators } from './generator.js';
 
 function addPopupContent()  {
     return `
@@ -36,9 +36,7 @@ function addPopupContent()  {
                 <div class="form-group">
                     <label for="generator-div">Password generator</label>
                     <div class="d-flex" id="generator-div"> 
-                        <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em; width: 300%;">
-                            <option value="default">Default generator</option>
-                        </select>
+                        <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em;"></select>
                         <button id="generate-password" type="button" class="btn transparent-button">
                             <img src="../svg-images/launch.svg" alt="Generate" style="width: 20px; height: 20px;">
                         </button>
@@ -74,6 +72,15 @@ function showPopupError(e){
     showPopupInfo(message, true);
 }
 
+async function fillGenerators(selectElement) {
+   const generators = await getGenerators();
+   for(const generator of generators) {
+        const opt = document.createElement('option');
+        opt.value = generator.id;
+        opt.innerHTML = generator.name;
+        selectElement.appendChild(opt);
+   }
+}
 document.addEventListener("DOMContentLoaded", async function() {
     popup.initClosePopupEvent();
     const addPswButton = document.getElementById('add-psw-button');
@@ -91,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const description = popupContent.querySelector('#description');
         const generatePassword = popupContent.querySelector('#generate-password');
         const selectGenerator = popupContent.querySelector('#select-generator');
-
+        await fillGenerators(selectGenerator);
         addPasswordForm.addEventListener("submit", async function(event) {
             event.preventDefault();
             try{
@@ -114,8 +121,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         });
 
-        generatePassword.addEventListener('click', function() {
-            const password = getRandomPassword(selectGenerator.value);
+        generatePassword.addEventListener('click', async function() {
+            const password = await getRandomPassword(selectGenerator.value);
             psw.value = password;
             pswConfirm.value = password;
         });

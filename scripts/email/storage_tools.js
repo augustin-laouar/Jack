@@ -131,7 +131,7 @@ export const maxEmailNumber = 10;
       throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
-      const psw = random.generate(10);
+      const psw = random.generateAllChars(10);
       const email = await api.createAccount(addr, psw);
       await addEmail(email);
     }

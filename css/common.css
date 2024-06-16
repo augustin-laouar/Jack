@@ -94,3 +94,24 @@
 .confirm-button:hover {
     background-color: rgb(13, 202, 240, 0.9);
 }
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+  .form-group label {
+    width: 35%;
+    margin-right: 15%;
+    text-align: right;
+    overflow-x: auto; 
+    overflow-y: hidden; 
+    white-space: nowrap; 
+  }
+.form-group input, .form-group textarea, .form-group div {
+    width: 60%;
+}
+
+.tab-text {
+    font-size: 0.8em;
+}

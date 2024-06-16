@@ -68,7 +68,7 @@ function sortByTitle(credentials) {
 }
 
 function getTrContent(title, url, username, description){ 
-  var codeHTML = `
+    return `
     <td>
       <div style="max-width: 150px; overflow-y: auto;">
         <p class="text-info" style="white-space: nowrap;">${title}</p>
@@ -80,7 +80,7 @@ function getTrContent(title, url, username, description){
       </div>
     </td>
     <td>
-      <div style="max-width: 150px; overflow-y: auto;">
+      <div style="max-width: 250px; overflow-y: auto;">
           <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-username">${username}</p>
       </div>
     </td>
@@ -105,7 +105,6 @@ function getTrContent(title, url, username, description){
       </button>
     </td>
     `;
-  return codeHTML;
 }
 
 export async function fillPasswordList(logsParam = null, searching = false){
@@ -236,15 +235,5 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
       login_tools.logout(true);
-    });
-    const settingsButton = document.getElementById('settings');
-    settingsButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/settings.html');
-      browser.tabs.create({ url });
-    });
-    const helpButton = document.getElementById('help');
-    helpButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/help.html');
-      browser.tabs.create({ url });
     });
 });

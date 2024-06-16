@@ -20,16 +20,8 @@ function wait(ms) {
 }
 
 async function onPeriod(ms){
-  var counter = 0;
   while(true) {
-   await checkLogin();
-   if(document.getElementById('info').innerHTML !== '')
-      counter ++;
-  
-    if(counter == 5){ 
-      document.getElementById('info').innerHTML = '';
-      counter = 0;
-    }
+    await checkLogin();
     await wait(ms);
   }
 
