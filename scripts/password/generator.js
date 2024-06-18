@@ -3,7 +3,7 @@ import * as storage from '../tools/storage.js';
 import * as error from '../exception/error.js';
 
 
-export function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
+function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
     const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
     const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numberChars = '0123456789';
@@ -24,15 +24,15 @@ export function getCharList(lowercase, uppercase, numbers, specials, excluded_ch
         charList += specialChars;
     }
     
-    const charArray = charList.split('').filter(char => !excluded_chars.includes(char));
+    const filteredCharList = charList.split('').filter(char => !excluded_chars.includes(char)).join('');
     
-    if(charArray.length === 0 ){
+    if(filteredCharList.length === 0 ){
         throw new error.Error('All characters are excluded.', true);
     }
-    return charArray;
+    return filteredCharList;
 }
 
-export async function addGenerator(name, length, char_list) {
+export async function addGenerator(name, length, char_params) {
     var generators;
     try {
         generators = await getGenerators();
@@ -43,17 +43,25 @@ export async function addGenerator(name, length, char_list) {
     if(generators.some(gen => gen.name === name)) {
         throw new error.Error('A password generator with the same name exists.', true);
     }
-    var id = random.generateAlphaNumeric(10);
-    while(generators.some(gen => gen.id === id)) {
-        id = random.generateAlphaNumeric(10);
-    }
-    var generator = {
-        id: id,
-        name:name,
-        psw_length: length,
-        char_list: char_list
-    }
     try {
+        var id = random.generateAlphaNumeric(10);
+        while(generators.some(gen => gen.id === id)) {
+            id = random.generateAlphaNumeric(10);
+        }
+        const char_list = getCharList(
+            char_params.lowercase,
+            char_params.uppercase, 
+            char_params.numbers, 
+            char_params.specials,
+            char_params.excluded_chars
+        );
+        var generator = {
+            id: id,
+            name: name,
+            psw_length: length,
+            char_params: char_params,
+            char_list: char_list
+        }
         generators.push(generator);
         await storage.store({ psw_generators: generators });
     }
@@ -92,10 +100,38 @@ export async function deleteGenerator(id) {
       }
 }
 
-export async function updateGenerator(id, newGenerator) {
+export async function updateGenerator(id, name, length, char_params) {
+    var generators;
+    var current_name;
+    try {
+        generators = await getGenerators();
+        const current_generator = await getGenerator(id);
+        current_name = current_generator.name;
+    }
+    catch (e) {
+        throw error.castError(e, false);
+    }
+    if(name !== current_name) { //if name changed we check if there is already a generator with this name
+        if(generators.some(gen => gen.name === name)) {
+            throw new error.Error('A password generator with the same name exists.', true);
+        }
+    }
     try{
-        const generators = await getGenerators();
         var updatedGenerators = generators.filter(generator => generator.id !== id);
+        const char_list = getCharList(
+            char_params.lowercase,
+            char_params.uppercase, 
+            char_params.numbers, 
+            char_params.specials,
+            char_params.excluded_chars
+        );
+        var newGenerator = {
+            id: id,
+            name: name,
+            psw_length: length,
+            char_params: char_params,
+            char_list: char_list
+        }
         updatedGenerators.push(newGenerator);
         await storage.store({ psw_generators: updatedGenerators });
     }

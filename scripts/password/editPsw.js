@@ -1,7 +1,8 @@
 import * as pswTools from './tools.js';
 import { fillPasswordList } from './mainPage.js';
 import * as popup from '../popup.js';
-import { getRandomPassword } from './generator.js';
+import { getRandomPassword, getGenerators } from './generator.js';
+import {fillGenerators} from './addPsw.js';
 
 function editPopupContent(title)  {
   if(title.length > 20) {
@@ -11,40 +12,38 @@ function editPopupContent(title)  {
   <div class="container d-flex justify-content-center align-items-center flex-column">
     <p class="lead text-center">Edit ` + title + `</p>
     <form id="edit-credential-form" class="d-flex flex-column" style="width: 90%;">
-        <div class="form-group">
+        <div class="form-group form-group-custom">
             <label for="title">Title</label>
             <input required class="form-control dark-input" id="title" autocomplete="off">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-custom">
             <label for="url">Associate URL</label>
             <input class="form-control dark-input" id="url" autocomplete="off">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-custom">
             <label for="username">Username</label>
             <input class="form-control dark-input" id="username" autocomplete="off">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-custom">
             <label for="description">Description</label>
             <textarea class="form-control dark-input" id="description" rows="2"></textarea>
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-custom">
             <label for="password">Password</label>
             <input required type="password" class="form-control dark-input" id="password" autocomplete="off">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-custom">
             <label for="password-confirm">Confirm password</label>
             <input required type="password" class="form-control dark-input" id="password-confirm" autocomplete="off">
         </div>
-        <div class="form-group">
-            <label for="generator-div">Password generator</label>
-            <div class="d-flex" id="generator-div"> 
-                <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em; width: 300%;">
-                    <option value="default">Default generator</option>
-                </select>
-                <button id="generate-password" type="button" class="btn transparent-button">
-                    <img src="../svg-images/launch.svg" alt="Generate" style="width: 20px; height: 20px;">
-                </button>
-            </div>
+        <div class="form-group form-group-custom">
+          <label for="generator-div">Password generator</label>
+          <div class="d-flex" id="generator-div"> 
+              <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em;"></select>
+              <button id="generate-password" type="button" class="btn transparent-button">
+                  <img src="../svg-images/launch.svg" alt="Generate" style="width: 20px; height: 20px;">
+              </button>
+          </div>
         </div>
         <div class="d-flex justify-content-center">
             <button type="submit" class="confirm-button" style="width:30%;">Save</button>
@@ -68,15 +67,8 @@ function showPopupInfo(message, warning = false) {
   }
 }
 
-function showPopupError(e){
-  if(!(e instanceof error.Error)){
-    return;
-  }
-  const message = error.errorToString(e);
-  showPopupInfo(message, true);
-}
 
-export function editCredential(id, title, url, username, password, description) {
+export async function editCredential(id, title, url, username, password, description) {
   popup.initClosePopupEvent();
   popup.fillPopupContent(editPopupContent(title));
   popup.openPopup();
@@ -91,6 +83,8 @@ export function editCredential(id, title, url, username, password, description) 
   const generatePassword = popupContent.querySelector('#generate-password');
   const selectGenerator = popupContent.querySelector('#select-generator');
   const editCredentialForm = popupContent.querySelector('#edit-credential-form');
+  
+  await fillGenerators(selectGenerator);
 
   titleInput.value = title;
   urlInput.value = url;
@@ -123,9 +117,9 @@ export function editCredential(id, title, url, username, password, description) 
       }
   });
 
-  generatePassword.addEventListener('click', function() {
-    const randPassword = getRandomPassword(selectGenerator.value);
-    pswInput.value = randPassword;
-    pswConfirmInput.value = randPassword;
+  generatePassword.addEventListener('click', async function() {
+    const password = await getRandomPassword(selectGenerator.value);
+    pswInput.value = password;
+    pswConfirmInput.value = password;
   });
 }

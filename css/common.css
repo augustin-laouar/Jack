@@ -95,12 +95,12 @@
     background-color: rgb(13, 202, 240, 0.9);
 }
 
-.form-group {
+.form-group-custom {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
 }
-  .form-group label {
+  .form-group-custom label {
     width: 35%;
     margin-right: 15%;
     text-align: right;
@@ -108,7 +108,7 @@
     overflow-y: hidden; 
     white-space: nowrap; 
   }
-.form-group input, .form-group textarea, .form-group div {
+.form-group-custom input, .form-group textarea, .form-group div {
     width: 60%;
 }
 

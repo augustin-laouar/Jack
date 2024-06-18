@@ -9,31 +9,31 @@ function addPopupContent()  {
         <div class="container d-flex justify-content-center align-items-center flex-column">
             <p class="lead text-center">New credentials</p>
             <form id="add-psw-form" class="d-flex flex-column" style="width: 90%;">
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="title">Title</label>
                     <input required class="form-control dark-input" id="title" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="url">Associate URL</label>
                     <input class="form-control dark-input" id="url" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="username">Username</label>
                     <input class="form-control dark-input" id="username" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="description">Description</label>
                     <textarea class="form-control dark-input" id="description" rows="2"></textarea>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="password">Password</label>
                     <input required type="password" class="form-control dark-input" id="password" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="password-confirm">Confirm password</label>
                     <input required type="password" class="form-control dark-input" id="password-confirm" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-custom">
                     <label for="generator-div">Password generator</label>
                     <div class="d-flex" id="generator-div"> 
                         <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em;"></select>
@@ -72,7 +72,7 @@ function showPopupError(e){
     showPopupInfo(message, true);
 }
 
-async function fillGenerators(selectElement) {
+export async function fillGenerators(selectElement) {
    const generators = await getGenerators();
    for(const generator of generators) {
         const opt = document.createElement('option');
