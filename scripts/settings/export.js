@@ -3,6 +3,7 @@ import * as error from '../exception/error.js';
 import * as crypto from '../tools/crypto.js';
 import * as popup from '../popup.js';
 import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
+import { fillGeneratorsList } from './generator.js';
 
 function get_meta_data() {
     const version = 1; //Jack's Mails accoutn file version
@@ -21,13 +22,15 @@ async function get_json() {
     const connectionDuration = await storage.read('connectionDuration');
     const emails = await storage.read('emails');
     const logs = await storage.read('logs');
+    const psw_generators = await storage.read('psw_generators');
     const metadata = get_meta_data();
     const jsonData = {
         metadata: metadata,
         masterPswHash: masterPswHash,
         connectionDuration: connectionDuration,
         emails: emails,
-        logs: logs
+        logs: logs,
+        psw_generators: psw_generators
     };
     return jsonData;
 }
@@ -60,30 +63,6 @@ export async function export_account(password, givenFileName) {
     URL.revokeObjectURL(url);
 }
 
-export async function store_from_json(json) {
-    //Check if every values exists
-    const masterPswHash = json.masterPswHash;
-    const connectionDuration = json.connectionDuration;
-    const emails = json.emails;
-    const logs = json.logs;
-    
-    if(masterPswHash === null) {
-        throw new error.Error('JSON file is corrupted. Master password was not found.', true);
-    }
-    await storage.store({ masterPswHash: masterPswHash});
-    if(connectionDuration === null) {
-        await storage.store({ connectionDuration: 3});
-    }
-    else {
-        await storage.store({ connectionDuration: connectionDuration});
-    }
-    if(emails !== null) {
-        await storage.store({emails: emails});
-    }
-    if(logs !== null) {
-        await storage.store({ logs: logs});
-    }
-}
 
 async function read_json_file(jsonfile) {
     return new Promise((resolve, reject) => {
@@ -117,6 +96,7 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
     const connectionDuration = json.connectionDuration ?? 3; // 3 mins is default value
     const emails = json.emails ?? []; //Empty list by default
     const logs = json.logs ?? [];
+    const psw_generators = json.psw_generators ?? [];
 
     if(!(await crypto.isValidHash(password, masterPswHash))) {
         throw new error.Error('Invalid password. Unable to decrypt the file.', true);
@@ -169,6 +149,7 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ connectionDuration: connectionDuration});
         await storage.store({ emails: newEmails });
         await storage.store({ logs: newLogs });
+        await storage.store({ psw_generators: psw_generators});
     }
 
     else {
@@ -176,6 +157,7 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ connectionDuration: connectionDuration});
         await storage.store({ emails: emails});
         await storage.store({ logs: logs });
+        await storage.store({ psw_generators: psw_generators});
         const newKey = await crypto.generateDerivedKey(password);
         await crypto.storeDerivedKey(newKey);
     }
@@ -203,6 +185,7 @@ function passwordConfirmPopupContent() {
 async function askForPasswordConfirm() {
     popup.initClosePopupEvent();
     popup.fillPopupContent(passwordConfirmPopupContent());
+    popup.setPopupSize(300, 300);
     popup.openPopup();
     const popupContent = document.getElementById('popup-content');
     const confirmPswForm = popupContent.querySelector('#confirm-psw-form');
@@ -244,7 +227,7 @@ function confirmFilePswContent() {
 async function confirmFilePsw() {
     popup.initClosePopupEvent();
     popup.fillPopupContent(confirmFilePswContent());
-    popup.setPopupSize(350,500);
+    popup.setPopupSize(300, 300);
     popup.openPopup();
     const popupContent = document.getElementById('popup-content');
     const confirmFilePswForm = popupContent.querySelector('#confirm-file-psw-form');
@@ -273,7 +256,9 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const file = importAccountFile.files[0];
             const filePassword = await confirmFilePsw();
-            await import_account(file,filePassword, keepCurrPsw.checked); //todo
+            await import_account(file,filePassword, keepCurrPsw.checked);
+            fillGeneratorsList();
+
             showInfo('Account imported with success !');
         }
         catch(e) {

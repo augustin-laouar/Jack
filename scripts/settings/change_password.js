@@ -2,15 +2,21 @@ import * as popup from '../popup.js';
 import * as crypto from '../tools/crypto.js';
 import * as login_tools from '../login_tools.js';
 import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
-
+import { updatePasswordStrength } from '../password/pswStrength .js';
 function changePasswordContent() {
     return `
     <div class="container d-flex justify-content-center align-items-center flex-column">
         <p class="lead text-center">Change password</p>
-        <form id="change-password-form" class="d-flex flex-column align-items-center">
+        <form id="change-password-form" class="d-flex flex-column align-items-center" style="width:85%;">
             <input required type="password" class="form-control dark-input mb-1" id="current-psw" placeholder="Current password" autocomplete="off">
             <input required type="password" class="form-control dark-input mb-1" id="new-psw" placeholder="New password" autocomplete="off">
-            <input required type="password" class="form-control dark-input mb-1" id="new-psw-confirm" placeholder="Confirm new password" autocomplete="off">
+            <input required type="password" class="form-control dark-input mb-2" id="new-psw-confirm" placeholder="Confirm new password" autocomplete="off">
+            <div class="password-strength-wrapper mb-1 w-100">
+                <div class="password-strength" id="password-strength">
+                    <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div id="password-strength-text" class="password-strength-text"'></div>
+            </div>
             <button type="submit" class="confirm-button">Change password</button>
         </form>
         <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
@@ -22,7 +28,7 @@ async function changePassword() {
     popup.initClosePopupEvent();
     popup.fillPopupContent(changePasswordContent());
     popup.openPopup();
-    popup.setPopupSize(300, 300);
+    popup.setPopupSize(400, 300);
     const popupContent = document.getElementById('popup-content');
     const changePswForm = popupContent.querySelector('#change-password-form');
     const currentPsw = popupContent.querySelector('#current-psw');
@@ -31,6 +37,10 @@ async function changePassword() {
     currentPsw.value = '';
     newPsw.value = '';
     newPswConfirm.value = '';
+    updatePasswordStrength(newPsw.value);
+    newPsw.addEventListener('input', async function() {
+        updatePasswordStrength(newPsw.value);
+    });
     changePswForm.addEventListener('submit', async function(event) {
         try {
             event.preventDefault();

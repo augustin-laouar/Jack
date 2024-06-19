@@ -10,7 +10,8 @@ async function removeAllData() {
     await storage.remove('lastLogin');
     await storage.remove('connectionDuration');
     await storage.remove('logs');
-    await storage.remove('masterPswHash')
+    await storage.remove('masterPswHash');
+    await storage.remove('psw_generators');
 }
 
 export async function reset(password) {
@@ -38,6 +39,7 @@ function passwordConfirmPopupContent() {
 async function askForPasswordConfirm() {
     popup.initClosePopupEvent();
     popup.fillPopupContent(passwordConfirmPopupContent());
+    popup.setPopupSize(300, 300);
     popup.openPopup();
     const popupContent = document.getElementById('popup-content');
     const confirmPswForm = popupContent.querySelector('#confirm-psw-form');

@@ -2,37 +2,54 @@ import * as password_generator from '../password/generator.js';
 import * as popup from '../popup.js';
 import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
 
-function getGeneratorDivContent(name) {
+function getGeneratorDivContent(name, disableDelete = false) {
+    var deleteSvgPath = '';
+    if(disableDelete) {
+        deleteSvgPath = `../svg-images/no-delete.svg`
+    }
+    else {
+        deleteSvgPath = `../svg-images/delete.svg`
+    }
     return `
     <div class="text-info d-flex justify-content-between align-items-center">
     <span id="name" style="overflow-y: scroll; white-space: nowrap; width: 70%; cursor: pointer;">` + name + `</span>
     <button id="delete-button" class="btn transparent-button">
-      <img src="../svg-images/delete.svg" alt="Delete" style="width: 20px; height: 20px;">
-    </button>       
+        <img src="`+ deleteSvgPath +` " alt="Delete" style="width: 20px; height: 20px;">
+    </button> 
+
     </div>
     `;
 }
-async function fillGeneratorsList() {
+export async function fillGeneratorsList() {
     const generators = await password_generator.getGenerators();
     const generatorsListDiv = document.getElementById('generators-list');
     generatorsListDiv.innerHTML = '';
     for(const generator of generators) {
         const divElement = document.createElement('div');
-        divElement.innerHTML = getGeneratorDivContent(generator.name);
+        if(generator.id === password_generator.default_generator_id) {
+            divElement.innerHTML = getGeneratorDivContent(generator.name, true);
+            const deleteButton = divElement.querySelector('#delete-button');
+            deleteButton.disabled = true;
+        }
+        else {
+            divElement.innerHTML = getGeneratorDivContent(generator.name);
+            const deleteButton = divElement.querySelector('#delete-button');
+            deleteButton.addEventListener('click', async function(){
+                try{
+                    await password_generator.deleteGenerator(generator.id);
+                    fillGeneratorsList();
+                }
+                catch(e) {
+                    showError(e);
+                }
+            });
+
+        }
         const name = divElement.querySelector('#name');
-        const deleteButton = divElement.querySelector('#delete-button');
         name.addEventListener('click', function(){
             editGenerator(generator.id);
         });
-        deleteButton.addEventListener('click', async function(){
-            try{
-                await password_generator.deleteGenerator(generator.id);
-                fillGeneratorsList();
-            }
-            catch(e) {
-                showError(e);
-            }
-        });
+
         generatorsListDiv.appendChild(divElement);
     }
 }

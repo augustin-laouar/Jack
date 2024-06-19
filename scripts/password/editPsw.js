@@ -1,8 +1,9 @@
 import * as pswTools from './tools.js';
 import { fillPasswordList } from './mainPage.js';
 import * as popup from '../popup.js';
-import { getRandomPassword, getGenerators } from './generator.js';
+import { getRandomPassword } from './generator.js';
 import {fillGenerators} from './addPsw.js';
+import { updatePasswordStrength } from './pswStrength .js';
 
 function editPopupContent(title)  {
   if(title.length > 20) {
@@ -36,6 +37,15 @@ function editPopupContent(title)  {
             <label for="password-confirm">Confirm password</label>
             <input required type="password" class="form-control dark-input" id="password-confirm" autocomplete="off">
         </div>
+        <div class="form-group form-group-custom">
+        <label for="password-strength">Password Strength</label>
+        <div class="password-strength-wrapper">
+            <div class="password-strength" id="password-strength">
+                <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div id="password-strength-text" class="password-strength-text"></div>
+        </div>
+    </div>
         <div class="form-group form-group-custom">
           <label for="generator-div">Password generator</label>
           <div class="d-flex" id="generator-div"> 
@@ -92,6 +102,7 @@ export async function editCredential(id, title, url, username, password, descrip
   pswInput.value = password;
   pswConfirmInput.value = password;
   descriptionInput.value = description;
+  updatePasswordStrength(pswInput.value);
 
   editCredentialForm.addEventListener("submit", async function(event) {
       event.preventDefault(); 
@@ -121,5 +132,10 @@ export async function editCredential(id, title, url, username, password, descrip
     const password = await getRandomPassword(selectGenerator.value);
     pswInput.value = password;
     pswConfirmInput.value = password;
+    updatePasswordStrength(password);
+
   });
+  pswInput.addEventListener('input', async function() {
+    updatePasswordStrength(pswInput.value);
+});
 }

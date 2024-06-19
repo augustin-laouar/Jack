@@ -44,10 +44,16 @@
     transform: scale(0.98); 
 }
 
+.transparent-button:disabled {
+    cursor: not-allowed;
+    transform: scale(1);
+    border-color: transparent;
+}
+
 .text-button {
     width: 100%;
     padding: 10px;
-    font-size: 16px; /* Texte plus petit */
+    font-size: 16px; 
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Police plus élégante */
     font-weight: 500; /* Moins audacieux */
     text-align: center; /* Centre le texte dans le bouton */
@@ -60,19 +66,16 @@
     transition: background-color 0.3s ease, transform 0.3s ease; /* Ajoute des transitions pour un effet de survol */
 }
 
-/* Ajoute des effets de survol */
 .text-button:hover {
     background-color: #495057;
-    transform: scale(1.02); /* Légère agrandissement au survol */
+    transform: scale(1.02);
 }
 
-/* Ajoute un état actif */
 .text-button:active {
     background-color: #212529;
-    transform: scale(0.98); /* Légère réduction lors du clic */
+    transform: scale(0.98);
 }
 
-/* Ajoute un état désactivé */
 .text-button:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
@@ -114,4 +117,33 @@
 
 .tab-text {
     font-size: 0.8em;
+}
+
+.password-strength {
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100% !important;
+}
+.password-strength-bar {
+    height: 100%;
+    min-width: 0%; /* Assure que la barre soit toujours visible */
+    background-color: red;
+    transition: width 0.5s, background-color 0.5s;
+}
+
+.password-strength-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.password-strength-text {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 0.3rem;
+    text-align: left; /* Aligner le texte à gauche */
+    width: 100% !important;
+    white-space: pre-wrap; 
+    max-width: 100%;
 }

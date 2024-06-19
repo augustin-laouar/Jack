@@ -2,6 +2,24 @@ import * as random from '../tools/rand_char.js';
 import * as storage from '../tools/storage.js';
 import * as error from '../exception/error.js';
 
+export const default_generator_id = '6675636b75';
+
+export async function storeDefaultGenerator() {
+    try {
+        const char_params ={
+            lowercase: true,
+            uppercase: true, 
+            numbers: true, 
+            specials: true,
+            excluded_chars: ''
+        };
+        
+        await addGenerator('Default generator', 12, char_params, default_generator_id);
+    }
+    catch(e) {
+        throw error.castError(e, false);
+    }
+}
 
 function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
     const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
@@ -32,7 +50,7 @@ function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
     return filteredCharList;
 }
 
-export async function addGenerator(name, length, char_params) {
+export async function addGenerator(name, length, char_params, id = null) {
     var generators;
     try {
         generators = await getGenerators();
@@ -44,9 +62,11 @@ export async function addGenerator(name, length, char_params) {
         throw new error.Error('A password generator with the same name exists.', true);
     }
     try {
-        var id = random.generateAlphaNumeric(10);
-        while(generators.some(gen => gen.id === id)) {
+        if(!id){
             id = random.generateAlphaNumeric(10);
+            while(generators.some(gen => gen.id === id)) {
+                id = random.generateAlphaNumeric(10);
+            }
         }
         const char_list = getCharList(
             char_params.lowercase,
@@ -63,7 +83,7 @@ export async function addGenerator(name, length, char_params) {
             char_list: char_list
         }
         generators.push(generator);
-        await storage.store({ psw_generators: generators });
+        await storeGenerators(generators);
     }
     catch(e) {
         throw error.castError(e, false);
@@ -93,7 +113,7 @@ export async function deleteGenerator(id) {
         }
     
         var updatedGenerators = generators.filter(generator => generator.id !== id);
-        await storage.store({ psw_generators: updatedGenerators });
+        await storeGenerators(updatedGenerators);
       }
       catch(e) {
         throw error.castError(e, false);
@@ -133,7 +153,7 @@ export async function updateGenerator(id, name, length, char_params) {
             char_list: char_list
         }
         updatedGenerators.push(newGenerator);
-        await storage.store({ psw_generators: updatedGenerators });
+        await storeGenerators(updatedGenerators);
     }
     catch(e) {
         throw error.castError(e, false);
@@ -141,10 +161,25 @@ export async function updateGenerator(id, name, length, char_params) {
 
 }
 
+
+
+export async function storeGenerators(generators) { //sort list before storing
+    generators.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));    
+    const defaultIndex = generators.findIndex(generator => generator.id === default_generator_id);
+    if (defaultIndex !== -1) {
+        const [defaultGenerator] = generators.splice(defaultIndex, 1);
+        generators.unshift(defaultGenerator);
+    }
+    await storage.store({ psw_generators: generators });
+}
+
 export async function getGenerators() {
     try {
         const generators = await storage.read('psw_generators');
         if(generators === null) {
+            return [];
+        }
+        else if(generators.length === 0){
             return [];
         }
         return generators;

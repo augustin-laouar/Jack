@@ -17,9 +17,6 @@
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
 - Robustesse du mot de passe
-- password generator personalisé : modification d'un existant, ajout initial du generateur par défaut (qui n'a pas de bouton delete ou modifier).
-- Pas plus de 20 generators
-- import les generators 
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

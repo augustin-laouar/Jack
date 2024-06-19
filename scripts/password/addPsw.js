@@ -3,6 +3,7 @@ import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
 import { getRandomPassword, getGenerators } from './generator.js';
+import { updatePasswordStrength } from './pswStrength .js';
 
 function addPopupContent()  {
     return `
@@ -32,6 +33,15 @@ function addPopupContent()  {
                 <div class="form-group form-group-custom">
                     <label for="password-confirm">Confirm password</label>
                     <input required type="password" class="form-control dark-input" id="password-confirm" autocomplete="off">
+                </div>
+                <div class="form-group form-group-custom">
+                    <label for="password-strength">Password Strength</label>
+                    <div class="password-strength-wrapper">
+                        <div class="password-strength" id="password-strength">
+                            <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div id="password-strength-text" class="password-strength-text"></div>
+                    </div>
                 </div>
                 <div class="form-group form-group-custom">
                     <label for="generator-div">Password generator</label>
@@ -98,6 +108,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const description = popupContent.querySelector('#description');
         const generatePassword = popupContent.querySelector('#generate-password');
         const selectGenerator = popupContent.querySelector('#select-generator');
+        updatePasswordStrength(psw.value);
         await fillGenerators(selectGenerator);
         addPasswordForm.addEventListener("submit", async function(event) {
             event.preventDefault();
@@ -125,7 +136,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             const password = await getRandomPassword(selectGenerator.value);
             psw.value = password;
             pswConfirm.value = password;
+            updatePasswordStrength(password);
         });
-
+        psw.addEventListener('input', async function() {
+            updatePasswordStrength(psw.value);
+        });
     });
 });
