@@ -55,8 +55,10 @@ function smoothScore(timeToCrackInSeconds) {
 
 
 export function timeToText(time) {
-    if (time < 1) {
-        return 'Instantly';
+    if (time < 0.01) {
+        return 'instantaneous';
+    } else if (time < 1) {
+        return `${(time * 100).toFixed(2)} ms`;
     } else if (time < 60) {
         return `${Math.floor(time)} seconds`;
     } else if (time < 3600) { // 60 * 60
@@ -125,15 +127,17 @@ function getColor(strength) {
 export function updatePasswordStrength(password) {
     const complexity = checkComplexity(password);
     const strength = complexity.score;
-    const timeToBreakText = 'Time to break this password : ' + timeToText(complexity.time);
     const strengthBar = document.getElementById('password-strength-bar');
     const strengthText = document.getElementById('password-strength-text');
-    strengthText.textContent = timeToBreakText;
+    const timeToBreakText = 'Time to break this password : ' + timeToText(complexity.time);
+    if(password.length > 0) {
+        strengthText.textContent = timeToBreakText;
+    }
     strengthBar.style.width = strength + '%';
     strengthBar.setAttribute('aria-valuenow', strength);
     const colors = getColor(strength);
     strengthBar.style.background = colors.color;
     strengthBar.style.backgroundImage = colors.backgroundImage;
 
-    strengthText.style.color = colors.color;
+    //strengthText.style.color = colors.color; ???
 }

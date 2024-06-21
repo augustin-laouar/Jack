@@ -64,7 +64,7 @@ function generatorPopupContent(title) {
         </div>
         <div class="form-group form-group-custom">
             <label for="password-length">Password length</label>
-            <input required type="range" id="password-length" name="password-length" min="1" max="50" value="12" step="1" style="width:55%";>
+            <input required type="range" id="password-length" name="password-length" min="6" max="50" value="12" step="1" style="width:55%";>
             <span id="password-length-display" style="width:5%";>12</span>
         </div>
         <div class="form-group form-group-custom">

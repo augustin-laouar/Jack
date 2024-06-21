@@ -4,6 +4,11 @@ import * as error from '../exception/error.js';
 
 export const default_generator_id = '6675636b75';
 
+const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const numberChars = '0123456789';
+const specialChars = '!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
+
 export async function storeDefaultGenerator() {
     try {
         const char_params ={
@@ -22,11 +27,6 @@ export async function storeDefaultGenerator() {
 }
 
 function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
-    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numberChars = '0123456789';
-    const specialChars = '!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
-    
     let charList = '';
     
     if (lowercase) {
@@ -61,6 +61,9 @@ export async function addGenerator(name, length, char_params, id = null) {
     if(generators.some(gen => gen.name === name)) {
         throw new error.Error('A password generator with the same name exists.', true);
     }
+    if(length < 6) {
+        throw new error.Error('Password length is less than 6.', true);
+    }
     try {
         if(!id){
             id = random.generateAlphaNumeric(10);
@@ -75,6 +78,7 @@ export async function addGenerator(name, length, char_params, id = null) {
             char_params.specials,
             char_params.excluded_chars
         );
+        char_params = refactorCharParams(char_params, char_list);
         var generator = {
             id: id,
             name: name,
@@ -136,6 +140,9 @@ export async function updateGenerator(id, name, length, char_params) {
             throw new error.Error('A password generator with the same name exists.', true);
         }
     }
+    if(length < 6) {
+        throw new error.Error('Password length is less than 6.', true);
+    }
     try{
         var updatedGenerators = generators.filter(generator => generator.id !== id);
         const char_list = getCharList(
@@ -145,6 +152,7 @@ export async function updateGenerator(id, name, length, char_params) {
             char_params.specials,
             char_params.excluded_chars
         );
+        char_params = refactorCharParams(char_params, char_list);
         var newGenerator = {
             id: id,
             name: name,
@@ -189,8 +197,83 @@ export async function getGenerators() {
       }
 }
 
+function hasCommonElement(A, B) {
+    for (let char of A) {
+        if (B.includes(char)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function refactorCharParams(char_params, char_list) {
+    let lowercase = char_params.lowercase;
+    let uppercase = char_params.uppercase;
+    let numbers = char_params.numbers;
+    let specials = char_params.specials;
+
+    if(lowercase) {
+        if(!hasCommonElement(lowercaseChars, char_list)) {
+            lowercase = false;
+        }
+    }
+    if(uppercase) {
+        if(!hasCommonElement(uppercaseChars, char_list)) {
+            uppercase = false;
+        }
+    }
+    if(numbers) {
+        if(!hasCommonElement(numberChars, char_list)) {
+            numbers = false;
+        }
+    }
+    if(specials) {
+        if(!hasCommonElement(specialChars, char_list)) {
+            specials = false;
+        }
+    }
+    return {
+        lowercase: lowercase,
+        uppercase: uppercase,
+        numbers: numbers,
+        specials: specials,
+        excluded_chars: char_params.excluded_chars
+    }
+}
+function containsCharFromSet(password, charSet) {
+    for (let char of password) {
+        if (charSet.includes(char)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function isValidPassword(generator, password) {
+    if(generator.char_params.lowercase) {
+        if(!containsCharFromSet(password, lowercaseChars))
+            return false;
+    }
+    if(generator.char_params.uppercase) {
+        if(!containsCharFromSet(password, uppercaseChars))
+            return false;
+    }
+    if(generator.char_params.numbers) {
+        if(!containsCharFromSet(password, numberChars))
+            return false;
+    }
+    if(generator.char_params.specials) {
+        if(!containsCharFromSet(password, specialChars))
+            return false;
+    }
+    return true;
+}
 
 export async function getRandomPassword(generator_id) { 
     const generator = await getGenerator(generator_id);
-    return random.generate(generator.psw_length, generator.char_list);
+    let password;
+    do {
+        password = random.generate(generator.psw_length, generator.char_list);
+    } while (!isValidPassword(generator, password));
+    return password;
 }

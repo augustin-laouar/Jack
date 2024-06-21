@@ -2,13 +2,11 @@
 
 ## todo
 - Ajouter sur chrome
-- Rajouter la possibilité de clic droit pour utiliser une email directement
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
 - ajouter petit bouton copier à côter du nom de l'email
 - Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - Dans local storage : utiliser des _ et pas ecriture java
-- Ajouter le nom des boutons au survol
 - bouton pour afficher le mot de passe lors de l'édition
 # Bugs 
 - API error quand on ouvre un mail
@@ -16,7 +14,8 @@
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Robustesse du mot de passe
+- Ajouter le nom des boutons au survol
+- Rajouter la possibilité de clic droit pour utiliser une email directement
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
