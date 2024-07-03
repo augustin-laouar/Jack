@@ -8,6 +8,8 @@
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - Dans local storage : utiliser des _ et pas ecriture java
 - bouton pour afficher le mot de passe lors de l'édition
+- logout lors de fermeture du navigateur 
+- backgroundScripts => background
 # Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu

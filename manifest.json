@@ -21,6 +21,11 @@
     "permissions": [
         "storage",
         "tabs",
-        "<all_urls>"
-      ]
+        "<all_urls>",
+        "contextMenus"
+      ],
+    "background": {
+      "scripts": ["scripts/backgroundScripts/auto_fill/context_menu.js"],
+      "type": "module"
+    }
 }
