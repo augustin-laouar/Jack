@@ -47,7 +47,7 @@ function addPopupContent()  {
                     <label for="generator-div">Password generator</label>
                     <div class="d-flex" id="generator-div"> 
                         <select id="select-generator" class="form-select dark-select me-1" style="font-size: 0.8em;"></select>
-                        <button id="generate-password" type="button" class="btn transparent-button">
+                        <button id="generate-password" type="button" class="btn transparent-button" data-bs-placement="bottom" title="Generate password">
                             <img src="../svg-images/launch.svg" alt="Generate" style="width: 20px; height: 20px;">
                         </button>
                     </div>
@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     addPswButton.addEventListener('click', async function() {
         popup.fillPopupContent(addPopupContent());
         popup.openPopup();
+        popup.setPopupSize(700,600);
 
         const popupContent = document.getElementById('popup-content');
         const addPasswordForm = popupContent.querySelector('#add-psw-form');

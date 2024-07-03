@@ -14,7 +14,7 @@ export function checkComplexity(password) {
 
     const combinations = Math.pow(charSetSize, password.length);
 
-    const guessesPerSecond = 2e12;
+    const guessesPerSecond = 2e12; // 200 billions per second
     const timeToCrackInSeconds = combinations / guessesPerSecond;
     return {
         score: smoothScore(timeToCrackInSeconds),
@@ -139,5 +139,5 @@ export function updatePasswordStrength(password) {
     strengthBar.style.background = colors.color;
     strengthBar.style.backgroundImage = colors.backgroundImage;
 
-    //strengthText.style.color = colors.color; ???
+    strengthText.style.color = colors.color;
 }

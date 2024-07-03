@@ -75,17 +75,17 @@ function getTrContent(title, url, username, description){
       </div>
     </td>
     <td>
-      <div style="max-width: 250px; overflow-y: auto;">
+      <div style="max-width: 250px; overflow-y: auto;" data-bs-placement="bottom" title="Copy to clipboard">
         <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-url">${url}</p>
       </div>
     </td>
     <td>
-      <div style="max-width: 250px; overflow-y: auto;">
+      <div style="max-width: 250px; overflow-y: auto;" data-bs-placement="bottom" title="Copy to clipboard">
           <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-username">${username}</p>
       </div>
     </td>
     <td>
-      <button id="cp-psw-button" class="btn transparent-button">
+      <button id="cp-psw-button" class="btn transparent-button" data-bs-placement="bottom" title="Copy to clipboard">
         <img src="../svg-images/copy.svg" alt="Copy" style="width: 20px; height: 20px;">
       </button>
     </td>
@@ -95,12 +95,12 @@ function getTrContent(title, url, username, description){
       </div>
     </td>
     <td>
-      <button id="edit-button" class="btn transparent-button">
+      <button id="edit-button" class="btn transparent-button" data-bs-placement="bottom" title="Edit">
         <img src="../svg-images/edit.svg" alt="Edit" style="width: 20px; height: 20px;">
       </button>
     </td>
     <td>
-      <button id="delete-button" class="btn transparent-button">
+      <button id="delete-button" class="btn transparent-button" data-bs-placement="bottom" title="Delete">
         <img src="../svg-images/delete.svg" alt="Delete" style="width: 20px; height: 20px;">
       </button>
     </td>

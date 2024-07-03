@@ -14,8 +14,10 @@
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 ## Tache actuel
-- Ajouter le nom des boutons au survol
-- Rajouter la possibilité de clic droit pour utiliser une email directement
+Ajouter le nom des boutons au survol
+- Password page OK
+- 
+Rajouter la possibilité de clic droit pour utiliser une email directement
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
