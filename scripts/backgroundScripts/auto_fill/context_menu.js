@@ -1,4 +1,3 @@
-import { isLogged } from "../../login_tools.js";
 import { checkLogin, waitLogin } from "./wait_login.js";
 
 let isUserLoggedIn = false;
@@ -12,33 +11,40 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "random_email") {
     checkLogin().then(isLoggedIn => {
-      if (!isLoggedIn) {
-        isUserLoggedIn = false;
-      } else {
-        isUserLoggedIn = true;
-      }
+      isUserLoggedIn = isLoggedIn;
     });
-
     if(!isUserLoggedIn) {
-      browser.browserAction.openPopup();
-      //waitLogin
-    }
-    const params = {
-      email: 'test@example.com'
-    };
-    browser.tabs.executeScript(tab.id, {
-      code: `
-      (function() {
-        const params = ${JSON.stringify(params)};
-        function insertTextIntoActiveElement(text) {
-          var activeElement = document.activeElement;
-          if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
-            activeElement.value = text;
-          }
+      browser.browserAction.setPopup({popup: "/html/askLogin.html"});
+      browser.browserAction.openPopup()
+      browser.browserAction.setPopup({popup: "/html/emails.html"});
+      waitLogin().then(isLoggedIn => {
+        if(isLoggedIn) {
+          fillField(tab, '');
         }
-        insertTextIntoActiveElement(params.email);
-        })();
-      `    
-    });
+      });
+    }
+    else {
+      fillField(tab, '');
+    }
   }
 });
+
+function fillField(tab, content) {
+  const params = {
+    email: 'test@example.com'
+  };
+  browser.tabs.executeScript(tab.id, {
+    code: `
+    (function() {
+      const params = ${JSON.stringify(params)};
+      function insertTextIntoActiveElement(text) {
+        var activeElement = document.activeElement;
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+          activeElement.value = text;
+        }
+      }
+      insertTextIntoActiveElement(params.email);
+      })();
+    `    
+  });
+}

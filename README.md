@@ -10,6 +10,8 @@
 - bouton pour afficher le mot de passe lors de l'édition
 - logout lors de fermeture du navigateur 
 - backgroundScripts => background
+- utiliser chemin absolu a la place de relatif
+- si possible petite pastille verte qui indique si l'on est connecté ou non
 # Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu

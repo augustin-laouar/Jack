@@ -5,16 +5,17 @@ import * as storage from './tools/storage.js';
 import * as error from './exception/error.js';
 
   //Login
-  async function sessionExpired(minutes) {
+export async function sessionExpired() {
     try{
       const storedDate = await storage.read('lastLogin');
+      const sessionDuration = await storage.read('connectionDuration');
       if(storedDate === null) {
         return true;
       }
       const currentDate = new Date();
       const storedDateObj = new Date(storedDate);
       const elapsedTime = currentDate.getTime() - storedDateObj.getTime();
-      if (elapsedTime >= minutes * 60000) {
+      if (elapsedTime >= sessionDuration * 60000) {
         return true;
       } 
       else {
@@ -42,12 +43,8 @@ export function storeLastLogin() {
 
 export async function isLogged() {
   try {
-    const connDuration = await getConnectionDuration();
-    const res = await sessionExpired(connDuration);
-    if(res){
-      return false;
-    }
-    return true;
+    const logged = await storage.read('logged');
+    return logged;
   }
   catch(e) {
     throw error.castError(e, false);
@@ -58,6 +55,7 @@ export async function isLogged() {
  export async function login(password){
   try{
     if (await crypto.validPassword(password)) {
+      storage.store({ logged: true })
       storeLastLogin();
       const derivedKey = await crypto.generateDerivedKey(password);
       crypto.storeDerivedKey(derivedKey)
@@ -74,19 +72,11 @@ export async function isLogged() {
  }
 
 //set lastLogin to an expired value, and delete derivedKey
- export async function logout(logoutButtonUsed = false) {
+ export async function logout() {
   try{
-    if(logoutButtonUsed){
-      var now = new Date();
-      const connectionDuration = await getConnectionDuration();
-      var toStore = new Date(now.getTime() - (parseInt(connectionDuration * 60 * 1000))); 
-      storage.store({ lastLogin:toStore.toISOString()})
-      .catch(e => {
-        error.castError(e, false);
-      });
-    }
     crypto.deleteDerivedKey();
     window.location.href = '../html/login.html';
+    storage.store({ logged: false })
   }
   catch(e) {
     throw error.castError(e, false);

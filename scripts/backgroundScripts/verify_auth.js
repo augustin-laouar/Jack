@@ -8,7 +8,8 @@ async function checkLogin() {
   }
   else{
     const isLogged = await tools.isLogged();
-    if(!isLogged){
+    const sessionExpired = await tools.sessionExpired();
+    if(!isLogged || sessionExpired){
       window.location.href = '../html/login.html';
       tools.logout();
     }
