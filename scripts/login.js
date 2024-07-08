@@ -10,6 +10,10 @@ function showError(e){
   infoLabel.innerHTML = message;
 }
 
+
+if(await tools.isLogged()) {
+  windows.location.href = '/html/emails.js';
+}
 document.addEventListener("DOMContentLoaded", function() {
   try{
     var form = document.getElementById("login-form");

@@ -15,8 +15,9 @@ document.addEventListener("DOMContentLoaded", function() {
     var form = document.getElementById("login-form");
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
-      var password = document.getElementById("password").value;
+      var password = document.getElementById('password').value;
       if(await tools.login(password)){
+        browser.runtime.sendMessage({subject: 'isLogged', status: true});
         window.close();
       }
       else{

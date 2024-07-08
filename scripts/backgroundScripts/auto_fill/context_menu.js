@@ -19,11 +19,13 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
       browser.browserAction.setPopup({popup: "/html/emails.html"});
       waitLogin().then(isLoggedIn => {
         if(isLoggedIn) {
+          console.log('logged via popup');
           fillField(tab, '');
         }
       });
     }
     else {
+      console.log('already logged');
       fillField(tab, '');
     }
   }

@@ -10,7 +10,7 @@
     "browser_action": {
         "default_area": "navbar",
         "default_icon": "icons/jackthemail-nobg3.png",
-        "default_popup" :"html/emails.html",
+        "default_popup" :"html/login.html",
         "default_title": "Jack's Mails"
     },
     "browser_specific_settings": {
@@ -22,10 +22,17 @@
         "storage",
         "tabs",
         "<all_urls>",
-        "contextMenus"
-      ],
+        "contextMenus",
+        "activeTab"
+        ],
     "background": {
-      "scripts": ["scripts/backgroundScripts/auto_fill/context_menu.js"],
-      "type": "module"
-    }
+      "page": "/html/background.html",
+      "persistent": false
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["/scripts/content/refreshTimer.js"]
+      }
+    ]
 }

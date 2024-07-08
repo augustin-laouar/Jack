@@ -1,18 +1,10 @@
 import * as tools from '../login_tools.js';
 
 async function checkLogin() {
-  const firstCon = await tools.isFirstLogin();
-
-  if(firstCon){
-    window.location.href = '../html/firstConnection.html';
-  }
-  else{
-    const isLogged = await tools.isLogged();
-    const sessionExpired = await tools.sessionExpired();
-    if(!isLogged || sessionExpired){
-      window.location.href = '../html/login.html';
-      tools.logout();
-    }
+  const isLogged = await tools.isLogged();
+  const sessionExpired = await tools.sessionExpired();
+  if(isLogged && sessionExpired){
+    tools.logout();
   }
 }
 
@@ -25,10 +17,6 @@ async function onPeriod(ms){
     await checkLogin();
     await wait(ms);
   }
-
 }
 
-checkLogin();
-document.addEventListener("DOMContentLoaded", function() {
-  onPeriod(1000);
-});
+onPeriod(1000);

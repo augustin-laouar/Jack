@@ -1,7 +1,9 @@
 import * as tools from '../login_tools.js';
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.addEventListener('click', function(event){
+browser.runtime.onMessage.addListener(notify);
+
+function notify(message) {
+    if(message.type === 'pageClick') {
         tools.storeLastLogin();
-    });
-  });
+    }
+}
