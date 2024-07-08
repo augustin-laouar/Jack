@@ -11,17 +11,18 @@ function showError(e){
 }
 
 
-if(await tools.isLogged()) {
-  windows.location.href = '/html/emails.js';
-}
-document.addEventListener("DOMContentLoaded", function() {
+
+document.addEventListener("DOMContentLoaded", async function() {
   try{
+    if(await tools.isLogged()) {
+      windows.location.href = '/html/emails.html';
+    }
     var form = document.getElementById("login-form");
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
       var password = document.getElementById("password").value;
       if(await tools.login(password)){
-        window.location.href = "../html/emails.html";
+        window.location.href = "/html/emails.html";
       }
       else{
         const infoLabel = document.getElementById('info');

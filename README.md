@@ -18,6 +18,7 @@
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
+- Empecher le formulaire de login d'afficher le password dans l'url
 ## Tache actuel
 Ajouter le nom des boutons au survol
 - Password page OK
