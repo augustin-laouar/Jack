@@ -1,6 +1,6 @@
 import { waitLogin } from "./wait_login.js";
 import * as email_storage from "/scripts/email/storage_tools.js";
-
+import { isFirstLogin } from "../../login_tools.js";
 
 async function get_email() {
   try {
@@ -35,10 +35,14 @@ function fillField(tab, content) {
 
 let isUserLoggedIn = false;
 
-browser.contextMenus.create({
-  id: "jack_random_email",
-  title: "Use temporary email",
-  contexts: ["editable"]
+isFirstLogin().then(res => {
+  if(!res) {
+    browser.contextMenus.create({
+      id: "jack_random_email",
+      title: "Use temporary email",
+      contexts: ["editable"]
+    });
+  }
 });
 
 
@@ -72,6 +76,13 @@ function notify(message) {
     }
     if(message.type === 'login') {
       isUserLoggedIn = true;
+    }
+    if(message.type === 'init') {
+      browser.contextMenus.create({
+        id: "jack_random_email",
+        title: "Use temporary email",
+        contexts: ["editable"]
+      });
     }
 }
 

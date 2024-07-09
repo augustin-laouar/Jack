@@ -85,7 +85,6 @@ export function timeToText(time) {
 }
 
 function getColor(strength) {
-    console.log('Strength :' + strength);
     var color;
     var backgroundImage
     if (strength < 20) {

@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
         await crypto.storeHashedPassword(passwordInput.value);
         await storeDefaultGenerator();
         tools.storeConnexionDuration(3);
+        browser.runtime.sendMessage({ type: "init" });
         window.location.href = "../html/login.html";
       }
       catch(error){

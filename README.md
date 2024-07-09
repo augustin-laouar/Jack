@@ -13,7 +13,7 @@
 - utiliser chemin absolu a la place de relatif
 - si possible petite pastille verte qui indique si l'on est connecté ou non
 - Réflechir à une manière de sécurisé l'envoi de messages entre scripts
-- logout quand fermeture du navigateur
+- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
 # Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
@@ -24,8 +24,7 @@
 ## Tache actuel
 Ajouter le nom des boutons au survol
 - Password page OK
-- Impossible d'utiliser les fonctionnalités si on est pas inscrit
-Rajouter la possibilité de clic droit pour utiliser une email directement
+
 - Déconnection à la fermeture du navigateur etc
 ## Terminé
 - Stocker logs via des ids et non url 
