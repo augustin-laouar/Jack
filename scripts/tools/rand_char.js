@@ -11,9 +11,9 @@ export function generate(length, chars) {
 }
 
 export function generateAllChars(length) {
-  return generate(length, alphaNumeric)
+  return generate(length, allCharacters)
 }
 
 export function generateAlphaNumeric(length) {
-  return generate(length, allCharacters);
+  return generate(length, alphaNumeric);
 }

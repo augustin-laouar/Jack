@@ -3,7 +3,7 @@ import { fillPasswordList } from './mainPage.js';
 import * as popup from '../popup.js';
 import { getRandomPassword } from './generator.js';
 import {fillGenerators} from './addPsw.js';
-import { updatePasswordStrength } from './pswStrength .js';
+import { updatePasswordStrength } from './pswStrength.js';
 
 function editPopupContent(title)  {
   if(title.length > 20) {
@@ -39,7 +39,7 @@ function editPopupContent(title)  {
         </div>
         <div class="form-group form-group-custom">
         <label for="password-strength">Password Strength</label>
-        <div class="password-strength-wrapper">
+        <div id="password-strength-wrapper" class="password-strength-wrapper" style="visibility: hidden;">
             <div class="password-strength" id="password-strength">
                 <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>

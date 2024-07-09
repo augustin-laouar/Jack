@@ -1,39 +1,21 @@
-import { checkLogin, waitLogin } from "./wait_login.js";
+import { waitLogin } from "./wait_login.js";
+import * as email_storage from "/scripts/email/storage_tools.js";
 
-let isUserLoggedIn = false;
 
-browser.contextMenus.create({
-  id: "random_email",
-  title: "Use random email",
-  contexts: ["editable"]
-});
-
-browser.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "random_email") {
-    checkLogin().then(isLoggedIn => {
-      isUserLoggedIn = isLoggedIn;
-    });
-    if(!isUserLoggedIn) {
-      browser.browserAction.setPopup({popup: "/html/askLogin.html"});
-      browser.browserAction.openPopup()
-      browser.browserAction.setPopup({popup: "/html/emails.html"});
-      waitLogin().then(isLoggedIn => {
-        if(isLoggedIn) {
-          console.log('logged via popup');
-          fillField(tab, '');
-        }
-      });
+async function get_email() {
+  try {
+    let emails = await email_storage.getDecrytpedEmails();
+    if(emails.length === 0 ) {
+      await email_storage.createRandomEmail();
+      emails = await email_storage.getDecrytpedEmails();
     }
-    else {
-      console.log('already logged');
-      fillField(tab, '');
-    }
+    return emails[0].email.address;
   }
-});
-
+  catch(e) {}
+}
 function fillField(tab, content) {
   const params = {
-    email: 'test@example.com'
+    email: content
   };
   browser.tabs.executeScript(tab.id, {
     code: `
@@ -50,3 +32,47 @@ function fillField(tab, content) {
     `    
   });
 }
+
+let isUserLoggedIn = false;
+
+browser.contextMenus.create({
+  id: "jack_random_email",
+  title: "Use temporary email",
+  contexts: ["editable"]
+});
+
+
+browser.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "jack_random_email") {
+    if(!isUserLoggedIn) {
+      browser.browserAction.setPopup({popup: "/html/askLogin.html"});
+      browser.browserAction.openPopup();
+      browser.browserAction.setPopup({popup: "/html/emails.html"});
+      waitLogin().then(isLoggedIn => {
+        if(isLoggedIn) {
+          get_email().then(address => {
+            fillField(tab, address);
+          });
+        }
+      });
+    }
+    else {
+      get_email().then(address => {
+        fillField(tab, address);
+      });
+    }
+  }
+});
+
+browser.runtime.onMessage.addListener(notify);
+
+function notify(message) {
+    if(message.type === 'logout') {
+      isUserLoggedIn = false;
+    }
+    if(message.type === 'login') {
+      isUserLoggedIn = true;
+    }
+}
+
+

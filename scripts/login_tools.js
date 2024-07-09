@@ -62,6 +62,7 @@ export async function isLogged() {
       .catch(e => {
         throw error.castError(e, false);
       });
+      browser.runtime.sendMessage({ type: "login" });
       return true;
     }
     return false;
@@ -75,8 +76,8 @@ export async function isLogged() {
  export async function logout() {
   try{
     crypto.deleteDerivedKey();
-    window.location.href = '../html/login.html';
     storage.store({ logged: false })
+    browser.runtime.sendMessage({ type: "logout" });
   }
   catch(e) {
     throw error.castError(e, false);

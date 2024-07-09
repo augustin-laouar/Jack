@@ -14,21 +14,21 @@
     <h2>Welcome to Jack's Mails.</h2>
     <p class="lead">First, set your password.</p>
     <form id ="create-psw-form">
-      <div class="form-group">
+      <div class="form-group mb-2">
         <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter your password" required>
         <label for="confirm"></label>
         <input type="password" id="confirm" name="confirm" autocomplete="new-password" placeholder="Re-type your password" required>
       </div>
       <div class="form-group">
-        <div class="password-strength-wrapper mb-1 w-100">
+        <button type="submit" class="confirm-button" style="width:100%;">Save</button>
+      </div>
+      <div class="form-group">
+        <div id="password-strength-wrapper" class="password-strength-wrapper w-100" style="visibility: hidden;">
           <div class="password-strength" id="password-strength">
               <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
-          <div id="password-strength-text" class="password-strength-text"'></div>
+          <div id="password-strength-text" class="password-strength-text"></div>
         </div>
-      </div>
-      <div class="form-group">
-        <button type="submit" class="confirm-button" style="width:100%;">Save</button>
       </div>
     </form>
     <p id="info" class="text-warning"></p>

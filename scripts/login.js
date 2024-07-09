@@ -10,12 +10,14 @@ function showError(e){
   infoLabel.innerHTML = message;
 }
 
-
-
 document.addEventListener("DOMContentLoaded", async function() {
   try{
-    if(await tools.isLogged()) {
-      windows.location.href = '/html/emails.html';
+    if(await tools.isFirstLogin()) {
+      window.location.href = "/html/firstConnection.html";
+    }
+    const isLogged = await tools.isLogged();
+    if(isLogged) {
+      window.location.href = "/html/emails.html";
     }
     var form = document.getElementById("login-form");
     form.addEventListener("submit", async function(event) {

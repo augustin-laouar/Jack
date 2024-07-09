@@ -3,7 +3,7 @@ import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
 import { getRandomPassword, getGenerators } from './generator.js';
-import { updatePasswordStrength } from './pswStrength .js';
+import { updatePasswordStrength } from './pswStrength.js';
 
 function addPopupContent()  {
     return `
@@ -36,7 +36,7 @@ function addPopupContent()  {
                 </div>
                 <div class="form-group form-group-custom">
                     <label for="password-strength">Password Strength</label>
-                    <div class="password-strength-wrapper">
+                    <div id="password-strength-wrapper" class="password-strength-wrapper" style="visibility: hidden;">
                         <div class="password-strength" id="password-strength">
                             <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>

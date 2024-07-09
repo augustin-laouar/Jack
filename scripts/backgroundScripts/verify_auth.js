@@ -1,22 +1,20 @@
 import * as tools from '../login_tools.js';
 
 async function checkLogin() {
-  const isLogged = await tools.isLogged();
-  const sessionExpired = await tools.sessionExpired();
-  if(isLogged && sessionExpired){
-    tools.logout();
+  try {
+    const isLogged = await tools.isLogged();
+    const sessionExpired = await tools.sessionExpired();
+    if (isLogged && sessionExpired) {
+      await tools.logout();
+    }
+  } catch (error) {
+    //console.error('Error in checkLogin:', error);
   }
 }
 
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+browser.alarms.onAlarm.addListener(async () => {
+  await checkLogin();
+  browser.alarms.create({ delayInMinutes: 0.05 });
+});
 
-async function onPeriod(ms){
-  while(true) {
-    await checkLogin();
-    await wait(ms);
-  }
-}
-
-onPeriod(1000);
+browser.alarms.create({ delayInMinutes: 0.05 });

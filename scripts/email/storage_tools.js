@@ -140,11 +140,15 @@ export const maxEmailNumber = 10;
     }
   }
   
-  export async function createRandomEmail(domain, tryNumber = 0) { 
+  export async function createRandomEmail(domain = null, tryNumber = 0) { 
     if(!canCreateEmail()){
       throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
+        if(domain === null || domain === '') {
+          const domains = await api.getDomains();
+          domain = domains[0];
+        }
         const name = random.generateAlphaNumeric(10);
         const addr = name + '@' + domain;
         const psw = random.generateAlphaNumeric(10);

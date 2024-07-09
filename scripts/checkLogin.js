@@ -9,3 +9,11 @@ if(!isLogged) {
         window.location.href = "/html/login.html";
     }
 }
+
+browser.runtime.onMessage.addListener(notify);
+
+function notify(message) {
+    if(message.type === 'logout') {
+        window.location.href = "/html/login.html";
+    }
+}

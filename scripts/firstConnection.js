@@ -1,7 +1,7 @@
 import * as tools from './login_tools.js';
 import * as crypto from './tools/crypto.js';
 import { storeDefaultGenerator } from './password/generator.js';
-import { updatePasswordStrength } from './password/pswStrength .js';
+import { updatePasswordStrength } from './password/pswStrength.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("create-psw-form");

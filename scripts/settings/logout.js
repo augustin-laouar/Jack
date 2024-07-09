@@ -5,5 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(){
       logout();
+      window.location.href = "/html/login.html";
     });
 });

@@ -13,21 +13,20 @@
 - utiliser chemin absolu a la place de relatif
 - si possible petite pastille verte qui indique si l'on est connecté ou non
 - Réflechir à une manière de sécurisé l'envoi de messages entre scripts
+- logout quand fermeture du navigateur
 # Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
 - Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
-- Empecher le formulaire de login d'afficher le password dans l'url
+- Empecher le formulaire de login d'afficher le password dans l'url ?
+
 ## Tache actuel
 Ajouter le nom des boutons au survol
 - Password page OK
-- 
+- Impossible d'utiliser les fonctionnalités si on est pas inscrit
 Rajouter la possibilité de clic droit pour utiliser une email directement
-- Page par défaut : login. Script sur la page login qui vérifie si s'est le first login, si oui redirection. Vérifie également si on est déjà log, si oui redirection sur emails
-- Simplifié check login : seul fonctionnalité : vérifier si le timeout a expiré, si oui on déco
 - Déconnection à la fermeture du navigateur etc
-- BUG CHECKLOGIN TJR REDIRIGE SUR LOGIN.HTML
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

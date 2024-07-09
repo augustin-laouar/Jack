@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
       login_tools.logout();
+      window.location.href = "/html/login.html";
     });
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){

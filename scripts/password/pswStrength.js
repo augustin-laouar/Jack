@@ -125,14 +125,22 @@ function getColor(strength) {
     }
 }
 export function updatePasswordStrength(password) {
+    const wrapper = document.getElementById('password-strength-wrapper');
+    if (wrapper.style.visibility === 'hidden' && password.length > 0) {
+        wrapper.style.visibility = 'visible';
+    }
+    if (password.length === 0) {
+        if(wrapper.style.visibility === 'visible') {
+            wrapper.style.visibility = 'hidden';
+        }
+        return;
+    }
     const complexity = checkComplexity(password);
     const strength = complexity.score;
     const strengthBar = document.getElementById('password-strength-bar');
     const strengthText = document.getElementById('password-strength-text');
     const timeToBreakText = 'Time to break this password : ' + timeToText(complexity.time);
-    if(password.length > 0) {
-        strengthText.textContent = timeToBreakText;
-    }
+    strengthText.textContent = timeToBreakText;
     strengthBar.style.width = strength + '%';
     strengthBar.setAttribute('aria-valuenow', strength);
     const colors = getColor(strength);
