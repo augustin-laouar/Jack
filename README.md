@@ -22,6 +22,8 @@
 - Empecher le formulaire de login d'afficher le password dans l'url ?
 
 ## Tache actuel
+- Fermer les pages à la déco
+
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

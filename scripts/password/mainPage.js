@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     });
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      login_tools.logout(true);
+      login_tools.logout();
       window.location.href = "/html/login.html";
     });
 });
