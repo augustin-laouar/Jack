@@ -37,7 +37,7 @@ function getTrContent(address){
           <div class="col-8">
             <div class="d-flex align-items-center">
               <div class="mx-2">
-                <div id="address-div" class="text-center" style=" max-width: 250px;overflow-x: auto; vertical-align:middle;">
+                <div id="address-div" class="text-center" style=" max-width: 250px;overflow-x: auto; vertical-align:middle;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to mailbox">
                     <p class="text-info" style="white-space: nowrap; vertical-align:middle;">${address}</p>
                 </div>
               </div>
@@ -46,10 +46,10 @@ function getTrContent(address){
           <div class="col-4">
             <div class="d-flex align-items-center justify-content-center">
               <div class="d-flex justify-content-center text-center">
-                <button id="copy-button" class="btn transparent-button">
+                <button id="copy-button" class="btn transparent-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Copy email address to clipboard">
                   <img src="../svg-images/copy.svg" alt="Delete Icon" style="width: 20px; height: 20px;">
                 </button> 
-                <button id="delete-button" class="btn transparent-button">
+                <button id="delete-button" class="btn transparent-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete">
                   <img src="../svg-images/delete.svg" alt="Delete Icon" style="width: 20px; height: 20px;">
                 </button>                
               </div>

@@ -3,7 +3,8 @@
 ## todo
 - Ajouter sur chrome
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
-- ajouter petit bouton copier à côter du nom de l'email
+- Page about
+- Page Email
 - Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - Dans local storage : utiliser des _ et pas ecriture java
@@ -12,7 +13,6 @@
 - backgroundScripts => background
 - utiliser chemin absolu a la place de relatif
 - si possible petite pastille verte qui indique si l'on est connecté ou non
-- Réflechir à une manière de sécurisé l'envoi de messages entre scripts
 - logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
 # Bugs 
 - API error quand on ouvre un mail
@@ -22,10 +22,6 @@
 - Empecher le formulaire de login d'afficher le password dans l'url ?
 
 ## Tache actuel
-Ajouter le nom des boutons au survol
-- Password page OK
-
-- Déconnection à la fermeture du navigateur etc
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -46,3 +42,5 @@ Ajouter le nom des boutons au survol
 - sort psw by title
 - style tableau password
 - génération de mdp aléatoire pour credentials
+- ajouter petit bouton copier à côter du nom de l'email
+- Ajouter le nom des boutons au survol

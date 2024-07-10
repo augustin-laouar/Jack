@@ -12,9 +12,9 @@ function getGeneratorDivContent(name, disableDelete = false) {
     }
     return `
     <div class="text-info d-flex justify-content-between align-items-center">
-    <span id="name" style="overflow-y: scroll; white-space: nowrap; width: 70%; cursor: pointer;">` + name + `</span>
+    <span id="name" style="overflow-y: scroll; white-space: nowrap; width: 70%; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">` + name + `</span>
     <button id="delete-button" class="btn transparent-button">
-        <img src="`+ deleteSvgPath +` " alt="Delete" style="width: 20px; height: 20px;">
+        <img src="`+ deleteSvgPath +` " alt="Delete" style="width: 20px; height: 20px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete">
     </button> 
 
     </div>
