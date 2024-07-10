@@ -2,7 +2,6 @@
 
 ## todo
 - Ajouter sur chrome
-- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
 - Page about
 - Page Email
 - Nouveau CSS 
@@ -22,8 +21,10 @@
 - Empecher le formulaire de login d'afficher le password dans l'url ?
 
 ## Tache actuel
-- Fermer les pages à la déco
-
+- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
+- Utilisation du mot de passe automatique sur les sites 
+- Content script qui permet de détécter automatiquement le formulaire de connexion et tente de trouver les mots de passes correspondants
+- background script qui permet de pouvoir ajouter manuellement les credentials (un bouton pour username et un bouton pour password)
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -46,3 +47,7 @@
 - génération de mdp aléatoire pour credentials
 - ajouter petit bouton copier à côter du nom de l'email
 - Ajouter le nom des boutons au survol
+
+
+## Next MAJ
+- Probleme lorsque déco sur un onglet, on est reconnecté sur emails.html
