@@ -25,7 +25,7 @@ function detectLoginForm() {
         if (textFields.length > 1) {
             return;
         }
-
+        //TODO : Prendre en compte le fait qu'il est possible que certains formulaires de connexion n'ont qu'un mot de passe ou qu'un champ email
         console.log('Formulaire de connexion détecté:', form);
     });
 }
