@@ -9,10 +9,11 @@
 - Dans local storage : utiliser des _ et pas ecriture java
 - bouton pour afficher le mot de passe lors de l'édition
 - logout lors de fermeture du navigateur 
-- backgroundScripts => background
+- backgroundScripts => background / logs, psw ... => credentials
 - utiliser chemin absolu a la place de relatif
 - si possible petite pastille verte qui indique si l'on est connecté ou non
 - logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
+- Dans settings : Pouvoir choisir si l'on veut encrypter ou non les urls
 # Bugs 
 - API error quand on ouvre un mail
 - le mail reste en non lu

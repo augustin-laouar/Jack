@@ -3,8 +3,7 @@ function detectLoginForm() {
     forms.forEach(form => {
         const passwordFields = form.querySelectorAll('input[type="password"]');
         const textFields = form.querySelectorAll('input[type="text"], input[type="email"]');
-        const inputFields = form.querySelectorAll('input, select, textarea');
-        console.log(textFields.length);
+        //const inputFields = form.querySelectorAll('input, select, textarea');
         if (passwordFields.length !== 1) {
             return;
         }
@@ -25,8 +24,15 @@ function detectLoginForm() {
         if (textFields.length > 1) {
             return;
         }
-        //TODO : Prendre en compte le fait qu'il est possible que certains formulaires de connexion n'ont qu'un mot de passe ou qu'un champ email
-        console.log('Formulaire de connexion détecté:', form);
+        const passwordField = passwordFields[0];
+        const textField = textFields[0];
+        const host = window.location.host;
+        const pathname = window.location.pathname;
+        const url = host + pathname;
+
+        browser.runtime.sendMessage({ type: 'loginForm', url: url }).then(response => {
+            //TODO d'avoir le les credentials en retour (username/password)
+        });   
     });
 }
 
