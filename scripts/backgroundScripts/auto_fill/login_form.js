@@ -13,7 +13,11 @@ async function notify(message) {
     if(message.type === 'loginForm') {
         const cred_id = await find_cred_id_from_url(message.url);
         if(cred_id) {
-            //todo : ask login form
+            browser.contextMenus.create({
+                id: "jack_fill_creds",
+                title: "Use saved credentials",
+                contexts: ["editable"]
+              });
         }
     }
 }

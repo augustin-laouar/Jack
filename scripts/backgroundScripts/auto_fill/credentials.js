@@ -1,26 +1,6 @@
 import { waitLogin } from "./wait_login.js";
-import * as credentials_storage from "/scripts/password/tools.js";
+import { find_cred_id_from_url } from "../../password/credentials_finder.js";
 import { isFirstLogin } from "../../login_tools.js";
-
-async function get_credentials(url) {
-  try {
-  }
-  catch(e) {}
-}
-function fillFields(tab, username, password) {
-  const params = {
-    username: username,
-    passowrd: password
-  };
-  browser.tabs.executeScript(tab.id, {
-    code: `
-    (function() {
-      const params = ${JSON.stringify(params)};
-      })();
-    `
-  });
-}
-
 
 function notify(message) {
     if(message.type === 'logout') {
@@ -31,7 +11,7 @@ function notify(message) {
     }
     if(message.type === 'init') {
       browser.contextMenus.create({
-        id: "jack_",
+        id: "jack_fill_creds",
         title: "Use saved credentials",
         contexts: ["editable"]
       });
@@ -43,7 +23,7 @@ let isUserLoggedIn = false;
 isFirstLogin().then(res => {
   if(!res) {
     browser.contextMenus.create({
-      id: "jack_fill_username",
+      id: "jack_fill_creds",
       title: "Use saved credentials",
       contexts: ["editable"]
     });
@@ -52,23 +32,26 @@ isFirstLogin().then(res => {
 
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "jack_fill_cred") {
+  if (info.menuItemId === "jack_fill_creds") {
     if(!isUserLoggedIn) {
       browser.browserAction.setPopup({popup: "/html/askLogin.html"});
       browser.browserAction.openPopup();
       browser.browserAction.setPopup({popup: "/html/emails.html"});
-      const url = tab.url;
-      waitLogin().then(isLoggedIn => {
+      const url = new URL(tab.url);
+      var host = url.host;
+      var path = url.pathname;
+      waitLogin().then(async isLoggedIn => {
         if(isLoggedIn) {
-            get_credentials().then(credentials => {
-                fillFields(tab, credentials.username, credentials.password);
+            find_cred_id_from_url(host+path).then(cred_id => {
+                console.log(cred_id);
+                //todo : envoyé un message avec les creds pour fill 
             });
         }
       });
     }
     else {
-        get_credentials().then(credentials => {
-            fillFields(tab, credentials.username, credentials.password);
+        find_cred_id_from_url(host+path).then(cred_id => {
+            console.log(cred_id);
         });
     }
   }

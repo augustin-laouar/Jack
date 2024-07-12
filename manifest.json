@@ -24,7 +24,8 @@
         "<all_urls>",
         "contextMenus",
         "activeTab",
-        "alarms"
+        "alarms",
+        "notifications"
         ],
     "background": {
       "page": "/html/background.html",

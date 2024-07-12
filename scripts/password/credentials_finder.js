@@ -21,6 +21,9 @@ function getCommonPath(url1, url2) {
 
 export async function find_cred_id_from_url(givenUrl) {
     const creds = await tools.getLogs();
+    if(creds === null) {
+        return null;
+    }
     let bestMatch = null;
     let longestCommonPath = 0;
     for(const cred of creds) {

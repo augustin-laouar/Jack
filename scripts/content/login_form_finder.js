@@ -31,7 +31,7 @@ function detectLoginForm() {
         const url = host + pathname;
 
         browser.runtime.sendMessage({ type: 'loginForm', url: url }).then(response => {
-            //TODO d'avoir le les credentials en retour (username/password)
+            //todo
         });   
     });
 }

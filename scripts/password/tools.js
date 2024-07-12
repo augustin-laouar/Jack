@@ -38,7 +38,7 @@ export async function decryptLogs(encryptedLogs) {
     const key = await crypto.getDerivedKey();
     for(const element of encryptedLogs) {
       const title = await crypto.decryptWithAES(element.content.title, key);
-      const url = element.content.url;
+      const url = await crypto.decryptWithAES(element.content.url, key);
       const username = await crypto.decryptWithAES(element.content.username, key);
       const password = await crypto.decryptWithAES(element.content.password, key);
       const description = await crypto.decryptWithAES(element.content.description, key);
@@ -97,7 +97,7 @@ export async function decryptLog(encryptedLog) {
   try {
     const key = await crypto.getDerivedKey();
     const title = await crypto.decryptWithAES(encryptedLog.content.title, key);
-    const url = encryptedLog.content.url;
+    const url = await crypto.decryptWithAES(encryptedLog.content.url, key);
     const username = await crypto.decryptWithAES(encryptedLog.content.username, key);
     const password = await crypto.decryptWithAES(encryptedLog.content.password, key);
     const description = await crypto.decryptWithAES(encryptedLog.content.description, key);
@@ -152,6 +152,7 @@ export async function addLog(title, url, username, password, description) {
     var logs = await getLogs();
     const key = await crypto.getDerivedKey();
     const encryptedTitle = await crypto.encryptWithAES(title, key);
+    const encryptedUrl = await crypto.encryptWithAES(url, key);
     const encrytedUsername = await crypto.encryptWithAES(username, key);
     const encryptedPassword = await crypto.encryptWithAES(password, key); 
     const encryptedDescription = await crypto.encryptWithAES(description, key);  
@@ -163,7 +164,7 @@ export async function addLog(title, url, username, password, description) {
       id: id,
       content: {
         title: encryptedTitle,
-        url: url,
+        url: encryptedUrl,
         username: encrytedUsername,
         password: encryptedPassword,
         description: encryptedDescription
@@ -212,6 +213,7 @@ export async function modifyLog(id, title, url, username, password, description)
     var updatedLogs = logs.filter(log => log.id !== id);
     const key = await crypto.getDerivedKey();
     const encryptedTitle = await crypto.encryptWithAES(title, key);
+    const encryptedUrl = await crypto.encryptWithAES(url, key);
     const encrytedUsername = await crypto.encryptWithAES(username, key);
     const encryptedPassword = await crypto.encryptWithAES(password, key);  
     const encryptedDescription = await crypto.encryptWithAES(description, key);
@@ -220,7 +222,7 @@ export async function modifyLog(id, title, url, username, password, description)
       id: id,
       content: {
         title: encryptedTitle,
-        url: url,
+        url: encryptedUrl,
         username: encrytedUsername,
         password: encryptedPassword,
         description: encryptedDescription
@@ -247,13 +249,13 @@ export async function encryptLogsWithNewKey(oldKey) {
     }
     for(const element of encryptedLogs) {
       const title = await crypto.decryptWithAES(element.content.title, oldKey);
-      const url = element.content.url;
+      const url = crypto.decryptWithAES(element.content.url, oldKey);
       const username = await crypto.decryptWithAES(element.content.username, oldKey);
       const password = await crypto.decryptWithAES(element.content.password, oldKey);
       const description = await crypto.decryptWithAES(element.content.description, oldKey);
 
       const newTitle = await crypto.encryptWithAES(title, key); 
-      const newUrl = url;
+      const newUrl = await crypto.encryptWithAES(url, key); 
       const newUsername = await crypto.encryptWithAES(username, key);
       const newPassword = await crypto.encryptWithAES(password, key);
       const newDescription = await crypto.encryptWithAES(description, key); 
