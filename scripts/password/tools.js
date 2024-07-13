@@ -103,7 +103,7 @@ export async function decryptLog(encryptedLog) {
     const description = await crypto.decryptWithAES(encryptedLog.content.description, key);
 
     const decryptedLog = {
-      id: element.id,
+      id: encryptedLog.id,
       content: {
         title: title,
         url: url,
