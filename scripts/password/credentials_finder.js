@@ -4,7 +4,6 @@ function formatUrl(url) {
     return url.replace(/^https?:\/\//, '');
 }
 function getCommonPath(url1, url2) {
-    console.log(url1);
     const parts1 = url1.split('/');
     const parts2 = url2.split('/');
     let commonParts = [];

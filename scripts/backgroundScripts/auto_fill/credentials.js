@@ -43,7 +43,7 @@ async function fillFields(cred_id, tab) {
     code: `
     (function() {
         const params = ${JSON.stringify(params)};
-        function detectLoginForm() {
+        function detectLoginForm(username, password) {
             const forms = document.querySelectorAll('form');
             forms.forEach(form => {
                 const passwordFields = form.querySelectorAll('input[type="password"]');
@@ -71,8 +71,8 @@ async function fillFields(cred_id, tab) {
                 }
                 const passwordField = passwordFields[0];
                 const textField = textFields[0];
-                textField.text = username;
-                passwordField.text = password;
+                textField.value = username;
+                passwordField.value = password;
             });
         }
         detectLoginForm(params.username, params.password);
@@ -83,13 +83,13 @@ async function fillFields(cred_id, tab) {
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "jack_fill_creds") {
+    const url = new URL(tab.url);
+    var host = url.host;
+    var path = url.pathname;
     if(!isUserLoggedIn) {
       browser.browserAction.setPopup({popup: "/html/askLogin.html"});
       browser.browserAction.openPopup();
       browser.browserAction.setPopup({popup: "/html/emails.html"});
-      const url = new URL(tab.url);
-      var host = url.host;
-      var path = url.pathname;
       waitLogin().then(async isLoggedIn => {
         if(isLoggedIn) {
             find_cred_id_from_url(host+path).then(cred_id => {
