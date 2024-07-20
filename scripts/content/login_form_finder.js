@@ -1,9 +1,8 @@
-function detectLoginForm() {
+function detectSignupForm() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         const passwordFields = form.querySelectorAll('input[type="password"]');
         const textFields = form.querySelectorAll('input[type="text"], input[type="email"]');
-        //const inputFields = form.querySelectorAll('input, select, textarea');
         if (passwordFields.length !== 1) {
             return;
         }
@@ -24,20 +23,16 @@ function detectLoginForm() {
         if (textFields.length > 1) {
             return;
         }
-        const passwordField = passwordFields[0];
-        const textField = textFields[0];
         const host = window.location.host;
         const pathname = window.location.pathname;
         const url = host + pathname;
 
-        browser.runtime.sendMessage({ type: 'loginForm', url: url }).then(response => {
-            //todo
-        });   
+        browser.runtime.sendMessage({ type: 'loginForm', url: url });
     });
 }
 
 
-detectLoginForm();
+detectSignupForm();
 // for dynamic detection 
-const observer = new MutationObserver(detectLoginForm);
-observer.observe(document.body, { childList: true, subtree: true });
+const loginFormObserver = new MutationObserver(detectSignupForm);
+loginFormObserver.observe(document.body, { childList: true, subtree: true });
