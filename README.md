@@ -7,7 +7,6 @@
 - Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - Dans local storage : utiliser des _ et pas ecriture java
-- bouton pour afficher le mot de passe lors de l'édition
 - logout lors de fermeture du navigateur 
 - backgroundScripts => background / logs, psw ... => credentials
 - utiliser chemin absolu a la place de relatif
@@ -22,10 +21,8 @@
 - Empecher le formulaire de login d'afficher le password dans l'url ?
 
 ## Tache actuel
-- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site
-- Utilisation du mot de passe automatique sur les sites 
-- Content script qui permet de détécter automatiquement le formulaire de connexion et tente de trouver les mots de passes correspondants
-- background script qui permet de pouvoir ajouter manuellement les credentials (un bouton pour username et un bouton pour password)
+- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?
+- bouton pour afficher le mot de passe lors de l'édition => cha ger le svg
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -48,6 +45,7 @@
 - génération de mdp aléatoire pour credentials
 - ajouter petit bouton copier à côter du nom de l'email
 - Ajouter le nom des boutons au survol
+- Utilisation du mot de passe automatique sur les sites 
 
 
 ## Next MAJ

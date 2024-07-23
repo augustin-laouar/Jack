@@ -4,6 +4,7 @@ import * as popup from '../popup.js';
 import { getRandomPassword } from './generator.js';
 import {fillGenerators} from './addPsw.js';
 import { updatePasswordStrength } from './pswStrength.js';
+import { togglePassword } from '../style/toggle_password.js';
 
 function editPopupContent(title)  {
   if(title.length > 20) {
@@ -31,11 +32,23 @@ function editPopupContent(title)  {
         </div>
         <div class="form-group form-group-custom">
             <label for="password">Password</label>
-            <input required type="password" class="form-control dark-input" id="password" autocomplete="off">
+            <div class="form-group password-wrapper" style="width:60%;">
+                <input type="password" id="password" style="width:100%;" class="form-control dark-input" autocomplete="off" required>
+                <span id="toggle-btn-1" class="toggle-password">
+                    <img id="show-psw-1" src="/svg-images/show.svg" alt="Show">
+                    <img id="hide-psw-1" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+                </span>
+            </div>
         </div>
         <div class="form-group form-group-custom">
             <label for="password-confirm">Confirm password</label>
-            <input required type="password" class="form-control dark-input" id="password-confirm" autocomplete="off">
+            <div class="form-group password-wrapper" style="width:60%;">
+                <input type="password" id="password-confirm" style="width:100%;" class="form-control dark-input" autocomplete="off" required>
+                <span id="toggle-btn-2" class="toggle-password">
+                    <img id="show-psw-2" src="/svg-images/show.svg" alt="Show">
+                    <img id="hide-psw-2" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+                </span>
+            </div>
         </div>
         <div class="form-group form-group-custom">
         <label for="password-strength">Password Strength</label>
@@ -137,5 +150,19 @@ export async function editCredential(id, title, url, username, password, descrip
   });
   pswInput.addEventListener('input', async function() {
     updatePasswordStrength(pswInput.value);
-});
+  });
+
+    const togglePasswordElement = popupContent.querySelector('#toggle-btn-1');
+    const showIcon = popupContent.querySelector('#show-psw-1');
+    const hideIcon = popupContent.querySelector('#hide-psw-1');
+    togglePasswordElement.addEventListener('click', function() { 
+        togglePassword(pswInput, showIcon, hideIcon);
+    });
+    const togglePasswordElement2 = popupContent.querySelector('#toggle-btn-2');
+    const showIcon2 = popupContent.querySelector('#show-psw-2');
+    const hideIcon2 = popupContent.querySelector('#hide-psw-2');
+    togglePasswordElement2.addEventListener('click', function() { 
+        togglePassword(pswConfirmInput, showIcon2, hideIcon2);
+    });
+
 }

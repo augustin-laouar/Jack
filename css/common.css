@@ -147,3 +147,19 @@
     white-space: pre-wrap; 
     max-width: 100%;
 }
+
+.password-wrapper {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.toggle-password img {
+    width: 24px;
+    height: 24px;
+    fill: gray;
+}

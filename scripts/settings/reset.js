@@ -2,7 +2,8 @@ import * as storage from '../tools/storage.js';
 import { validPassword } from '../tools/crypto.js';
 import * as crypto from '../tools/crypto.js';
 import * as popup from '../popup.js';
-import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
+import {showPopupInfo} from './info.js';
+import { togglePassword } from '../style/toggle_password.js';
 
 async function removeAllData() {
     await storage.remove('derivedKey');
@@ -28,8 +29,14 @@ function passwordConfirmPopupContent() {
       <p class="text-warning" style="font-size:0.9em;">Warning: Resetting will permanently delete all your data and cannot be undone.</p>
       <form id="confirm-psw-form">
           <div class="m-1">
-            <input placeholder="Enter your password" type="password" id="confirm-psw-input" autocomplete="off" class="form-control dark-input d-block mx-auto" style="width: 80%;">
-            <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 80%;">Reset</button>
+            <div class="form-group password-wrapper">
+                <input type="password" id="confirm-psw-input" class="form-control dark-input d-block mx-auto" placeholder="Enter your password" autocomplete="off" required>
+                <span id="toggle-btn" class="toggle-password">
+                    <img id="show-psw" src="/svg-images/show.svg" alt="Show">
+                    <img id="hide-psw" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+                </span>
+            </div>
+            <button type="submit" class="confirm-button mt-2 d-block mx-auto">Reset</button>
           </div>
       </form>
       <p id="popup-info" class="mt-2" style="font-size: 0.8em;"></p>
@@ -44,7 +51,13 @@ async function askForPasswordConfirm() {
     const popupContent = document.getElementById('popup-content');
     const confirmPswForm = popupContent.querySelector('#confirm-psw-form');
     const confirmPswInput = popupContent.querySelector('#confirm-psw-input');
-
+    
+    const togglePasswordElement = popupContent.querySelector('#toggle-btn');
+    const showIcon = popupContent.querySelector('#show-psw');
+    const hideIcon = popupContent.querySelector('#hide-psw');
+    togglePasswordElement.addEventListener('click', function() { 
+        togglePassword(confirmPswInput, showIcon, hideIcon);
+    });
     return new Promise((resolve, reject) => {
         confirmPswForm.addEventListener('submit', async function(event) {
             event.preventDefault();

@@ -15,9 +15,21 @@
     <p class="lead">First, set your password.</p>
     <form id ="create-psw-form">
       <div class="form-group mb-2">
-        <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter your password" required>
+        <div class="form-group password-wrapper" style="width:100%;">
+          <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" placeholder="Enter your password" required>
+          <span id="toggle-btn-1" class="toggle-password">
+            <img id="show-psw-1" src="/svg-images/show.svg" alt="Show">
+            <img id="hide-psw-1" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+          </span>
+        </div>
         <label for="confirm"></label>
-        <input type="password" id="confirm" name="confirm" autocomplete="new-password" placeholder="Re-type your password" required>
+        <div class="form-group password-wrapper" style="width:100%;">
+          <input type="password" id="confirm" name="confirm" class="form-control" autocomplete="new-password" placeholder="Re-type your password" required>
+          <span id="toggle-btn-2" class="toggle-password">
+            <img id="show-psw-2" src="/svg-images/show.svg" alt="Show">
+            <img id="hide-psw-2" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+          </span>
+        </div>
       </div>
       <div class="form-group">
         <button type="submit" class="confirm-button" style="width:100%;">Save</button>

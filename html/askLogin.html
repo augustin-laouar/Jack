@@ -14,7 +14,13 @@
     <p class = "lead">Please log in.</p>
     <form id ="login-form">
       <div class="form-group">
-        <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter your password" required>
+        <div class="form-group password-wrapper" style="width:100%;">
+          <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" placeholder="Enter your password" required>
+          <span id="toggle-btn" class="toggle-password">
+            <img id="show-psw" src="/svg-images/show.svg" alt="Show">
+            <img id="hide-psw" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+          </span>
+        </div>
       </div>
       <div class="form-group">
         <button type="submit" class="confirm-button" style="width:100%;">Login</button>

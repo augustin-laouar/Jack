@@ -8,18 +8,22 @@
   <link rel="icon" type="image/png" href="../icons/favicon.ico">
 </head>
 <body class="bg-dark text-light">
-  <div class="container text-center">
+  <div class="container text-center" style="height: 325px;">
     <img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="mx-auto" style="max-height:100px;">
     <p class = "lead">Welcome back.</p>
     <form id ="login-form" accept-charset="utf-8" >
-      <div class="form-group">
-        <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter your password" required>
+      <div class="form-group password-wrapper">
+        <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" placeholder="Enter your password" required>
+        <span class="toggle-password">
+          <img id="show-password" src="/svg-images/show.svg" alt="Show">
+          <img id="hide-password" src="/svg-images/hide.svg" alt="Hide" style="display:none;">
+        </span>
       </div>
       <div class="form-group">
         <button type="submit" class="confirm-button" style="width:100%;">Login</button>
       </div>
-      <p id="info" class="text-warning"></p>
     </form>
+    <p id="info" class="text-warning"></p>
     <script type="module" src="/scripts/refreshInfo.js"></script>
     <script type="module" src ="/scripts/login.js"></script>
   </div>

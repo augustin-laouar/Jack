@@ -1,5 +1,6 @@
 import * as tools from './login_tools.js';
 import * as error from './exception/error.js';
+import { togglePassword } from './style/toggle_password.js';
 
 function showError(e){
   if(!(e instanceof error.Error)){
@@ -28,8 +29,16 @@ document.addEventListener("DOMContentLoaded", async function() {
       }
       else{
         const infoLabel = document.getElementById('info');
-        infoLabel.innerText = 'Login failed.';
+        infoLabel.innerText = 'Wrong password.';
       }
+    });
+
+    var togglePasswordElement = document.querySelector('.toggle-password');
+    var passwordInput = document.getElementById('password');
+    var eyeIcon = document.getElementById('show-password');
+    var eyeOffIcon = document.getElementById('hide-password');
+    togglePasswordElement.addEventListener('click', function() { 
+      togglePassword(passwordInput, eyeIcon, eyeOffIcon);
     });
   }
   catch(error){
