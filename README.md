@@ -3,26 +3,21 @@
 ## todo
 - Ajouter sur chrome
 - Page about
-- Page Email
 - Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - Dans local storage : utiliser des _ et pas ecriture java
-- logout lors de fermeture du navigateur 
+- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
 - backgroundScripts => background / logs, psw ... => credentials
 - utiliser chemin absolu a la place de relatif
 - si possible petite pastille verte qui indique si l'on est connecté ou non
-- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
-- Dans settings : Pouvoir choisir si l'on veut encrypter ou non les urls
 # Bugs 
-- API error quand on ouvre un mail
-- le mail reste en non lu
 - Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
-- Error api lorsque l'on delete + il faut supprimer le contenu du mail a droite
 - Empecher le formulaire de login d'afficher le password dans l'url ?
 
 ## Tache actuel
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?
-- bouton pour afficher le mot de passe lors de l'édition => cha ger le svg
+- Page Email
+Page email (style) : 
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 
@@ -46,6 +41,7 @@
 - ajouter petit bouton copier à côter du nom de l'email
 - Ajouter le nom des boutons au survol
 - Utilisation du mot de passe automatique sur les sites 
+- bouton pour afficher le mot de passe lors de l'édition => cha ger le svg
 
 
 ## Next MAJ

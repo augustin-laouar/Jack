@@ -77,7 +77,7 @@ export async function fillAddressList(){
     const tab = document.querySelector('#tab-body');
     tab.innerHTML = ''; 
     if(emails.length === 0){
-      tab.innerHTML = '<p class="lead">No address for the moment.</p>';
+      tab.innerHTML = '<p class="lead text-center">Nothing here. </br> Click the add button to add a temporary email address !</p>';
     }
     else{
       for(const email of emails) {

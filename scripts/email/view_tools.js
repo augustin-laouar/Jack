@@ -1,4 +1,5 @@
 import * as error from '../exception/error.js';
+import { baseUrl } from './api_tools.js';
 
 export async function downloadMessage(myMail, myMessage) {
     const requestOptions = {
@@ -132,7 +133,6 @@ export async function downloadMessage(myMail, myMessage) {
   export async function downloadAttachment(url, token) {
     const headers = new Headers();
     headers.set('Authorization', `Bearer ${token}`);
-  
     const response = await fetch(baseUrl + url, { headers });
     if(!response.ok){
       throw new error.Error("Error downloading email's attachments.", true);

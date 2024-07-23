@@ -2,6 +2,7 @@ import * as error from '../exception/error.js';
 import * as viewer from './view_tools.js';
 import * as api from './api_tools.js';
 import * as storage from './storage_tools.js';
+import { logout } from '../login_tools.js';
 
 function showError(e){
     if(!(e instanceof error.Error)){
@@ -27,7 +28,6 @@ async function markAsRead(email, message, trElement) {
 
 async function markAsUnread(email, message, trElement) {
     try{
-
         await api.marksAsUnread(email, message.id);
         message.seen = false;
         trElement.querySelector('#messageSubject').classList.add('fw-bolder');
@@ -73,16 +73,48 @@ function changeDateFormat(oldDateFormat) {
         }
     } 
     else if(diffInSeconds < 86400) { // Less than 1 day
-        newFormat = newDate.getHours() + ':' + newDate.getMinutes();
+        var hours;
+        var minutes;
+        if(newDate.getHours() < 10) {
+            hours = '0' + newDate.getHours();
+        }
+        else {
+            hours = newDate.getHours();
+        }
+        if(newDate.getMinutes() < 10) {
+            minutes = '0' + newDate.getMinutes();
+        }
+        else {
+            minutes = newDate.getMinutes();
+        }
+        newFormat = hours + ':' + minutes;
     }
     else {
-        newFormat = newDate.getFullYear() + '/' + newDate.getMonth() + '/' + newDate.getDate();
+        var month;
+        var day;
+        var year = newDate.getFullYear();
+        if(newDate.getMonth() + 1 < 10) {
+            month = '0' + (newDate.getMonth() + 1);
+        }
+        else {
+            month = newDate.getMonth() + 1;
+        }
+        if(newDate.getDate() < 10) {
+            day = '0' + newDate.getDate();
+        }
+        else {
+            day = newDate.getDate();
+        }
+        newFormat = year + '/' + month + '/' + day;
     }
 
     return newFormat;
 }
 
 async function fillAttachement(myMail, message) {
+    if(!message.attachments) {
+        return;
+    }
     var attachmentDiv = document.getElementById("attachments");
     attachmentDiv.innerHTML = '';
     for(var i =0; i < message.attachments.length; i++) {
@@ -123,7 +155,51 @@ async function showMailContent(myMail, message) {
             }
         }
         const creationDate = new Date(m.createdAt);
-        date.innerText = (creationDate.getMonth() + 1) + '/' + creationDate.getDate() + '/' + creationDate.getFullYear() + '  ' + creationDate.getHours() + ':' + creationDate.getMinutes() + ':' + creationDate.getSeconds();
+        var month;
+        var day;
+        var year = creationDate.getFullYear();
+        var hours;
+        var minutes;
+        var seconds;
+        if(creationDate.getMonth() + 1 < 10) {
+            month = '0' + (creationDate.getMonth() + 1);
+        }
+        else {
+            month = creationDate.getMonth() + 1;
+        }
+        if(creationDate.getDate() < 10) {
+            day = '0' + creationDate.getDate();
+        }
+        else {
+            day = creationDate.getDate();
+        }
+        if(creationDate.getHours() < 10) {
+            hours = '0' + creationDate.getHours();
+        }
+        else {
+            hours = creationDate.getHours();
+        }
+        if(creationDate.getMinutes() < 10) {
+            minutes = '0' + creationDate.getMinutes();
+        }
+        else {
+            minutes = creationDate.getMinutes();
+        }
+        if(creationDate.getSeconds() < 10) {
+            seconds = '0' + creationDate.getSeconds();
+        }
+        else {
+            seconds = creationDate.getSeconds();
+        }
+        
+        date.innerText = 
+            month + 
+            '/' + day + 
+            '/' + year + 
+            '  ' + hours + 
+            ':' + minutes + 
+            ':' + seconds;
+
         if(m.subject === ''){
             subject.innerText = 'No subject';
         }
@@ -174,7 +250,7 @@ function getTrContent(message) {
         h4Class = 'class="fw-bolder text-info"';
     }
     var codeHTML = `<td>
-                  <div class="container">
+                  <div class="container mb-1">
                     <div class="row">
                       <div class="col-10">
                         <div class="d-flex align-items-center">
@@ -307,7 +383,7 @@ async function fillEmailList(myMail, pageNumber = 1){
                 showMailContent(myMail, message);
                 if(!message.seen){
                     try{
-                        markAsRead(myMail,message,trElement);
+                        markAsRead(myMail, message, trElement);
                     }
                     catch(error){
                         showError(error);
@@ -331,7 +407,7 @@ async function fillEmailList(myMail, pageNumber = 1){
             });
             tab.appendChild(moreMessageButton);
         }
-        document.getElementById('totalItems').innerHTML = '<strong>' + res.totalItems + '</strong> messages in <strong>' + myMail.address + '</strong> mailbox.';
+        document.getElementById('totalItems').innerHTML = '<strong>' + res.totalItems + '</strong> messages in this mailbox.';
         }
     catch(error){
         showError(error);
@@ -367,18 +443,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     document.addEventListener('click', function(event) { 
         hideCustomMenu(event);
     });
-    document.getElementById('refreshButton').addEventListener('click', function() {
-        fillEmailList(email);
-    });
     document.getElementById('title').innerText = email.address;
-    browser.tabs.insertCSS({ file: "../css/bootstrap.min.css" });
+    document.getElementById('mailbox-title').innerHTML = 'Mailbox : ' + email.address;
 
+    const logOutButton = document.getElementById('log-out');
+    logOutButton.addEventListener("click", async function(event){
+      logout();
+      window.location.href = "/html/login.html";
+    });
     //autorefrsh
     onPeriod(5000, email);
   });
-
-
-
-
-
-
