@@ -1,0 +1,4 @@
+# .gitignore file
+.vscode/
+.git/
+jack_app/
