@@ -17,7 +17,7 @@ function addPopupContent()  {
                 <select class="form-select dark-select mb-1" id="select-domain" style="font-size: 0.8em;"></select>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-2 d-block mx-auto" style="width: 50%;">Generate</button>
+        <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 50%;">Generate</button>
       </form>
       <p id="info-popup" class="text-warning mt-2" style="font-size: 0.8em;"></p>
     `;

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script type="module" src="/scripts/content/refreshTimer.js"></script>
+  <script type="module" src="/scripts/checkLogin.js"></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/about.css">
+  <script type="module" src="../scripts/about.js"></script>
+
+  <title>Jack's Mails : About</title>
+  <link rel="icon" type="image/png" href="../icons/favicon.ico">
+</head>
+<body class="bg-dark text-light">
+  <div class="container">
+    <div class="row d-flex align-items-center">
+      <div class="col">
+        <div class="d-flex align-items-center">
+          <img src="../icons/jackthemail-nobg2-min.png" alt="Logo" class="me-2" style="max-height:100px;">
+          <h1 class="display-3">About</h1>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="d-flex align-items-center">
+            <a href="/html/passwords.html" class="btn transparent-button" id="password-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Password manager">
+              <img src="../svg-images/password.svg" alt="Credentials" style="width: 20px; height: 20px;">
+            </a>
+            <a href="/html/settings.html" class="btn transparent-button" id="settings" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Settings">
+              <img src="../svg-images/settings.svg" alt="Settings" style="width: 20px; height: 20px;">
+            </a>
+            <a href="login.html" class="btn transparent-button" id="log-out" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Log out">
+              <img src="../svg-images/logout.svg" alt="Log out" style="width: 20px; height: 20px;">
+            </a>
+          </div>
+      </div>
+    </div>
+    <div class="border-top"  style="margin-top : 10px; width:100%"></div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active lead" href="#" data-target="#what">What is Jack ?</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="#guide">User Guide</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="#legal">Legal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="#faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9" style="max-height: 80vh; overflow-y: scroll;">
+            <div id="what" class="content active">
+                <h1 class ="display-4">What is Jack ?</h1>
+                <p class="lead">Jack is a sophisticated web browser extension designed to enhance your online security and convenience.</p>
+                <p class="lead">With Jack, you can easily create and manage temporary email addresses, protecting your primary inbox from spam and unwanted messages.</p>
+                <p class="lead">In addition, Jack offers a robust local password management service. This lightweight tool ensures that all your passwords are securely stored on your device, providing quick and safe access to your accounts without relying on external servers.</p>
+            </div>
+            <div id="guide" class="content">
+                <h1 class="display-4">User guide</h1>
+                <p class="lead">Here is a quick user guide to enhance your experience with Jack!</p>
+                <h1 class="h2">Temorary emails addresses</h1>
+                <p class="lead">Jack allows you to easily and quickly create disposable email addresses. These email addresses can only be used to receive emails. The received emails are stored for up to one week before being deleted; however, the email address remains active until you delete it.</p>
+                <p class="lead">The page for managing your temporary email addresses is the default page displayed by the extension after you log in. To access it, simply click on the extension icon in your browser</p>
+                <h1 class="h4">Create a new address</h1>
+                <p class="lead">To create a new address, simply click on the <strong>+</strong> button at the top right, then enter the desired name for your address (do not include the domain name, it is generated automatically), then click <strong>Generate</strong>. You can also leave the name field blank to generate a random name.</p>
+                <p class="text-center"><img src="/img/screen_mail_main_page.png" alt="Email main page" class="rounded" style="height:300px; "></p>
+                <h1 class="h4">Access your mailbox</h1>
+                <p class="lead">After generating an email address, click on its name to access the inbox. You will be able to see all the emails you have received in the last 7 days.</p>
+                <p class="text-center"><img src="/img/screen_mailbox.png" alt="Mailbox" class="rounded" style="height:450px; width:900px;"></p>
+                <h1 class="h4">Quick use</h1>
+                <p class="lead">When you want to use your temporary email address on the web, you can quickly use it by right-clicking on the desired field and selecting <strong>Jack</strong> then <strong>Use temporary email</strong>. This will automatically fill the field with a temporary email address.</p>
+                <p class="text-center"><img src="/img/screen_quick_use_email.png" alt="quick use" class="rounded" style="height:300px; "></p>
+                <h1 class="h2">Password manager</h1>
+                <p class="lead">Jack offers an intuitive and lightweight password manager. You can access it by clicking on <img src="/svg-images/password.svg" alt="Logo key" style="width: 20px; height: 20px;"> at the top right. The password manager opens only as a browser tab and not in the extension popup.</p>
+                <h1 class="h4">Security</h1>
+                <p class="lead">Your passwords and all associated information are stored encrypted using the AES-128 algorithm. The encryption key is not stored permanently but is generated from your master password. Therefore, the security of your passwords depends on the strength of your master password.</p>
+                <p class="lead">Your information is all stored locally on your computer, and Jack does not communicate with any external servers.</p>
+                <h1 class="h4">Save a password</h1>
+                <p class="lead">To save a new password, click on the <strong>+</strong> button at the top right of the password manager page. Then fill in the desired fields. The Title and Password fields are mandatory.</p>
+                <p class="lead"> The URL field is also useful if you want to automatically fill in your login credentials on the website associated with this URL.</p>
+                <p class="lead">You can generate a random password using password generators, which will be presented in the next section. Select the generator you want to use and click on <img src="/svg-images/launch.svg" alt="Logo lancher" style="width: 20px; height: 20px;"> to generate a random password.</p>
+                <p class="text-center"><img src="/img/screen_add_psw.png" alt="Add Password Example" class="rounded" style="height:400px; "></p>
+                <h1 class="h4">Password generators</h1>
+                <p class="lead">Password generators are tools that allow you to generate a random password based on several predefined criteria. Generators can be created, modified, and deleted from the application's settings page, which will be presented in the next section.</p>
+                <p class="lead">To configure a new password generator, go to the extension settings by clicking on <img src="/svg-images/settings.svg" alt="Logo settings" style="width: 20px; height: 20px;"> at the top right of the page, then navigate to the <strong>Password generators</strong> section and click on the <strong>+</strong> button to create a generator.
+                    </br>Then configure the generator by filling in the fields:
+                    <ul>
+                        <li class="lead"><strong>Name : </strong>Your generator's name.</li>
+                        <li class="lead"><strong>Password length : </strong>The number of characters in the password.</li>
+                        <li class="lead"><strong>Excluded characters : </strong>A list of characters that are excluded for password generation.</li>
+                        <li class="lead"><strong>Allowed characters : </strong>The types of characters used for password generation.</li>
+                    </ul> 
+                </p>
+                <p class="lead">Then click on <strong>Save</strong>.</p>
+                <p class="lead">You can also delete a generator by clicking on <img src="/svg-images/delete.svg" alt="Logo delete" style="width: 20px; height: 20px;"> and edit it by clicking on its name.</p>
+                <p class="lead">There is a default generator that cannot be deleted; however, it can be modified.</p>
+                <p class="lead">Below is an example of a generator creating a password with 12 alphanumeric characters, excluding the letter A and the number 1 :</p>
+                <p class="text-center"><img src="/img/screen_generator_example.png" alt="Add Password Example" class="rounded" style="height:400px; "></p>
+                <h1 class="h4">Quick use</h1>
+                <p class="lead">
+                    You can quickly use your login credentials on a website by right-clicking on a form field, then clicking on <strong>Jack</strong> and selecting <strong>Use saved credentials</strong>.
+                    </br>
+                    Jack will search your saved passwords for the one that best matches the URL you are on and will automatically fill in the fields.
+                    <p class="text-center"><img src="/img/screen_quick_use_cred.png" alt="quick use password" class="rounded" style="height:300px; "></p>
+                </p>
+                <h1 class="h2">Settings</h1>
+                <p class="lead">The settings page is accessible by clicking on <img src="/svg-images/settings.svg" alt="Logo settings" style="width: 20px; height: 20px;">.</p>
+                <h1 class="h4">Change the master password</h1>
+                <p class="lead">You can change your master password, which allows access to the application, by clicking on <strong>Change Master Password</strong>. Be sure to use a secure password! A strength indicator will show you how long it might take for your password to be discovered by brute force.</p>
+                <h1 class="h4">Change the session validity time</h1>
+                <p class="lead">You can change the validity period of your session, which corresponds to the duration after which you will be logged out of the application if no activity is detected from you on the browser.</p>
+                <h1 class="h4">Data Import/Export</h1>
+                <p class="lead">You can export all the data stored on your Jack Extension using the Export Local Data feature. This will generate a file, with the name you have chosen, containing all the data stored locally by Jack. This data will be protected by your password.</p>
+                <p class="lead">
+                    You can import data to any instance of Jack by selecting the file generated by the exporter and clicking on <img src="/svg-images/import.svg" alt="Logo import" style="width: 20px; height: 20px;">.
+                    </br>
+                    You will be asked for the file password to decrypt the data.
+                </br>
+                    Your master password will be replaced by the one stored in the imported file's data. You can keep your current password by checking Keep.</p>
+                <h1 class="h4">Reset Jack</h1>
+                <p class="lead">You can completely reset the extension to default settings. All your data will be deleted and unrecoverable.</p>
+            </div>
+            <div id="legal" class="content">
+                <h1 class="display-4">Legal</h1>
+                <h1 class="h2">Privacy</h1>
+                <p class="lead">
+                    All your data is stored locally on your computer, ensuring that you are the only person who has access to it. Jack does not communicate with the outside. All your data is stored encrypted with a robust encryption algorithm (AES-128).
+                    </br>
+                    <strong style="color:red">Jack does not collect any user-related data</strong>.
+                    </br>
+                    As for email accounts, they are managed by mail.tm and are subject to their <a href ="https://mail.tm/privacy/">privacy policy</a>.
+                </p>
+                <h1 class="h2">Acceptable Use Policy</h1>
+                <p class="lead">By using this application, you agree to comply with all applicable laws and regulations. You must not use this application for any unlawful or prohibited activities, including but not limited to:</p>
+                <ul>
+                    <li class="lead">Engaging in any activity that violates any local, state, national, or international law or regulation.</li>
+                    <li class="lead">Using the application to distribute, share, or store content that is illegal.</li>
+                    <li class="lead">Attempting to gain unauthorized access to any portion of the application or any other systems or networks connected to the application.</li>
+                </ul>
+                <p class="lead">By using this application, you acknowledge and agree to these terms and conditions.</p>
+                <h1 class="h2">Licence</h1>
+                <p class = "lead">This project is licensed under the <a href ="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3.0.</a></p>
+
+            </div>
+            <div id="faq" class="content">
+                <h1 class="display-4">Frequenlty Asked Questions</h1>
+                <p class="lead">Here you will find a list of frequently asked questions, to which we will try to provide the most accurate answers possible.</p>
+                <p class="h4">Is Jack really secure for my passwords ?</p>
+                <p class="lead">
+                    Jack stores all data locally. Since nothing goes online, many threats are neutralized. To protect your data locally, Jack encrypts your data with the AES-128 algorithm, which is known for its security. The encryption key is not kept in memory but is generated on-the-fly during your login. Your master password is hashed using the argon2 algorithm, which is considered secure.
+                    </br>
+                    Jack takes every measure to keep your data as secure as possible.
+                </p>
+                <p class="h4">Can I send emails with Jack ?</p>
+                <p class="lead">No, you can only receive emails with this extension.</p>
+                <p class="h4">Can I use Jack without main password ?</p>
+                <p class="lead">No, this extension is not designed to be used without a password. However, there are no constraints on the strength and length of the password, so you can use a simple password if you wish, although it is not recommended.</p>
+                <p class="h4">Why is the app called Jack ?</p>
+                <p class="lead">This application is named in dedication to my cat Jack. Unfortunately, he passed away while I was developing this extension.</p>
+                <p class="text-center"><img src="/img/jack.jpg" alt="Jack" class="rounded" style="height:400px; "></p>
+                <p class="lead text-center"><i>Jack, 02/01/2011 - 06/30/2024</i></p>
+            </div>
+            <div id="contact" class="content">
+                <h1 class="display-4">Contact</h1>
+                <ul>
+                    <li class="lead">Email : <i>augustinlaouar@hotmail.com</i></li>
+                    <li class="lead">GitHub : <a href ="https://github.com/augustin-laouar/"><i>https://github.com/augustin-laouar/</i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

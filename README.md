@@ -1,23 +1,20 @@
 # Jack's Mails
 
 ## todo
+- hache mdp avec argon2
 - Ajouter sur chrome
-- Page about
-- Nouveau CSS 
 - changer logs/passwords par credentials / connectionDuration par sessionValidity
 - Dans local storage : utiliser des _ et pas ecriture java
-- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
 - backgroundScripts => background / logs, psw ... => credentials
 - utiliser chemin absolu a la place de relatif
 - si possible petite pastille verte qui indique si l'on est connecté ou non
 # Bugs 
-- Lors de la recherche de credentials, lorsque l'on change la méthode de recherche ça ne refresh pas
-- Empecher le formulaire de login d'afficher le password dans l'url ?
 
 ## Tache actuel
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?
-- Page Email
-Page email (style) : 
+- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
+- Page about
+
 ## Terminé
 - Stocker logs via des ids et non url 
 - Modification du password 

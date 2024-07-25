@@ -34,14 +34,17 @@
 
 .transparent-button {
     background-color: rgb(33, 37, 41);
+    border: none;
 }
 
 .transparent-button:hover {
     transform: scale(1.1); 
+    border: none;
 }
 
 .transparent-button:active {
     transform: scale(0.98); 
+    border: none;
 }
 
 .transparent-button:disabled {

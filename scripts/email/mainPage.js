@@ -34,16 +34,16 @@ function getTrContent(address){
     <td>
       <div class="container">
         <div class="row">
-          <div class="col-8">
+          <div class="col-10">
             <div class="d-flex align-items-center">
               <div class="mx-2">
-                <div id="address-div" class="text-center" style=" max-width: 250px;overflow-x: auto; vertical-align:middle;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to mailbox">
+                <div id="address-div" class="text-center" style=" max-width: 250px; overflow-x: auto; vertical-align:middle;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Go to mailbox">
                     <p class="text-info" style="white-space: nowrap; vertical-align:middle;">${address}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-1">
             <div class="d-flex align-items-center justify-content-center">
               <div class="d-flex justify-content-center text-center">
                 <button id="copy-button" class="btn transparent-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Copy email address to clipboard">
@@ -133,9 +133,9 @@ document.addEventListener("DOMContentLoaded", function() {
       const url = browser.runtime.getURL('../../html/settings.html');
       browser.tabs.create({ url });
     });
-    const helpButton = document.getElementById('help');
-    helpButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/help.html');
+    const aboutButton = document.getElementById('about');
+    aboutButton.addEventListener("click", function(){
+      const url = browser.runtime.getURL('../../html/about.html');
       browser.tabs.create({ url });
     });
     const passwordButton = document.getElementById('password-button');

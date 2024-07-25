@@ -36,8 +36,7 @@
         "matches": ["<all_urls>"],
         "js": [
         "/scripts/content/refreshTimer.js",
-        "/scripts/content/login_form_finder.js",
-        "/scripts/content/signup_form_finder.js"
+        "/scripts/content/login_form_finder.js"
         ]
       }
     ]
