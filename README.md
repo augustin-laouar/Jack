@@ -1,4 +1,4 @@
-# Jack's Mails
+# Jack
 
 ## todo
 - hache mdp avec argon2
