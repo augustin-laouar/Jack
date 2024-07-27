@@ -1,8 +1,8 @@
 import * as error from '../exception/error.js';
-import * as crypto from '../tools/crypto.js';
 import * as storage from '../tools/storage.js';
 import * as api from './api_tools.js';
 import * as random from '../tools/rand_char.js';
+import * as encryptor from '../tools/encryptor_interface.js';
 
 export const maxEmailNumber = 10;
 
@@ -16,9 +16,8 @@ export const maxEmailNumber = 10;
         return [];
     }
     var decryptedEmails = [];
-    const key = await crypto.getDerivedKey();
     for(const element of encryptedEmails) {
-        const email = await crypto.decryptWithAES(element.email, key);
+        const email = await encryptor.decrypt(element.email);
         const jsonEmail = JSON.parse(email);
         const decryptedElement = {
             id: element.id,
@@ -39,21 +38,10 @@ export const maxEmailNumber = 10;
 
   export async function encryptEmail(email) {
     const jsonEmail = JSON.stringify(email);
-    const aesKey = await crypto.getDerivedKey();
-    const encryptedJsonEmail = await crypto.encryptWithAES(jsonEmail, aesKey);
+    const encryptedJsonEmail = await encryptor.encrypt(jsonEmail);
     return encryptedJsonEmail;
   }
 
-  export async function storeEmail(email) {
-    const id = email.id;
-    const encryptedEmail = await encryptEmail(email);
-    const json = {
-        id: id,
-        email: encryptedEmail
-    };
-    
-
-  }
   export async function addEmail(email) {
     var emails = await getEmails();
 
@@ -102,8 +90,7 @@ export const maxEmailNumber = 10;
   }
 
   export async function decryptEmail(email) {
-    const key = await crypto.getDerivedKey();
-    const decryptedJsonEmail = await crypto.decryptWithAES(email, key);
+    const decryptedJsonEmail = await encryptor.decrypt(email);
     return JSON.parse(decryptedJsonEmail);
   }
 
@@ -166,16 +153,16 @@ export const maxEmailNumber = 10;
   }
 
   // Re encrypt all
-  export async function encryptEmailsWithNewKey(oldKey) {
-    const key = await crypto.getDerivedKey();
+  export async function encryptEmailsWithNewKey() {
     const encryptedEmails = await getEmails();
     var newEmails = [];
     if(encryptedEmails === null) {
         return;
     }
     for(const element of encryptedEmails) {
-        const email = await crypto.decryptWithAES(element.email, oldKey);
-        const newEncryption = await crypto.encryptWithAES(email, key);
+        const email = await encryptor.decrypt(element.email);
+        const newEncryption = await encryptor.encryptWithTempKey(email);
+        console.log(newEncryption);
         const newElement = {
             id: element.id,
             email: newEncryption

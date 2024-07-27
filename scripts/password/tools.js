@@ -1,7 +1,8 @@
 import * as storage from '../tools/storage.js';
-import * as crypto from '../tools/crypto.js';
 import * as generator from '../tools/rand_char.js';
 import * as error from '../exception/error.js';
+import * as encryptor from '../tools/encryptor_interface.js';
+
  /*
   Format logs :
     logs : [
@@ -35,13 +36,12 @@ export async function decryptLogs(encryptedLogs) {
       return [];
     }
     var decryptedList = [];
-    const key = await crypto.getDerivedKey();
     for(const element of encryptedLogs) {
-      const title = await crypto.decryptWithAES(element.content.title, key);
-      const url = await crypto.decryptWithAES(element.content.url, key);
-      const username = await crypto.decryptWithAES(element.content.username, key);
-      const password = await crypto.decryptWithAES(element.content.password, key);
-      const description = await crypto.decryptWithAES(element.content.description, key);
+      const title = await encryptor.decrypt(element.content.title);
+      const url = await encryptor.decrypt(element.content.url);
+      const username = await encryptor.decrypt(element.content.username);
+      const password = await encryptor.decrypt(element.content.password);
+      const description = await encryptor.decrypt(element.content.description);
 
       const decryptedElement = {
         id: element.id,
@@ -95,12 +95,11 @@ export async function getLog(id) {
 
 export async function decryptLog(encryptedLog) {
   try {
-    const key = await crypto.getDerivedKey();
-    const title = await crypto.decryptWithAES(encryptedLog.content.title, key);
-    const url = await crypto.decryptWithAES(encryptedLog.content.url, key);
-    const username = await crypto.decryptWithAES(encryptedLog.content.username, key);
-    const password = await crypto.decryptWithAES(encryptedLog.content.password, key);
-    const description = await crypto.decryptWithAES(encryptedLog.content.description, key);
+    const title = await encryptor.decrypt(encryptedLog.content.title);
+    const url = await encryptor.decrypt(encryptedLog.content.url);
+    const username = await encryptor.decrypt(encryptedLog.content.username);
+    const password = await encryptor.decrypt(encryptedLog.content.password);
+    const description = await encryptor.decrypt(encryptedLog.content.description);
 
     const decryptedLog = {
       id: encryptedLog.id,
@@ -150,12 +149,11 @@ function isUniqueId(id, logs) {
 export async function addLog(title, url, username, password, description) {
   try {
     var logs = await getLogs();
-    const key = await crypto.getDerivedKey();
-    const encryptedTitle = await crypto.encryptWithAES(title, key);
-    const encryptedUrl = await crypto.encryptWithAES(url, key);
-    const encrytedUsername = await crypto.encryptWithAES(username, key);
-    const encryptedPassword = await crypto.encryptWithAES(password, key); 
-    const encryptedDescription = await crypto.encryptWithAES(description, key);  
+    const encryptedTitle = await encryptor.encrypt(title);
+    const encryptedUrl = await encryptor.encrypt(url);
+    const encrytedUsername = await encryptor.encrypt(username);
+    const encryptedPassword = await encryptor.encrypt(password); 
+    const encryptedDescription = await encryptor.encrypt(description);  
     var id = generator.generateAlphaNumeric(15);
     while(!isUniqueId(id, logs)){
       id = generator.generateAlphaNumeric(15);
@@ -211,12 +209,11 @@ export async function modifyLog(id, title, url, username, password, description)
       return;
     }
     var updatedLogs = logs.filter(log => log.id !== id);
-    const key = await crypto.getDerivedKey();
-    const encryptedTitle = await crypto.encryptWithAES(title, key);
-    const encryptedUrl = await crypto.encryptWithAES(url, key);
-    const encrytedUsername = await crypto.encryptWithAES(username, key);
-    const encryptedPassword = await crypto.encryptWithAES(password, key);  
-    const encryptedDescription = await crypto.encryptWithAES(description, key);
+    const encryptedTitle = await encryptor.encrypt(title);
+    const encryptedUrl = await encryptor.encrypt(url);
+    const encrytedUsername = await encryptor.encrypt(username);
+    const encryptedPassword = await encryptor.encrypt(password);  
+    const encryptedDescription = await encryptor.encrypt(description);
  
     const log = {
       id: id,
@@ -239,26 +236,25 @@ export async function modifyLog(id, title, url, username, password, description)
 
 // Re encrypt all passwords
 
-export async function encryptLogsWithNewKey(oldKey) {
+export async function encryptLogsWithNewKey() {
   try {
-    const key = await crypto.getDerivedKey();
     const encryptedLogs = await getLogs();
     var newLogs = [];
     if(encryptedLogs === null) {
         return;
     }
     for(const element of encryptedLogs) {
-      const title = await crypto.decryptWithAES(element.content.title, oldKey);
-      const url = crypto.decryptWithAES(element.content.url, oldKey);
-      const username = await crypto.decryptWithAES(element.content.username, oldKey);
-      const password = await crypto.decryptWithAES(element.content.password, oldKey);
-      const description = await crypto.decryptWithAES(element.content.description, oldKey);
+      const title = await encryptor.decrypt(element.content.title);
+      const url = await encryptor.decrypt(element.content.url);
+      const username = await encryptor.decrypt(element.content.username);
+      const password = await encryptor.decrypt(element.content.password);
+      const description = await encryptor.decrypt(element.content.description);
 
-      const newTitle = await crypto.encryptWithAES(title, key); 
-      const newUrl = await crypto.encryptWithAES(url, key); 
-      const newUsername = await crypto.encryptWithAES(username, key);
-      const newPassword = await crypto.encryptWithAES(password, key);
-      const newDescription = await crypto.encryptWithAES(description, key); 
+      const newTitle = await encryptor.encryptWithTempKey(title); 
+      const newUrl = await  encryptor.encryptWithTempKey(url); 
+      const newUsername = await  encryptor.encryptWithTempKey(username);
+      const newPassword = await  encryptor.encryptWithTempKey(password);
+      const newDescription = await encryptor.encryptWithTempKey(description); 
 
       const newElement = {
         id: element.id,

@@ -11,11 +11,9 @@
 # Bugs 
 
 ## Tache actuel
-- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?
-- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
-- Page about
 
 ## Terminé
+- Page about
 - Stocker logs via des ids et non url 
 - Modification du password 
 - Code refactoring 
@@ -39,7 +37,9 @@
 - Ajouter le nom des boutons au survol
 - Utilisation du mot de passe automatique sur les sites 
 - bouton pour afficher le mot de passe lors de l'édition => cha ger le svg
+- logout quand fermeture du navigateur (suspend.js a vérifier en installant l'extension);
 
 
 ## Next MAJ
 - Probleme lorsque déco sur un onglet, on est reconnecté sur emails.html
+- Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?

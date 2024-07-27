@@ -3,7 +3,7 @@ import * as emailStorage from './email/storage_tools.js';
 import * as crypto from './tools/crypto.js';
 import * as storage from './tools/storage.js';
 import * as error from './exception/error.js';
-
+import * as encryptor from './tools/encryptor_interface.js';
   //Login
 export async function sessionExpired() {
     try{
@@ -57,11 +57,7 @@ export async function isLogged() {
     if (await crypto.validPassword(password)) {
       storage.store({ logged: true })
       storeLastLogin();
-      const derivedKey = await crypto.generateDerivedKey(password);
-      crypto.storeDerivedKey(derivedKey)
-      .catch(e => {
-        throw error.castError(e, false);
-      });
+      await encryptor.genereateKey(password);
       browser.runtime.sendMessage({ type: "login" });
       return true;
     }
@@ -75,7 +71,6 @@ export async function isLogged() {
 //set lastLogin to an expired value, and delete derivedKey
  export async function logout() {
   try{
-    crypto.deleteDerivedKey();
     storage.store({ logged: false })
     browser.runtime.sendMessage({ type: "logout" });
   }
@@ -85,14 +80,14 @@ export async function isLogged() {
  }
 
 //re encrypt all data
-export async function changePassword(newPsw){
+export async function changePassword(newPassword){
   try {
-    const oldKey = await crypto.getDerivedKey();
-    const newKey = await crypto.generateDerivedKey(newPsw);
-    await crypto.storeHashedPassword(newPsw);
-    await crypto.storeDerivedKey(newKey);
-    await emailStorage.encryptEmailsWithNewKey(oldKey);
-    await logsTools.encryptLogsWithNewKey(oldKey);
+    await encryptor.genereateTempKey(newPassword);
+    await emailStorage.encryptEmailsWithNewKey();
+    await logsTools.encryptLogsWithNewKey();
+    await encryptor.switchKey();
+
+    await crypto.storeHashedPassword(newPassword);
   }
   catch(e) {
     throw error.castError(e, false);

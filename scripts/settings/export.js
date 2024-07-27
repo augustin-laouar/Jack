@@ -5,6 +5,7 @@ import * as popup from '../popup.js';
 import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
 import { fillGeneratorsList } from './generator.js';
 import { togglePassword } from '../style/toggle_password.js';
+import * as encryptor from '../tools/encryptor_interface.js';
 
 function get_meta_data() {
     const version = 1; //Jack's Mails accoutn file version
@@ -104,14 +105,14 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
     }
 
     if(keepCurrPsw) {
-        const currentKey = await crypto.getDerivedKey();
         try {
-            const otherKey = await crypto.generateDerivedKey(password);
+            //create other key
+            await encryptor.genereateTempKey(password);
             var newEmails = [];
             var newLogs = [];
             for(const element of emails) {
-                const email = await crypto.decryptWithAES(element.email, otherKey);
-                const newEncryption = await crypto.encryptWithAES(email, currentKey);
+                const email = await encryptor.decryptWithTempKey(element.email);
+                const newEncryption = await encryptor.encrypt(email);
                 const newElement = {
                     id: element.id,
                     email: newEncryption
@@ -119,17 +120,17 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
                 newEmails.push(newElement);
             }
             for(const element of logs) {
-                const title = await crypto.decryptWithAES(element.content.title, otherKey);
-                const url = await crypto.decryptWithAES(element.content.url, otherKey);
-                const username = await crypto.decryptWithAES(element.content.username, otherKey);
-                const password = await crypto.decryptWithAES(element.content.password, otherKey);
-                const description = await crypto.decryptWithAES(element.content.description, otherKey);
+                const title = await encryptor.decryptWithTempKey(element.content.title);
+                const url = await encryptor.decryptWithTempKey(element.content.url);
+                const username = await encryptor.decryptWithTempKey(element.content.username);
+                const password = await encryptor.decryptWithTempKey(element.content.password);
+                const description = await encryptor.decryptWithTempKey(element.content.description);
 
-                const newTitle = await crypto.encryptWithAES(title, currentKey);
-                const newUrl = await crypto.encryptWithAES(url, currentKey);
-                const newUsername = await crypto.encryptWithAES(username, currentKey);
-                const newPassword = await crypto.encryptWithAES(password, currentKey);
-                const newDescription = await crypto.encryptWithAES(description, currentKey);
+                const newTitle = await encryptor.encrypt(title);
+                const newUrl = await encryptor.encrypt(url);
+                const newUsername = await encryptor.encrypt(username);
+                const newPassword = await encryptor.encrypt(password);
+                const newDescription = await encryptor.encrypt(description);
 
                 const newElement = {
                     id: element.id,
@@ -151,6 +152,8 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ emails: newEmails });
         await storage.store({ logs: newLogs });
         await storage.store({ psw_generators: psw_generators});
+
+        await encryptor.switchKey();
     }
 
     else {
@@ -159,8 +162,8 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ emails: emails});
         await storage.store({ logs: logs });
         await storage.store({ psw_generators: psw_generators});
-        const newKey = await crypto.generateDerivedKey(password);
-        await crypto.storeDerivedKey(newKey);
+
+        await encryptor.genereateKey(password);
     }
 }
 

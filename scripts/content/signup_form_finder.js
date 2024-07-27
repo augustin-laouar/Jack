@@ -18,6 +18,5 @@ function detectSignupForm() {
 
 detectSignupForm();
 
-// Pour la détection dynamique des nouveaux formulaires ajoutés au DOM
 const signupFormObserver = new MutationObserver(detectSignupForm);
 signupFormObserver.observe(document.body, { childList: true, subtree: true });

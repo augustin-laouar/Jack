@@ -1,6 +1,5 @@
 import * as storage from '../tools/storage.js';
 import { validPassword } from '../tools/crypto.js';
-import * as crypto from '../tools/crypto.js';
 import * as popup from '../popup.js';
 import {showPopupInfo} from './info.js';
 import { togglePassword } from '../style/toggle_password.js';
@@ -63,7 +62,7 @@ async function askForPasswordConfirm() {
             event.preventDefault();
             const givenPsw = confirmPswInput.value;
             try {
-                if (await crypto.validPassword(givenPsw) === false) {
+                if (await validPassword(givenPsw) === false) {
                     showPopupInfo('Invalid password.', true);
                     confirmPswInput.value = '';
                 } else {
