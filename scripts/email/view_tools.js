@@ -1,5 +1,5 @@
 import * as error from '../exception/error.js';
-import { baseUrl } from './api_tools.js';
+import { baseUrl } from '../tools/emails_api.js';
 
 export async function downloadMessage(myMail, myMessage) {
     const requestOptions = {

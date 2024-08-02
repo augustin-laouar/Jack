@@ -1,10 +1,9 @@
 import * as popup from '../popup.js';
-import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
-import { getRandomPassword, getGenerators } from './generator.js';
 import { updatePasswordStrength } from './pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
+import * as request from '../manager/manager_request.js';
 
 function addPopupContent()  {
     return `
@@ -96,13 +95,13 @@ function showPopupError(e){
 }
 
 export async function fillGenerators(selectElement) {
-   const generators = await getGenerators();
-   for(const generator of generators) {
-        const opt = document.createElement('option');
-        opt.value = generator.id;
-        opt.innerHTML = generator.name;
-        selectElement.appendChild(opt);
-   }
+    const generators = await request.makeRequest('generators', 'get', {default: false, id: null});
+    for(const generator of generators) {
+            const opt = document.createElement('option');
+            opt.value = generator.id;
+            opt.innerHTML = generator.name;
+            selectElement.appendChild(opt);
+    }
 }
 document.addEventListener("DOMContentLoaded", async function() {
     popup.initClosePopupEvent();
@@ -131,7 +130,14 @@ document.addEventListener("DOMContentLoaded", async function() {
                     showPopupInfo('Passwords are not the same.', true);
                     return;
                 }
-                await pswTools.addLog(title.value, url.value, username.value, psw.value, description.value);
+                const params = {
+                    title: title.value,
+                    url: url.value,
+                    username: username.value,
+                    password: psw.value,
+                    description: description.value
+                }
+                await request.makeRequest('credentials', 'add', params);
                 title.value = '';
                 username.value = '';
                 psw.value = '';
@@ -140,14 +146,14 @@ document.addEventListener("DOMContentLoaded", async function() {
                 popup.closePopup();
                 fillPasswordList();
             }
-            catch(error){
-                showPopupError(error);
+            catch(e){
+                showPopupError(e);
             }
         
         });
 
         generatePassword.addEventListener('click', async function() {
-            const password = await getRandomPassword(selectGenerator.value);
+            const password = await request.makeRequest('generators', 'generate', { generator_id: selectGenerator.value});
             psw.value = password;
             pswConfirm.value = password;
             updatePasswordStrength(password);

@@ -1,7 +1,6 @@
-import * as pswTools from './tools.js';
 import * as error from '../exception/error.js';
 import { editCredential } from './editPsw.js';
-import * as login_tools from '../login_tools.js';
+import * as request from '../manager/manager_request.js';
 
 function showErrorMessage(message) {
   const infoLabel = document.getElementById('info');
@@ -18,8 +17,8 @@ function showError(e){
 
 async function researchPassword(){
   try{
-    const logs = await pswTools.getDecryptedLogs();
-    if(logs.length === 0){
+    const creds = await request.makeRequest('credentials', 'get', { decrypted: true});
+    if(creds.length === 0){
       return;
     }
     const input = document.getElementById('search').value;
@@ -27,16 +26,16 @@ async function researchPassword(){
     let logsFiltred;
 
     if (searchMethod === 'title') {
-      logsFiltred = logs.filter(element => element.content.title.includes(input));
+      logsFiltred = creds.filter(element => element.content.title.includes(input));
     } 
     if (searchMethod === 'url') {
-        logsFiltred = logs.filter(element => element.content.url.includes(input));
+        logsFiltred = creds.filter(element => element.content.url.includes(input));
     } 
     else if (searchMethod === 'username') {
-      logsFiltred = logs.filter(element => element.content.username.includes(input));
+      logsFiltred = creds.filter(element => element.content.username.includes(input));
     } 
     else if (searchMethod === 'all') {
-      logsFiltred = logs.filter(element => 
+      logsFiltred = creds.filter(element => 
         element.content.title.includes(input) ||
         element.content.url.includes(input) || 
         element.content.username.includes(input) || 
@@ -107,21 +106,21 @@ function getTrContent(title, url, username, description){
     `;
 }
 
-export async function fillPasswordList(logsParam = null, searching = false){
+export async function fillPasswordList(credParam = null, searching = false){
   try{
-    var credentials;
-    if(logsParam === null){
-      credentials = await pswTools.getDecryptedLogs();
+    var creds;
+    if(credParam === null){
+      creds = await request.makeRequest('credentials', 'get', { decrypted: true});
     }
     else{
-      credentials = logsParam;
+      creds = credParam;
     }
-    credentials = sortByTitle(credentials);
+    creds = sortByTitle(creds);
     const tab = document.querySelector('#tab-body');    
     const head = document.querySelector('#tab-head');
 
     tab.innerHTML = ''; 
-    if(credentials.length === 0){
+    if(creds.length === 0){
       head.innerHTML = '';
       if(searching){
         tab.innerHTML = '<p class ="lead">No matching result.</p>'
@@ -132,7 +131,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
     }
     else{
       head.innerHTML = '<tr><th scope="col">Title</th><th scope="col">URL</th><th scope="col">Username</th><th scope="col">Password</th><th scope="col">Description</th></tr>';
-      for(const credential of credentials) {
+      for(const credential of creds) {
         const trElement = document.createElement('tr');
         trElement.innerHTML = getTrContent(credential.content.title, credential.content.url, credential.content.username, credential.content.description);
         const copyUrl = trElement.querySelector('#cp-url')
@@ -181,7 +180,7 @@ export async function fillPasswordList(logsParam = null, searching = false){
         });
         deleteButton.addEventListener('click', async function(){
           try{
-            await pswTools.deleteLog(credential.id);
+            await request.makeRequest('credentials', 'delete', { id: credential.id });
             fillPasswordList();
           }
           catch(error){
@@ -234,7 +233,12 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     });
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      login_tools.logout();
-      window.location.href = "/html/login.html";
+      try {
+        await request.makeRequest('logout', null, null);
+        window.location.href = "/html/login.html";
+      }
+      catch(e) {
+        showError(e);
+      }
     });
 });

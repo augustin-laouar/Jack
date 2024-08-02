@@ -1,30 +1,12 @@
-import * as random from '../tools/rand_char.js';
-import * as storage from '../tools/storage.js';
-import * as error from '../exception/error.js';
+import * as random from '../../tools/rand_char.js';
+import * as storage from '../../tools/storage.js';
+import * as error from '../../exception/error.js';
 
-export const default_generator_id = '6675636b75';
-
+const default_generator_id = '6675636b75';
 const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
 const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const numberChars = '0123456789';
 const specialChars = '!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
-
-export async function storeDefaultGenerator() {
-    try {
-        const char_params ={
-            lowercase: true,
-            uppercase: true, 
-            numbers: true, 
-            specials: true,
-            excluded_chars: ''
-        };
-        
-        await addGenerator('Default generator', 12, char_params, default_generator_id);
-    }
-    catch(e) {
-        throw error.castError(e, false);
-    }
-}
 
 function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
     let charList = '';
@@ -50,7 +32,38 @@ function getCharList(lowercase, uppercase, numbers, specials, excluded_chars) {
     return filteredCharList;
 }
 
-export async function addGenerator(name, length, char_params, id = null) {
+async function getGenerators() {
+    try {
+        const generators = await storage.read('generators');
+        if(generators === null) {
+            return [];
+        }
+        else if(generators.length === 0){
+            return [];
+        }
+        return generators;
+      }
+      catch(e) {
+        throw error.castError(e, false);
+      }
+}
+
+async function getGenerator(id) {
+    try{
+        const generators = await getGenerators();
+        for(const generator of generators) {
+          if(generator.id === id){
+            return generator;
+          }
+        }
+        return null;
+      }
+      catch(e) {
+        throw error.castError(e, false);
+      }
+}
+
+async function addGenerator(name, length, char_params, id = null) {
     var generators;
     try {
         generators = await getGenerators();
@@ -88,28 +101,14 @@ export async function addGenerator(name, length, char_params, id = null) {
         }
         generators.push(generator);
         await storeGenerators(generators);
+        return id;
     }
     catch(e) {
         throw error.castError(e, false);
     }
 }
 
-export async function getGenerator(id) {
-    try{
-        const generators = await getGenerators();
-        for(const generator of generators) {
-          if(generator.id === id){
-            return generator;
-          }
-        }
-        return null;
-      }
-      catch(e) {
-        throw error.castError(e, false);
-      }
-}
-
-export async function deleteGenerator(id) {
+async function deleteGenerator(id) {
     try {
         var generators = await getGenerators();
         if(generators === null) {
@@ -124,7 +123,7 @@ export async function deleteGenerator(id) {
       }
 }
 
-export async function updateGenerator(id, name, length, char_params) {
+async function updateGenerator(id, name, length, char_params) {
     var generators;
     var current_name;
     try {
@@ -170,32 +169,33 @@ export async function updateGenerator(id, name, length, char_params) {
 }
 
 
+async function storeDefaultGenerator() {
+    try {
+        const char_params ={
+            lowercase: true,
+            uppercase: true, 
+            numbers: true, 
+            specials: true,
+            excluded_chars: ''
+        };
+        await addGenerator('Default generator', 12, char_params, default_generator_id);
+    }
+    catch(e) {
+        throw error.castError(e, false);
+    }
+}
 
-export async function storeGenerators(generators) { //sort list before storing
+async function storeGenerators(generators) { //sort list before storing
     generators.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));    
     const defaultIndex = generators.findIndex(generator => generator.id === default_generator_id);
     if (defaultIndex !== -1) {
         const [defaultGenerator] = generators.splice(defaultIndex, 1);
         generators.unshift(defaultGenerator);
     }
-    await storage.store({ psw_generators: generators });
+    await storage.store({ generators: generators });
 }
 
-export async function getGenerators() {
-    try {
-        const generators = await storage.read('psw_generators');
-        if(generators === null) {
-            return [];
-        }
-        else if(generators.length === 0){
-            return [];
-        }
-        return generators;
-      }
-      catch(e) {
-        throw error.castError(e, false);
-      }
-}
+
 
 function hasCommonElement(A, B) {
     for (let char of A) {
@@ -240,6 +240,7 @@ function refactorCharParams(char_params, char_list) {
         excluded_chars: char_params.excluded_chars
     }
 }
+
 function containsCharFromSet(password, charSet) {
     for (let char of password) {
         if (charSet.includes(char)) {
@@ -269,11 +270,64 @@ function isValidPassword(generator, password) {
     return true;
 }
 
-export async function getRandomPassword(generator_id) { 
+async function getRandomPassword(generator_id) { 
     const generator = await getGenerator(generator_id);
     let password;
     do {
         password = random.generate(generator.psw_length, generator.char_list);
     } while (!isValidPassword(generator, password));
     return password;
+}
+
+export async function handle(message) {
+    if(message.type === 'add') {
+        if(message.params.default) {
+            await storeDefaultGenerator();
+            return true;
+        }
+        else {
+            const result = await addGenerator(
+                message.params.name,
+                message.params.length,
+                message.params.char_params,
+            );
+            return result;
+        }
+    }
+
+    if(message.type === 'update') {
+        await updateGenerator(
+            message.params.id,
+            message.params.name,
+            message.params.length,
+            message.params.char_params
+        );
+        return true;
+    }
+
+    if(message.type === 'get') {
+        console.log(message.params.default);
+        if(message.params.default) {
+            const result = await getGenerator(default_generator_id);
+            return result;
+        }
+        if(message.params.id) {
+            const result = await getGenerator(message.params.id);
+            return result;
+        }
+        else {
+            const result = await getGenerators();
+            return result;
+        }
+    }
+
+    if(message.type === 'delete') {
+        await deleteGenerator(message.params.id);
+        return true;
+    }
+
+    if(message.type === 'generate') {
+        const result = await getRandomPassword(message.params.generator_id);
+        return result;
+    }
 }

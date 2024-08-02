@@ -1,6 +1,6 @@
-import * as password_generator from '../password/generator.js';
 import * as popup from '../popup.js';
 import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
+import * as request from '../manager/manager_request.js';
 
 function getGeneratorDivContent(name, disableDelete = false) {
     var deleteSvgPath = '';
@@ -21,12 +21,13 @@ function getGeneratorDivContent(name, disableDelete = false) {
     `;
 }
 export async function fillGeneratorsList() {
-    const generators = await password_generator.getGenerators();
+    const generators = await request.makeRequest('generators', 'get', {});
     const generatorsListDiv = document.getElementById('generators-list');
     generatorsListDiv.innerHTML = '';
     for(const generator of generators) {
         const divElement = document.createElement('div');
-        if(generator.id === password_generator.default_generator_id) {
+        const defaultGenerator = await request.makeRequest('generators', 'get', { default: true });
+        if(generator.id === defaultGenerator.id) {
             divElement.innerHTML = getGeneratorDivContent(generator.name, true);
             const deleteButton = divElement.querySelector('#delete-button');
             deleteButton.disabled = true;
@@ -36,7 +37,7 @@ export async function fillGeneratorsList() {
             const deleteButton = divElement.querySelector('#delete-button');
             deleteButton.addEventListener('click', async function(){
                 try{
-                    await password_generator.deleteGenerator(generator.id);
+                    await request.makeRequest('generators', 'delete', { id: generator.id });
                     fillGeneratorsList();
                 }
                 catch(e) {
@@ -135,7 +136,12 @@ async function addGenerator() {
                 specials: specialCharsCheckbox.checked,
                 excluded_chars: excludedChars.value
             };
-            await password_generator.addGenerator(generatorName.value, passwordLength.value, char_params);
+            const params = {
+                name: generatorName.value,
+                length: passwordLength.value,
+                char_params: char_params
+            };
+            await request.makeRequest('generators', 'add', params);
             fillGeneratorsList();
             popup.closePopup();
             showInfo('New password generator created !');
@@ -159,7 +165,7 @@ async function addGenerator() {
 
 
 async function editGenerator(id) {
-    const generator = await password_generator.getGenerator(id);
+    const generator = await request.makeRequest('generators', 'get', { id: id });
     popup.initClosePopupEvent();
     popup.fillPopupContent(generatorPopupContent('Edit ' + generator.name));
     popup.setPopupSize(600, 500);
@@ -194,7 +200,13 @@ async function editGenerator(id) {
                 specials: specialCharsCheckbox.checked,
                 excluded_chars: excludedChars.value
             };
-            await password_generator.updateGenerator(id, generatorName.value, passwordLength.value, char_params);
+            const params = {
+                id: id,
+                name: generatorName.value,
+                length: passwordLength.value,
+                char_params: char_params
+            };
+            await request.makeRequest('generators', 'update', params);
             fillGeneratorsList();
             popup.closePopup();
             showInfo('Password generator ' + generatorName.value + ' updated !');

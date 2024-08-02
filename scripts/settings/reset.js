@@ -1,25 +1,11 @@
-import * as storage from '../tools/storage.js';
-import { validPassword } from '../tools/crypto.js';
 import * as popup from '../popup.js';
 import {showPopupInfo} from './info.js';
 import { togglePassword } from '../style/toggle_password.js';
+import * as request from '../manager/manager_request.js';
 
-async function removeAllData() {
-    await storage.remove('derivedKey');
-    await storage.remove('emails');
-    await storage.remove('lastLogin');
-    await storage.remove('connectionDuration');
-    await storage.remove('logs');
-    await storage.remove('masterPswHash');
-    await storage.remove('psw_generators');
-}
 
-export async function reset(password) {
-    if(password) {
-        if(await validPassword(password)) {
-            removeAllData();
-        }
-    }
+export async function reset() {
+    await request.makeRequest('reset', null, null);
 }
 
 function passwordConfirmPopupContent() {
@@ -62,7 +48,8 @@ async function askForPasswordConfirm() {
             event.preventDefault();
             const givenPsw = confirmPswInput.value;
             try {
-                if (await validPassword(givenPsw) === false) {
+                const isValid = await request.makeRequest('password', 'verify', { password: currentPsw.value});
+                if (!isValid) {
                     showPopupInfo('Invalid password.', true);
                     confirmPswInput.value = '';
                 } else {
@@ -81,7 +68,7 @@ async function askForPasswordConfirm() {
 document.addEventListener('DOMContentLoaded', function() {
     const resetDataButton = document.getElementById('reset-data');
     resetDataButton.addEventListener('click', async function() {
-        const password = await askForPasswordConfirm(); 
-        await reset(password);
+        await askForPasswordConfirm(); 
+        await reset();
     });
 });

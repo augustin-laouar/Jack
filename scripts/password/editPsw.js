@@ -1,10 +1,9 @@
-import * as pswTools from './tools.js';
 import { fillPasswordList } from './mainPage.js';
 import * as popup from '../popup.js';
-import { getRandomPassword } from './generator.js';
 import {fillGenerators} from './addPsw.js';
 import { updatePasswordStrength } from './pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
+import * as request from '../manager/manager_request.js';
 
 function editPopupContent(title)  {
   if(title.length > 20) {
@@ -124,15 +123,16 @@ export async function editCredential(id, title, url, username, password, descrip
           showPopupInfo('Passwords are not the same.', true);
           return;
         }
-
-        await pswTools.modifyLog(
-          id, 
-          titleInput.value, 
-          urlInput.value, 
-          usernameInput.value,
-          pswInput.value, 
-          descriptionInput.value);
-          
+        const params = {
+            id: id,
+            title: titleInput.value,
+            url: urlInput.value,
+            username: usernameInput.value,
+            password: pswInput.value,
+            description: descriptionInput.value
+        };
+        await request.makeRequest('credentials', 'update', params);
+        
           popup.closePopup();
           fillPasswordList();
       }
@@ -142,7 +142,7 @@ export async function editCredential(id, title, url, username, password, descrip
   });
 
   generatePassword.addEventListener('click', async function() {
-    const password = await getRandomPassword(selectGenerator.value);
+    const password = await request.makeRequest('generators', 'generate', { generator_id: selectGenerator.value});
     pswInput.value = password;
     pswConfirmInput.value = password;
     updatePasswordStrength(password);

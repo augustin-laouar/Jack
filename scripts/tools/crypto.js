@@ -51,7 +51,6 @@ export async function encryptWithAES(data, key) {
   
     const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
     const encryptedArray = new Uint8Array(encryptedHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-  
     const decryptedData = await window.crypto.subtle.decrypt(
       {
         name: 'AES-CBC',
@@ -60,7 +59,6 @@ export async function encryptWithAES(data, key) {
       key,
       encryptedArray
     );
-  
     const decryptedString = new TextDecoder().decode(decryptedData);
     return decryptedString;
   }
@@ -82,12 +80,11 @@ export async function hashPassword(psw, salt) {
     return hashHex;
 }
 
-export async function storeHashedPassword(psw) {
+export async function hashPasswordWithSalt(psw) {
     const salt = generateSalt();
     const hashedPsw = await hashPassword(psw, salt);
     const combinedHash = `${salt}:${hashedPsw}`;
-    const jsonData = { masterPswHash: combinedHash };
-    await storage.store(jsonData);
+    return combinedHash;
 }
 
 export async function isValidHash(psw, combinedHash) {
@@ -95,17 +92,8 @@ export async function isValidHash(psw, combinedHash) {
         const [salt, hash] = combinedHash.split(':');
         const hashedPsw = await hashPassword(psw, salt);
         return hashedPsw === hash;
-    } catch (error) {
+    } catch (e) {
         return false;
     }
 }
 
-export async function validPassword(psw) {
-  try {
-    const storedHash = await storage.read('masterPswHash');
-    const isValid = await isValidHash(psw, storedHash);
-    return isValid;
-  } catch (error) {
-    return false;
-  }
-}

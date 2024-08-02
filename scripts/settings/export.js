@@ -1,59 +1,26 @@
-import * as storage from '../tools/storage.js';
 import * as error from '../exception/error.js';
-import * as crypto from '../tools/crypto.js';
 import * as popup from '../popup.js';
 import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
 import { fillGeneratorsList } from './generator.js';
 import { togglePassword } from '../style/toggle_password.js';
-import * as encryptor from '../tools/encryptor_interface.js';
+import * as request from '../manager/manager_request.js';
 
-function get_meta_data() {
-    const version = 1; //Jack's Mails accoutn file version
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    return {
-        version: version,
-        creation: formattedTime
-    };
-}
-async function get_json() {
-    const masterPswHash = await storage.read('masterPswHash');
-    const connectionDuration = await storage.read('connectionDuration');
-    const emails = await storage.read('emails');
-    const logs = await storage.read('logs');
-    const psw_generators = await storage.read('psw_generators');
-    const metadata = get_meta_data();
-    const jsonData = {
-        metadata: metadata,
-        masterPswHash: masterPswHash,
-        connectionDuration: connectionDuration,
-        emails: emails,
-        logs: logs,
-        psw_generators: psw_generators
-    };
-    return jsonData;
-}
 
 export async function export_account(password, givenFileName) {
-    if(await crypto.validPassword(password) === false){
+    const isValid = await request.makeRequest('password', 'verify', { password: password});
+    if(isValid === false){
         throw new error.Error('Your current password is invalid.', true);
     }
-    const jsonObject = await get_json();
+    const blob = await request.makeRequest('export', null, null);
+    const url = URL.createObjectURL(blob);
+
     var filename;
     if(givenFileName === '') {
-        filename = 'jack-mail-data.json';
+        filename = 'jack.json';
     }
     else {
         filename = givenFileName + '.json';
     }
-
-    const jsonStr = JSON.stringify(jsonObject, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
@@ -85,86 +52,12 @@ async function read_json_file(jsonfile) {
 }
 
 export async function import_account(jsonfile, password, keepCurrPsw) {
-    const json = await read_json_file(jsonfile);
-    //Check if these required values exists
-    if (!(json.metadata && json.metadata.version && json.masterPswHash)) {
-        throw new error.Error('Account file is corrupted.', true);
+    const params = {
+        jsonFile: jsonfile,
+        password: password,
+        keepCurrPsw: keepCurrPsw
     }
-    const version = json.metadata.version;
-    if(version !== 1) { // If, in a future version of Jack's Mails, the file account won't be the same 
-        throw new error.Error("This account file version is not supported. Please udpate Jack's Mails to import this account.", true);
-    }
-    const masterPswHash = json.masterPswHash;
-    const connectionDuration = json.connectionDuration ?? 3; // 3 mins is default value
-    const emails = json.emails ?? []; //Empty list by default
-    const logs = json.logs ?? [];
-    const psw_generators = json.psw_generators ?? [];
-
-    if(!(await crypto.isValidHash(password, masterPswHash))) {
-        throw new error.Error('Invalid password. Unable to decrypt the file.', true);
-    }
-
-    if(keepCurrPsw) {
-        try {
-            //create other key
-            await encryptor.genereateTempKey(password);
-            var newEmails = [];
-            var newLogs = [];
-            for(const element of emails) {
-                const email = await encryptor.decryptWithTempKey(element.email);
-                const newEncryption = await encryptor.encrypt(email);
-                const newElement = {
-                    id: element.id,
-                    email: newEncryption
-                };
-                newEmails.push(newElement);
-            }
-            for(const element of logs) {
-                const title = await encryptor.decryptWithTempKey(element.content.title);
-                const url = await encryptor.decryptWithTempKey(element.content.url);
-                const username = await encryptor.decryptWithTempKey(element.content.username);
-                const password = await encryptor.decryptWithTempKey(element.content.password);
-                const description = await encryptor.decryptWithTempKey(element.content.description);
-
-                const newTitle = await encryptor.encrypt(title);
-                const newUrl = await encryptor.encrypt(url);
-                const newUsername = await encryptor.encrypt(username);
-                const newPassword = await encryptor.encrypt(password);
-                const newDescription = await encryptor.encrypt(description);
-
-                const newElement = {
-                    id: element.id,
-                    content: {
-                        title: newTitle,
-                        url: newUrl,
-                        username: newUsername,
-                        password: newPassword,
-                        description: newDescription
-                    }
-                };
-                newLogs.push(newElement);
-            }
-        }
-        catch(e) {
-            throw new error.Error('Unable to decrypt account file. It may be corrupted.', true);
-        }
-        await storage.store({ connectionDuration: connectionDuration});
-        await storage.store({ emails: newEmails });
-        await storage.store({ logs: newLogs });
-        await storage.store({ psw_generators: psw_generators});
-
-        await encryptor.switchKey();
-    }
-
-    else {
-        await storage.store({ masterPswHash: masterPswHash});
-        await storage.store({ connectionDuration: connectionDuration});
-        await storage.store({ emails: emails});
-        await storage.store({ logs: logs });
-        await storage.store({ psw_generators: psw_generators});
-
-        await encryptor.genereateKey(password);
-    }
+    await request.makeRequest('import', null, params);
 }
 
 
@@ -212,7 +105,8 @@ async function askForPasswordConfirm() {
             event.preventDefault();
             const givenPsw = confirmPswInput.value;
             try {
-                if (await crypto.validPassword(givenPsw) === false) {
+                const isValid = await request.makeRequest('password', 'verify', { password: currentPsw.value});
+                if (isValid) {
                     showPopupInfo('Invalid password.', true);
                     confirmPswInput.value = '';
                 } else {
@@ -284,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const file = importAccountFile.files[0];
             const filePassword = await confirmFilePsw();
-            await import_account(file,filePassword, keepCurrPsw.checked);
+            await import_account(file, filePassword, keepCurrPsw.checked);
             fillGeneratorsList();
 
             showInfo('Account imported with success !');

@@ -1,8 +1,10 @@
-import * as tools from './login_tools.js';
+import * as request from './manager/manager_request.js';
 
-const isLogged = await tools.isLogged();
+
+const isLogged = await request.makeRequest('session', 'check', null);
 if(!isLogged) {
-    if(await tools.isFirstLogin()) {
+    const isFirstLogin = await request.makeRequest('session', 'isFirstLogin', null);
+    if(isFirstLogin) {
         window.location.href = "/html/firstConnection.html";
     }
     else {

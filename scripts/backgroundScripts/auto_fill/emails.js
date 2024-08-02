@@ -1,19 +1,24 @@
 import { waitLogin } from "./wait_login.js";
-import * as email_storage from "/scripts/email/storage_tools.js";
-import { isFirstLogin } from "../../login_tools.js";
+import { directRequest  } from "../../manager/manager.js";
+import { decryptWithAES } from "../../tools/crypto.js";
+import { getDerivedKey } from "../../manager/vars.js";
 
 async function get_email() {
   try {
-    let emails = await email_storage.getDecrytpedEmails();
-    if(emails.length === 0 ) {
-      await email_storage.createRandomEmail();
-      emails = await email_storage.getDecrytpedEmails();
+    let encryptedEmails = await directRequest('emails', 'get', null);
+    if(encryptedEmails.length === 0 ) {
+      await directRequest('emails', 'create', { random: true });
+      encryptedEmails = await directRequest('emails', 'get', null);
     }
-    return emails[0].email.address;
+    const firstEncryptedEmail = encryptedEmails[0];
+    const derivedKey = getDerivedKey();
+    const firstEmail = await decryptWithAES(firstEncryptedEmail.email, derivedKey);
+    const jsonEmail = JSON.parse(firstEmail);
+    return jsonEmail.address;
   }
   catch(e) {}
 }
-function fillField(tab, content) {
+export function fillField(tab, content) {
   const params = {
     email: content
   };
@@ -35,7 +40,7 @@ function fillField(tab, content) {
 
 let isUserLoggedIn = false;
 
-isFirstLogin().then(res => {
+directRequest('session', 'isFirstLogin', null).then(res => {
   if(!res) {
     browser.contextMenus.create({
       id: "jack_random_email",
@@ -71,13 +76,13 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 browser.runtime.onMessage.addListener(notify);
 
 function notify(message) {
-    if(message.type === 'logout') {
+    if(message.endpoit === 'logout') {
       isUserLoggedIn = false;
     }
-    if(message.type === 'login') {
+    if(message.endpoit === 'login') {
       isUserLoggedIn = true;
     }
-    if(message.type === 'init') {
+    if(message.endpoit === 'password' && message.type === 'set') { //it's the first connection
       browser.contextMenus.create({
         id: "jack_random_email",
         title: "Use temporary email",

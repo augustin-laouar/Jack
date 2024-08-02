@@ -1,8 +1,6 @@
-import * as tools from './login_tools.js';
-import * as crypto from './tools/crypto.js';
-import { storeDefaultGenerator } from './password/generator.js';
 import { updatePasswordStrength } from './password/pswStrength.js';
 import { togglePassword } from './style/toggle_password.js';
+import * as request from './manager/manager_request.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("create-psw-form");
@@ -16,10 +14,9 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       try{
-        await crypto.storeHashedPassword(passwordInput.value);
-        await storeDefaultGenerator();
-        tools.storeConnexionDuration(3);
-        browser.runtime.sendMessage({ type: "init" });
+        await request.makeRequest('password', 'set', { password: passwordInput.value });
+        await request.makeRequest('generators', 'add', { default: true });
+        await request.makeRequest('sessionDuration', 'set', { duration: 3 });
         window.location.href = "../html/login.html";
       }
       catch(error){

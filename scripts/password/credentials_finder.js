@@ -1,4 +1,4 @@
-import * as tools from './tools.js';
+import * as request from '../manager/manager_request.js';
 
 function formatUrl(url) {
     return url.replace(/^https?:\/\//, '');
@@ -20,7 +20,7 @@ function getCommonPath(url1, url2) {
 }
 
 export async function find_cred_id_from_url(givenUrl) {
-    const creds = await tools.getDecryptedLogs();
+    const creds = await request.makeRequest('credentials', 'get', { decrypted: true});
     if(creds === null) {
         return null;
     }

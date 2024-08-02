@@ -1,6 +1,5 @@
-import * as storage from './storage_tools.js';
-import * as login_tools from '../login_tools.js';
 import * as error from '../exception/error.js';
+import * as request from '../manager/manager_request.js';
 
 export function showInfo(message){
   const infoLabel = document.getElementById('info');
@@ -73,7 +72,7 @@ async function copyToClipboard(text) {
 
 export async function fillAddressList(){
   try{
-    const emails = await storage.getDecrytpedEmails(); 
+    const emails = await request.makeRequest('emails', 'get', { decrypted: true });
     const tab = document.querySelector('#tab-body');
     tab.innerHTML = ''; 
     if(emails.length === 0){
@@ -102,7 +101,7 @@ export async function fillAddressList(){
         });
         deleteButton.addEventListener('click', async function(){
           try{
-            await storage.deleteEmail(email.id);
+            await request.makeRequest('emails', 'delete', { id: email.id, total: true });
             fillAddressList();
           }
           catch(error){
@@ -125,8 +124,13 @@ document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      login_tools.logout();
-      window.location.href = "/html/login.html";
+      try {
+        await request.makeRequest('logout', null, null);
+        window.location.href = "/html/login.html";
+      }
+      catch(e) {
+        showError(e);
+      }
     });
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){

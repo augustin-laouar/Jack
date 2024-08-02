@@ -1,8 +1,8 @@
 import * as popup from '../popup.js';
 import { fillAddressList, showInfo } from './mainPage.js';
-import * as storage from './storage_tools.js';
 import * as error from '../exception/error.js';
-import { getDomains } from './api_tools.js';
+import { getDomains } from '../tools/emails_api.js';
+import * as request from '../manager/manager_request.js';
 
 function addPopupContent()  {
     return `
@@ -74,11 +74,20 @@ document.addEventListener("DOMContentLoaded", async function() {
         const addressInput = popupContent.querySelector('#email-name');
         const selectDomain = popupContent.querySelector('#select-domain');
         try{
+            const requestEndpoint = 'emails';
+            const requestType = 'create';
             if (addressInput.value.trim() === "") { //Generate a random address
-                await storage.createRandomEmail(selectDomain.value);
+                const requestParams = {
+                    random: true,
+                    domainName: selectDomain.value
+                };
+                await request.makeRequest(requestEndpoint, requestType, requestParams);
             } else {
                 const address = addressInput.value + '@' + selectDomain.value;
-                await storage.createEmail(address);
+                const requestParams = {
+                    emailName: address
+                };
+                await request.makeRequest(requestEndpoint, requestType, requestParams);
             }
             addressInput.value = '';      
             popup.closePopup();

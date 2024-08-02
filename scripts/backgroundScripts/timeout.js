@@ -1,11 +1,10 @@
-import * as tools from '../login_tools.js';
+import { directRequest } from '../manager/manager.js';
 
 async function checkLogin() {
   try {
-    const isLogged = await tools.isLogged();
-    const sessionExpired = await tools.sessionExpired();
-    if (isLogged && sessionExpired) {
-      await tools.logout();
+    const sessionTimeout = await directRequest('session', 'timeout', null);
+    if (sessionTimeout) {
+      await directRequest('logout', null, null);
     }
   } catch (error) {
     //console.error('Error in checkLogin:', error);

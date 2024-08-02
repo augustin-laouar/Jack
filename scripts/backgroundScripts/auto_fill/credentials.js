@@ -1,16 +1,15 @@
 import { waitLogin } from "./wait_login.js";
 import { find_cred_id_from_url } from "../../password/credentials_finder.js";
-import { isFirstLogin } from "../../login_tools.js";
-import { getDecryptedLog } from "../../password/tools.js";
+import { directRequest } from "../../manager/manager.js";
 
 function notify(message) {
-    if(message.type === 'logout') {
+    if(message.endpoit === 'logout') {
       isUserLoggedIn = false;
     }
-    if(message.type === 'login') {
+    if(message.endpoit === 'login') {
       isUserLoggedIn = true;
     }
-    if(message.type === 'init') {
+    if(message.endpoit === 'password' && message.type === 'set') {
       browser.contextMenus.create({
         id: "jack_fill_creds",
         title: "Use saved credentials",
@@ -21,7 +20,7 @@ function notify(message) {
 
 let isUserLoggedIn = false;
 
-isFirstLogin().then(res => {
+directRequest('session', 'isFirstLogin', null).then(res => {
   if(!res) {
     browser.contextMenus.create({
       id: "jack_fill_creds",
@@ -32,7 +31,7 @@ isFirstLogin().then(res => {
 });
 
 async function fillFields(cred_id, tab) {
-    const cred = await getDecryptedLog(cred_id);
+    const cred = await directRequest('credentials', 'get', { id: cred_id, decrypted: true });
     const username = cred.content.username;
     const password = cred.content.password;
     const params = {

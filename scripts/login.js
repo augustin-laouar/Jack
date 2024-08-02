@@ -1,6 +1,6 @@
-import * as tools from './login_tools.js';
 import * as error from './exception/error.js';
 import { togglePassword } from './style/toggle_password.js';
+import * as request from './manager/manager_request.js';
 
 function showError(e){
   if(!(e instanceof error.Error)){
@@ -13,10 +13,11 @@ function showError(e){
 
 document.addEventListener("DOMContentLoaded", async function() {
   try{
-    if(await tools.isFirstLogin()) {
+    const isFirstLogin = await request.makeRequest('session', 'isFirstLogin', null);
+    if(isFirstLogin) {
       window.location.href = "/html/firstConnection.html";
     }
-    const isLogged = await tools.isLogged();
+    const isLogged = await request.makeRequest('session', 'check', null);
     if(isLogged) {
       window.location.href = "/html/emails.html";
     }
@@ -24,7 +25,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
       var password = document.getElementById("password").value;
-      if(await tools.login(password)){
+      const result = await request.makeRequest('login', null, { password: password });
+      if(result) {
         window.location.href = "/html/emails.html";
       }
       else{

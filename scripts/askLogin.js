@@ -1,6 +1,6 @@
-import * as tools from './login_tools.js';
 import * as error from './exception/error.js';
 import { togglePassword } from './style/toggle_password.js';
+import * as request from './manager/manager_request.js';
 
 function showError(e){
   if(!(e instanceof error.Error)){
@@ -17,8 +17,9 @@ document.addEventListener("DOMContentLoaded", function() {
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
       const password = document.getElementById('password').value;
-      if(await tools.login(password)){
-        browser.runtime.sendMessage({subject: 'isLogged', status: true});
+      const isValid = await request.makeRequest('password', 'verify', password);
+      if(isValid){
+        browser.runtime.sendMessage({subject: 'isLogged', status: true}); //todo
         window.close();
       }
       else{

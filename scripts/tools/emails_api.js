@@ -150,8 +150,8 @@ export async function getDomains() {
       return domains;
 }
 
-export async function login(myMail){ //recupere le token qui permet de s'authentifier sur les futurs requests
-    const params = {address : myMail.address, password : myMail.password};
+export async function login(myMail){ //get auth token
+    const params = {address: myMail.address, password: myMail.password};
     const response = await sendRequest(baseUrl + '/token', 'POST', params);
     myMail.token = response.token;
     return myMail;
@@ -182,6 +182,7 @@ export async function me(myMail){
 
 export async function deleteAccount(myMail){
   const params = {};
+  await login(myMail);
   await sendRequest(baseUrl + '/accounts/' + myMail.id, 'DELETE', params, myMail.token );
 }
 

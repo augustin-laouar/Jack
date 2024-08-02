@@ -1,8 +1,7 @@
 import * as error from '../exception/error.js';
 import * as viewer from './view_tools.js';
-import * as api from './api_tools.js';
-import * as storage from './storage_tools.js';
-import { logout } from '../login_tools.js';
+import * as api from '../tools/emails_api.js';
+import * as request from '../manager/manager_request.js';
 
 function showError(e){
     if(!(e instanceof error.Error)){
@@ -43,11 +42,9 @@ async function loginAssociatedAccount() {
     try{
         const params = new URLSearchParams(window.location.search);
         const id = params.get('emailId');
-        var email = await storage.getDecryptedEmail(id);
-        email = await api.login(email);
-        await storage.deleteEmail(id);
-        await storage.addEmail(email);
-        return email;
+        const email = await request.makeRequest('emails', 'get', { id: id, decrypted: true });
+        const emailContent = await api.login(email.email);
+        return emailContent;
     }
     catch(error){
         showError(error);
@@ -418,7 +415,7 @@ async function fillEmailList(myMail, pageNumber = 1){
 
 async function init(){
     try{
-        var email = await loginAssociatedAccount();
+        const email = await loginAssociatedAccount();
         fillEmailList(email);
         return email;
     }
@@ -448,8 +445,13 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const logOutButton = document.getElementById('log-out');
     logOutButton.addEventListener("click", async function(event){
-      logout();
-      window.location.href = "/html/login.html";
+        try {
+            await request.makeRequest('logout', null, null);
+            window.location.href = "/html/login.html";
+        }
+        catch(e) {
+            showError(error);
+        }
     });
     //autorefrsh
     onPeriod(5000, email);

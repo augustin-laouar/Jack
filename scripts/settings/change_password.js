@@ -1,9 +1,8 @@
 import * as popup from '../popup.js';
-import * as crypto from '../tools/crypto.js';
-import * as login_tools from '../login_tools.js';
-import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
+import {showInfo, showPopupError, showPopupInfo} from './info.js';
 import { updatePasswordStrength } from '../password/pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
+import * as request from '../manager/manager_request.js';
 
 function changePasswordContent() {
     return `
@@ -67,7 +66,8 @@ async function changePassword() {
             if(newPsw.value === '' || newPsw.value === null) {
                 return;
             }
-            if (await crypto.validPassword(currentPsw.value) === false) {
+            const isValid = await request.makeRequest('password', 'verify', { password: currentPsw.value});
+            if (isValid === false) {
                 showPopupInfo('Wrong current password.', true);
                 currentPsw.value = '';
             }
@@ -77,7 +77,7 @@ async function changePassword() {
                 newPswConfirm.value = ''
             }
             else {
-                await login_tools.changePassword(newPsw.value);
+                await request.makeRequest('password', 'update', { password: newPsw.value });
                 popup.closePopup();
                 currentPsw.value = '';
                 newPsw.value = '';

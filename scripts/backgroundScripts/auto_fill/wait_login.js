@@ -1,14 +1,14 @@
-import { isLogged } from "../../login_tools.js";
+import { directRequest } from "../../manager/manager.js";
 
 export async function checkLogin() {
-    const res = await isLogged();
-    return res;
+    const result = await directRequest('session', 'check', null);
+    return result;
 }
 
 export async function waitLogin() {
     return new Promise((resolve) => {
         function messageListener(message) {
-            if (message.subject === 'isLogged') {
+            if (message.endpoit === 'login') {
                 if (message.status === true) {
                     resolve(true);
                 } else {
