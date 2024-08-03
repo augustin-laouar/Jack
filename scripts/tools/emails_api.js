@@ -131,8 +131,7 @@ export async function sendRequest(url, method, params, token) {
       if (response.ok) {
         return data;
       } else {
-        const message = 'Send Request : \n Request : ' + requestOptions + '\n' + 'Response : ' + response + '\n';
-        throw new error.Error(message, false);
+        throw new error.Error(response.status, false);
       }
     } catch (e) {
       throw error.castError(e, false);
@@ -166,7 +165,7 @@ export async function createAccount(addr, psw){
     return currMail;
   }
   catch(e) {
-    throw new error.Error('Error creating the email address. The address name must consist only of alphanumeric characters.', true);
+    throw new error.Error('Error creating the email address. This name might already be taken or it contains forbidden characters.', true);
   }
 }
 

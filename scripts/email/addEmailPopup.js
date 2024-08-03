@@ -41,6 +41,7 @@ function showPopupError(e){
       return;
     }
     const message = error.errorToString(e);
+    console.log(e);
     showPopupInfo(message, true);
 }
 

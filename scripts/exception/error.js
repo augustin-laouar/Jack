@@ -24,6 +24,9 @@ export function castError(error, show = false) {
         return error;
     }
     if ('message' in error) {
+        if('show' in error) {
+            return new Error(error.message, error.show);
+        }
         return new Error(error.message, show);
     } 
     else {

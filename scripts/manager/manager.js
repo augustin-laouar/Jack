@@ -75,12 +75,12 @@ export async function directRequest(endpoint, type, params) {
         };
         const response = await handleRequest(message);
         if(response.error) {
-            throw new error.castError(e);
+            throw error.castError(e);
         }
         return response;
     }
     catch(e) {
-        throw new error.castError(e);
+        throw error.castError(e);
     }
 }
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {   

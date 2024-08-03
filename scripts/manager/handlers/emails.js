@@ -3,6 +3,7 @@ import * as crypto from '../../tools/crypto.js'
 import * as random from '../../tools/rand_char.js';
 import * as api from '../../tools/emails_api.js';
 import { getDerivedKey } from '../vars.js';
+import * as error from '../../exception/error.js';
 
 const maxEmailNumber = 10; 
  
@@ -111,7 +112,8 @@ async function canCreateEmail() {
 }
 
 async function createEmail(addr){
-    if(!canCreateEmail()){
+    const canCreate = await canCreateEmail();
+    if(!canCreate){
         throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{
@@ -126,7 +128,8 @@ async function createEmail(addr){
 }
   
 async function createRandomEmail(domain = null, tryNumber = 0) { 
-    if(!canCreateEmail()){
+    const canCreate = await canCreateEmail();
+    if(!canCreate){
       throw new error.Error('You have reached the maximum number of allowed addresses.', true);
     }
     try{

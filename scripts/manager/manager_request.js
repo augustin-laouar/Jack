@@ -9,11 +9,11 @@ export async function makeRequest(endpoint, type, params) {
         };
         const response = await browser.runtime.sendMessage(message);
         if(response.error) {
-            throw new error.castError(response.error);
+            throw error.castError(response.error);
         }
         return response.result;
     }
     catch(e) {
-        throw new error.castError(e);
+        throw error.castError(e);
     }
 }
