@@ -20,7 +20,7 @@ import * as request from '../manager/manager_request.js';
 
 export function showInfo(message){
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
   infoLabel.className = 'text-info';
 }
 
@@ -30,7 +30,7 @@ export function showError(e){
   }
   const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
   infoLabel.className = 'text-warning';
 }
 
@@ -40,7 +40,7 @@ function showPopupError(e){
   }
   const message = error.errorToString(e);
   const infoLabel = document.getElementById('info-popup');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
 }
 
 

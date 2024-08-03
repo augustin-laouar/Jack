@@ -26,7 +26,7 @@ function showError(e){
     }
     const message = error.errorToString(e);
     const infoLabel = document.getElementById('info');
-    infoLabel.innerHTML = message;
+    infoLabel.innerText = message;
 }
 
 
@@ -458,7 +458,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         hideCustomMenu(event);
     });
     document.getElementById('title').innerText = email.address;
-    document.getElementById('mailbox-title').innerHTML = 'Mailbox : ' + email.address;
+    document.getElementById('mailbox-title').innerText = 'Mailbox : ' + email.address;
     //autorefrsh
     onPeriod(5000, email);
   });

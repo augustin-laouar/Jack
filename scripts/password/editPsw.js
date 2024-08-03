@@ -95,7 +95,7 @@ function editPopupContent(title)  {
 
 function showPopupInfo(message, warning = false) {
   const infoLabel = document.getElementById('popup-info');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
   if(warning) {
       infoLabel.classList.remove('text-info');
       infoLabel.classList.add('text-warning');

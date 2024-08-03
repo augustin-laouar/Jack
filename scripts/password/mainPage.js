@@ -22,7 +22,7 @@ import * as request from '../manager/manager_request.js';
 
 function showErrorMessage(message) {
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
 }
 function showError(e){
   if(!(e instanceof error.Error)){
@@ -30,7 +30,7 @@ function showError(e){
   }
   const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
 }
 
 async function researchPassword(){

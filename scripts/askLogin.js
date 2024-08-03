@@ -25,7 +25,7 @@ function showError(e){
   }
   const message = error.errorToString(e);
   const infoLabel = document.getElementById('info');
-  infoLabel.innerHTML = message;
+  infoLabel.innerText = message;
 }
 
 document.addEventListener("DOMContentLoaded", function() {

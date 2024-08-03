@@ -92,7 +92,7 @@ function addPopupContent()  {
 
 function showPopupInfo(message, warning = false) {
     const infoLabel = document.getElementById('popup-info');
-    infoLabel.innerHTML = message;
+    infoLabel.innerText = message;
     if(warning) {
         infoLabel.classList.remove('text-info');
         infoLabel.classList.add('text-warning');
@@ -116,7 +116,7 @@ export async function fillGenerators(selectElement) {
     for(const generator of generators) {
             const opt = document.createElement('option');
             opt.value = generator.id;
-            opt.innerHTML = generator.name;
+            opt.innerText = generator.name;
             selectElement.appendChild(opt);
     }
 }

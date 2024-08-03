@@ -1,5 +1,5 @@
 {
-    "name": "Jack's Mails",
+    "name": "Jack",
     "description": "Manage temporary e-mails address and passwords.",
     "manifest_version": 2,
     "version" : "1.2",
@@ -11,7 +11,7 @@
         "default_area": "navbar",
         "default_icon": "icons/jackthemail-nobg3.png",
         "default_popup" :"html/login.html",
-        "default_title": "Jack's Mails"
+        "default_title": "Jack"
     },
     "browser_specific_settings": {
       "gecko": {

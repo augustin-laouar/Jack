@@ -42,7 +42,7 @@ function addPopupContent()  {
 
 function showPopupInfo(message, warning = false) {
     const infoLabel = document.getElementById('info-popup');
-    infoLabel.innerHTML = message;
+    infoLabel.innerText = message;
     if(warning) {
         infoLabel.classList.remove('text-info');
         infoLabel.classList.add('text-warning');
@@ -63,7 +63,7 @@ function showPopupError(e){
 
 async function fillSelectDomain() {
     const selectDomain = document.getElementById('select-domain');
-    selectDomain.innerHTML = '';
+    selectDomain.innerText = '';
     const domains = await getDomains();
     let options = [];
     domains.forEach(domain => {
