@@ -1,7 +1,7 @@
 import * as popup from '../popup.js';
 import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
-import { updatePasswordStrength } from './pswStrength.js';
+import { updatePasswordStrength } from '../style/pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
 

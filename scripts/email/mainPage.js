@@ -122,16 +122,6 @@ export async function fillAddressList(){
 
 document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
-    const logOutButton = document.getElementById('log-out');
-    logOutButton.addEventListener("click", async function(event){
-      try {
-        await request.makeRequest('logout', null, null);
-        window.location.href = "/html/login.html";
-      }
-      catch(e) {
-        showError(e);
-      }
-    });
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){
       const url = browser.runtime.getURL('../../html/settings.html');

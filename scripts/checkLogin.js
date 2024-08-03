@@ -15,7 +15,10 @@ if(!isLogged) {
 browser.runtime.onMessage.addListener(notify);
 
 function notify(message) {
-    if(message.type === 'logout') {
+    if(message.endpoint === 'logout') {
+        window.location.href = "/html/login.html";
+    }
+    if(message.endpoint === 'managerIgnore' && message.type === 'logout') {
         window.location.href = "/html/login.html";
     }
 }

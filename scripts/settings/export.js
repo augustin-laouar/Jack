@@ -32,25 +32,6 @@ export async function export_account(password, givenFileName) {
     URL.revokeObjectURL(url);
 }
 
-
-async function read_json_file(jsonfile) {
-    return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.readAsText(jsonfile);
-        reader.onload = function(event) {
-            try {
-                const jsonData = JSON.parse(event.target.result);
-                resolve(jsonData);
-            } catch (e) {
-                reject(new error.Error('Error reading account file.', true));
-            }
-        };
-        reader.onerror = function() {
-            reject(new error.Error('Account file is unreadable.', true));
-        };
-    });
-}
-
 export async function import_account(jsonfile, password, keepCurrPsw) {
     const params = {
         jsonFile: jsonfile,
@@ -105,8 +86,8 @@ async function askForPasswordConfirm() {
             event.preventDefault();
             const givenPsw = confirmPswInput.value;
             try {
-                const isValid = await request.makeRequest('password', 'verify', { password: currentPsw.value});
-                if (isValid) {
+                const isValid = await request.makeRequest('password', 'verify', { password: givenPsw});
+                if (!isValid) {
                     showPopupInfo('Invalid password.', true);
                     confirmPswInput.value = '';
                 } else {

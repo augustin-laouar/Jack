@@ -3,26 +3,10 @@
 ## todo
 - hache mdp avec argon2
 - Ajouter sur chrome
-- changer logs/passwords par credentials / connectionDuration par sessionValidity
-- Dans local storage : utiliser des _ et pas ecriture java
-- backgroundScripts => background / logs, psw ... => credentials
-- utiliser chemin absolu a la place de relatif
-- si possible petite pastille verte qui indique si l'on est connecté ou non
-- JSON.serialize pour encrypt/decrypt les creds
+
 # Bugs 
 
 ## Tache actuel
-- Toutes les taches d'encryption/decryption password/emails directement faites dans le bg script.
-- Envoi de requetes au bg script pour avoir l'acces aux mails/passwords
-- accès direct en appelant les fonctions depuis les autres bg scripts
-- verify_auth ne logout pas correctement.
-- Passer les autres variables dans le bg scripts et y accéder de la meme manière
-
-étape 1 : 
-- Créer les fonctions (vides) et les handle de requêtes qui seront nécessaires
-- Créer l'interfacer qui enverra les requêtes et attendra les réponses
-- Implémenter les fonctions
-- Utiliesr l'interfacer partout à la places des autres fonctions tools.
 ## Terminé
 - Page about
 - Stocker logs via des ids et non url 
@@ -54,3 +38,4 @@
 ## Next MAJ
 - Probleme lorsque déco sur un onglet, on est reconnecté sur emails.html
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?
+- Utiliser le generateur de mot de passe via le clic droit

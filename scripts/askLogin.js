@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", function() {
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
       const password = document.getElementById('password').value;
-      const isValid = await request.makeRequest('password', 'verify', password);
-      if(isValid){
-        browser.runtime.sendMessage({subject: 'isLogged', status: true}); //todo
+      const result = await request.makeRequest('login', null, { password: password });
+      if(result){
+        request.makeRequest('managerIgnore', 'loginSucess', null);
         window.close();
       }
       else{

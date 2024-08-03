@@ -1,4 +1,4 @@
-import { updatePasswordStrength } from './password/pswStrength.js';
+import { updatePasswordStrength } from './style/pswStrength.js';
 import { togglePassword } from './style/toggle_password.js';
 import * as request from './manager/manager_request.js';
 
@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
         await request.makeRequest('password', 'set', { password: passwordInput.value });
         await request.makeRequest('generators', 'add', { default: true });
         await request.makeRequest('sessionDuration', 'set', { duration: 3 });
+        request.makeRequest('managerIgnore', 'firstLogin', null);
         window.location.href = "../html/login.html";
       }
       catch(error){

@@ -8,12 +8,8 @@ export async function checkLogin() {
 export async function waitLogin() {
     return new Promise((resolve) => {
         function messageListener(message) {
-            if (message.endpoit === 'login') {
-                if (message.status === true) {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
+            if (message.endpoint === 'managerIgnore' && message.type === 'loginSucess') {
+                resolve(true);
                 browser.runtime.onMessage.removeListener(messageListener);
             }
         }

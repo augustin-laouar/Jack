@@ -15,8 +15,6 @@ export function errorToString(error) {
         return error.message;
     }
     else {
-        //debug mode
-        console.log(error);
         return 'Unexpected error.';
     }
 }

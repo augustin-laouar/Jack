@@ -1,6 +1,6 @@
 import * as popup from '../popup.js';
 import {showInfo, showPopupError, showPopupInfo} from './info.js';
-import { updatePasswordStrength } from '../password/pswStrength.js';
+import { updatePasswordStrength } from '../style/pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
 

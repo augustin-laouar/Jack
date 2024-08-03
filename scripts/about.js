@@ -1,13 +1,4 @@
-import * as request from './manager/manager_request.js';
-
 document.addEventListener('DOMContentLoaded', function() {
-    const logOutButton = document.getElementById('log-out');
-    logOutButton.addEventListener("click", async function(event){
-        await request.makeRequest('logout', null, null);
-        window.location.href = "/html/login.html";
-    });
-
-
     var navLinks = document.querySelectorAll('.nav-link');
     var contents = document.querySelectorAll('.content');
 

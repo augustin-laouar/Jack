@@ -19,7 +19,6 @@ MESSAGE STRUCTURE :
 */
 //handle the request. If nothing to return, return null
 async function handleRequest(message) {
-    //console.log('request : ', message);
     if (message.endpoint === "login") {
         const result = await loginHandler.handle(message);
         return result;
@@ -45,7 +44,6 @@ async function handleRequest(message) {
         return result;
     }
     if (message.endpoint === "emails") { // Emails  
-        console.log('request : ', message);
         const result = await emailsHandler.handle(message);
         return result;
     }
@@ -79,16 +77,18 @@ export async function directRequest(endpoint, type, params) {
         if(response.error) {
             throw new error.castError(e);
         }
-        return response.result;
+        return response;
     }
     catch(e) {
         throw new error.castError(e);
     }
 }
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {   
+    if(message.endpoint === 'managerIgnore') {
+        return true;
+    }
     handleRequest(message)
     .then(result => {
-       // console.log('response : ', result);
         sendResponse({ result: result });
     })
     .catch(e => {

@@ -442,17 +442,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
     document.getElementById('title').innerText = email.address;
     document.getElementById('mailbox-title').innerHTML = 'Mailbox : ' + email.address;
-
-    const logOutButton = document.getElementById('log-out');
-    logOutButton.addEventListener("click", async function(event){
-        try {
-            await request.makeRequest('logout', null, null);
-            window.location.href = "/html/login.html";
-        }
-        catch(e) {
-            showError(error);
-        }
-    });
     //autorefrsh
     onPeriod(5000, email);
   });

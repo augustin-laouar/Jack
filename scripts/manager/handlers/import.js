@@ -50,13 +50,13 @@ async function import_account(jsonfile, password, keepCurrPsw) {
     if(keepCurrPsw) {
         try {
             //create other key
-            const newKey = await crypto.generateDerivedKey(password);
+            const fileKey = await crypto.generateDerivedKey(password);
             const currentKey = getDerivedKey();
             var newEmails = [];
             var newCreds = [];
             for(const element of emails) {
-                const email = await crypto.decryptWithAES(element.email, currentKey);
-                const newEncryption = await crypto.encryptWithAES(email, newKey);
+                const email = await crypto.decryptWithAES(element.email, fileKey);
+                const newEncryption = await crypto.encryptWithAES(email, currentKey);
                 const newElement = {
                     id: element.id,
                     email: newEncryption
@@ -64,8 +64,8 @@ async function import_account(jsonfile, password, keepCurrPsw) {
                 newEmails.push(newElement);
             }
             for(const element of creds) {
-                const content = await crypto.decryptWithAES(element.content, currentKey);
-                const newEncryption = await crypto.encryptWithAES(content, newKey);
+                const content = await crypto.decryptWithAES(element.content, fileKey);
+                const newEncryption = await crypto.encryptWithAES(content, currentKey);
 
                 const newElement = {
                     id: element.id,
@@ -81,7 +81,6 @@ async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ emails: newEmails });
         await storage.store({ credentials: newCreds });
         await storage.store({ generators: generators});
-        setDerivedKey(newKey);
     }
     else {
         await storage.store({ masterPswHash: masterPswHash});

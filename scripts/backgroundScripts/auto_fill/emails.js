@@ -5,10 +5,10 @@ import { getDerivedKey } from "../../manager/vars.js";
 
 async function get_email() {
   try {
-    let encryptedEmails = await directRequest('emails', 'get', null);
+    let encryptedEmails = await directRequest('emails', 'get', {});
     if(encryptedEmails.length === 0 ) {
       await directRequest('emails', 'create', { random: true });
-      encryptedEmails = await directRequest('emails', 'get', null);
+      encryptedEmails = await directRequest('emails', 'get', {});
     }
     const firstEncryptedEmail = encryptedEmails[0];
     const derivedKey = getDerivedKey();
@@ -38,18 +38,44 @@ export function fillField(tab, content) {
   });
 }
 
-let isUserLoggedIn = false;
-
-directRequest('session', 'isFirstLogin', null).then(res => {
-  if(!res) {
-    browser.contextMenus.create({
-      id: "jack_random_email",
-      title: "Use temporary email",
-      contexts: ["editable"]
-    });
+function notify(message) {
+  if(message.endpoit === 'logout') {
+    isUserLoggedIn = false;
   }
-});
+  if(message.endpoint === 'managerIgnore') {
+    if(message.type === 'logout') {
+      isUserLoggedIn = false;
+    }
+    if(message.type === 'loginSucess') {
+      isUserLoggedIn = true;
+    }
+    if(message.type === 'firstLogin') {
+      browser.contextMenus.create({
+        id: "jack_random_email",
+        title: "Use temporary email",
+        contexts: ["editable"]
+      });
+    }
+  }
+}
 
+async function init() {
+  try {
+    const res = await directRequest('session', 'isFirstLogin', null);
+    if (!res) {
+      browser.contextMenus.create({
+        id: "jack_random_email",
+        title: "Use temporary email",
+        contexts: ["editable"]
+      });
+    }
+  }
+  catch (e) {
+  }
+}
+
+let isUserLoggedIn = false;
+init();
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "jack_random_email") {
@@ -75,20 +101,5 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 
 browser.runtime.onMessage.addListener(notify);
 
-function notify(message) {
-    if(message.endpoit === 'logout') {
-      isUserLoggedIn = false;
-    }
-    if(message.endpoit === 'login') {
-      isUserLoggedIn = true;
-    }
-    if(message.endpoit === 'password' && message.type === 'set') { //it's the first connection
-      browser.contextMenus.create({
-        id: "jack_random_email",
-        title: "Use temporary email",
-        contexts: ["editable"]
-      });
-    }
-}
 
 

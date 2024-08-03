@@ -231,14 +231,4 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
         }
       }
     });
-    const logOutButton = document.getElementById('log-out');
-    logOutButton.addEventListener("click", async function(event){
-      try {
-        await request.makeRequest('logout', null, null);
-        window.location.href = "/html/login.html";
-      }
-      catch(e) {
-        showError(e);
-      }
-    });
 });

@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       var password = document.getElementById("password").value;
       const result = await request.makeRequest('login', null, { password: password });
       if(result) {
+        request.makeRequest('managerIgnore', 'loginSucess', null);
         window.location.href = "/html/emails.html";
       }
       else{

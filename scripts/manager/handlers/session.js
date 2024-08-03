@@ -62,7 +62,7 @@ async function isFirstLogin(){
     try {
         const hash = await storage.read('masterPswHash');
         if(hash === null) {
-          return true;
+            return true;
         }
         return false;
       }

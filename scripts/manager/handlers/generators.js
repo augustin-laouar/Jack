@@ -306,7 +306,6 @@ export async function handle(message) {
     }
 
     if(message.type === 'get') {
-        console.log(message.params.default);
         if(message.params.default) {
             const result = await getGenerator(default_generator_id);
             return result;

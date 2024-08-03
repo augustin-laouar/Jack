@@ -5,6 +5,7 @@ async function checkLogin() {
     const sessionTimeout = await directRequest('session', 'timeout', null);
     if (sessionTimeout) {
       await directRequest('logout', null, null);
+      await browser.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
     }
   } catch (error) {
     //console.error('Error in checkLogin:', error);

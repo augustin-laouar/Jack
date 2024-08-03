@@ -48,7 +48,7 @@ async function askForPasswordConfirm() {
             event.preventDefault();
             const givenPsw = confirmPswInput.value;
             try {
-                const isValid = await request.makeRequest('password', 'verify', { password: currentPsw.value});
+                const isValid = await request.makeRequest('password', 'verify', { password: givenPsw});
                 if (!isValid) {
                     showPopupInfo('Invalid password.', true);
                     confirmPswInput.value = '';
@@ -70,5 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
     resetDataButton.addEventListener('click', async function() {
         await askForPasswordConfirm(); 
         await reset();
+        window.location.href = "/html/firstConnection.html";
     });
 });
