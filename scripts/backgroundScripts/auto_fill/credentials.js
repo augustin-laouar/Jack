@@ -109,6 +109,11 @@ async function init() {
 }
 
 let isUserLoggedIn = false;
+
+export function updateIsLoggedInCred(value) {
+  isUserLoggedIn = value;
+}
+
 init();
 
 browser.contextMenus.onClicked.addListener((info, tab) => {

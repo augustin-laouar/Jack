@@ -15,8 +15,25 @@
  * limitations under the License.
  */
 
-window.addEventListener("click", notifyExtension);
-
-function notifyExtension(e) {
+function notifyExtension() {
   browser.runtime.sendMessage({ endpoint: 'session', type: 'update' });
 }
+
+function throttle(func, limit) {
+  return function() {
+      if (!throttleTimer) {
+          func();
+          throttleTimer = setTimeout(() => {
+              throttleTimer = null;
+          }, limit);
+      }
+  }
+}
+
+let throttleTimer;
+
+window.addEventListener("click", throttle(notifyExtension, 1000));
+window.addEventListener("mousemove", throttle(notifyExtension, 1000));
+window.addEventListener("keydown", throttle(notifyExtension, 1000));
+window.addEventListener("scroll", throttle(notifyExtension, 1000));
+window.addEventListener("focus", throttle(notifyExtension, 1000));

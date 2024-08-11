@@ -3,9 +3,15 @@
 ## todo
 - hache mdp avec argon2
 - Ajouter sur chrome
-
+- Remplacer Jack's mails par jack
+- Changer les screens
+- Agrandir la page mails et la page credentials
+- Si possible enlever le hash du mdp -> le remplacer par un challenge à résoudre en se connectant, en ajoutant un facteur de travail (1000 par exemple).
+- utiliser le generator via le clic droit
+- browser.storage.sync
+- + d'eventlistener pour le timeout
 # Bugs 
-
+- Lorsque l'on clic droit pour utiliser une email, parfois on a undefined. Cela semble arrivé lorsque l'on a été deconnecté par un timeout.
 ## Tache actuel
 ## Terminé
 - Page about

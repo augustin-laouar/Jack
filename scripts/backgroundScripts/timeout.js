@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 import { directRequest } from '../manager/manager.js';
+import { updateIsLoggedInCred } from './auto_fill/credentials.js';
+import { updateIsLoggedInEmail } from './auto_fill/emails.js';
 
 async function checkLogin() {
   try {
     const sessionTimeout = await directRequest('session', 'timeout', null);
     if (sessionTimeout) {
       await directRequest('logout', null, null);
-      await browser.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
+      updateIsLoggedInCred(false);
+      updateIsLoggedInEmail(false);
+      browser.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
     }
   } catch (error) {
   }

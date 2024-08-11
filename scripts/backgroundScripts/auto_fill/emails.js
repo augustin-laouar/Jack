@@ -20,6 +20,7 @@ import { directRequest  } from "../../manager/manager.js";
 import { decryptWithAES } from "../../tools/crypto.js";
 import { getDerivedKey } from "../../manager/vars.js";
 
+
 async function get_email() {
   try {
     let encryptedEmails = await directRequest('emails', 'get', {});
@@ -92,6 +93,11 @@ async function init() {
 }
 
 let isUserLoggedIn = false;
+
+export function updateIsLoggedInEmail(value) {
+  isUserLoggedIn = value;
+}
+
 init();
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
