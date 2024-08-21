@@ -92,8 +92,8 @@ function getTrContent(title, url, username, description){
       </div>
     </td>
     <td>
-      <div style="max-width: 250px; overflow-y: auto;" data-bs-placement="bottom" title="Copy to clipboard">
-        <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="cp-url">${url}</p>
+      <div style="max-width: 250px; overflow-y: auto;" data-bs-placement="bottom" title="Open link">
+        <p class="text-info" style="white-space: nowrap; cursor: pointer;" id="open-url">${url}</p>
       </div>
     </td>
     <td>
@@ -152,15 +152,19 @@ export async function fillPasswordList(credParam = null, searching = false){
       for(const credential of creds) {
         const trElement = document.createElement('tr');
         trElement.innerHTML = getTrContent(credential.content.title, credential.content.url, credential.content.username, credential.content.description);
-        const copyUrl = trElement.querySelector('#cp-url')
+        const openUrl = trElement.querySelector('#open-url')
         const copyUsername = trElement.querySelector('#cp-username');
         const copyPasswordButton = trElement.querySelector('#cp-psw-button');
         const editButton = trElement.querySelector('#edit-button');
         const deleteButton = trElement.querySelector('#delete-button');
 
-        copyUrl.addEventListener('click', async function(){
+        openUrl.addEventListener('click', async function(){
           try{
-            copyToClipboard(credential.content.url);
+            let url = credential.content.url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+              url = 'https://' + url;
+            }
+            browser.tabs.create({ url: url });
           }
           catch(error){
             showError(error);
