@@ -30,7 +30,7 @@ function get_meta_data() {
     };
 }
 async function get_json() {
-    const masterPswHash = await storage.read('masterPswHash');
+    const challenge = await storage.read('challenge');
     const connectionDuration = await storage.read('connectionDuration');
     const emails = await storage.read('emails');
     const creds = await storage.read('credentials');
@@ -38,7 +38,7 @@ async function get_json() {
     const metadata = get_meta_data();
     const jsonData = {
         metadata: metadata,
-        masterPswHash: masterPswHash,
+        challenge: challenge,
         connectionDuration: connectionDuration,
         emails: emails,
         credentials: creds,
@@ -47,7 +47,7 @@ async function get_json() {
     return jsonData;
 }
 
-async function export_account(givenFileName) {
+async function export_account() {
     const jsonObject = await get_json();
     const jsonStr = JSON.stringify(jsonObject, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });

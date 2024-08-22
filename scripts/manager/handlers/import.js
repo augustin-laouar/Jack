@@ -19,6 +19,7 @@ import * as storage from '../../tools/storage.js';
 import * as error from '../../exception/error.js';
 import * as crypto from '../../tools/crypto.js';
 import { setDerivedKey, getDerivedKey } from '../vars.js';
+import { checkChallenge } from '../../tools/challenge.js';
 
 async function read_json_file(jsonfile) {
     return new Promise((resolve, reject) => {
@@ -47,20 +48,19 @@ async function import_account(jsonfile, password, keepCurrPsw) {
         throw new error.Error('Unreadable file.', true);
     }
     //Check if these required values exists
-    if (!(json.metadata && json.metadata.version && json.masterPswHash)) {
+    if (!(json.metadata && json.metadata.version && json.challenge)) {
         throw new error.Error('File is corrupted.', true);
     }
     const version = json.metadata.version;
     if(version !== 1) { // If, in a future version of Jack's Mails, the file account won't be the same 
         throw new error.Error("This file version is not supported. Please udpate Jack's Mails to import this account.", true);
     }
-    const masterPswHash = json.masterPswHash;
+    const challenge = json.challenge;
     const connectionDuration = json.connectionDuration ?? 3; // 3 mins is default value
     const emails = json.emails ?? []; //Empty list by default
     const creds = json.credentials ?? [];
     const generators = json.generators ?? [];
-
-    if(!(await crypto.isValidHash(password, masterPswHash))) {
+    if(!(await checkChallenge(password, challenge))){
         throw new error.Error('Invalid password. Unable to decrypt the file.', true);
     }
 
@@ -83,7 +83,6 @@ async function import_account(jsonfile, password, keepCurrPsw) {
             for(const element of creds) {
                 const content = await crypto.decryptWithAES(element.content, fileKey);
                 const newEncryption = await crypto.encryptWithAES(content, currentKey);
-
                 const newElement = {
                     id: element.id,
                     content: newEncryption
@@ -100,10 +99,10 @@ async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ generators: generators});
     }
     else {
-        await storage.store({ masterPswHash: masterPswHash});
+        await storage.store({ challenge: challenge});
         await storage.store({ connectionDuration: connectionDuration});
         await storage.store({ emails: emails});
-        await storage.store({ logs: creds });
+        await storage.store({ credentials: creds });
         await storage.store({ psw_generators: generators});
         const newKey = await crypto.generateDerivedKey(password);
         setDerivedKey(newKey);

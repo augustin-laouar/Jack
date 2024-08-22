@@ -22,7 +22,7 @@ async function removeAllData() {
     await storage.remove('emails');
     await storage.remove('credentials');
     await storage.remove('connectionDuration');
-    await storage.remove('masterPswHash');
+    await storage.remove('challenge');
     await storage.remove('generators');
     setDerivedKey(null);
     setIsLogged(false);

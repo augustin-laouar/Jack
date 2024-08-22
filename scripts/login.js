@@ -41,13 +41,15 @@ document.addEventListener("DOMContentLoaded", async function() {
     var form = document.getElementById("login-form");
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
-      var password = document.getElementById("password").value;
-      const result = await request.makeRequest('login', null, { password: password });
+      const passwordField = document.getElementById("password");
+      var inputPassword = passwordField.value;
+      const result = await request.makeRequest('login', null, { password: inputPassword });
       if(result) {
         request.makeRequest('managerIgnore', 'loginSucess', null);
         window.location.href = "/html/emails.html";
       }
       else{
+        passwordField.value = '';
         const infoLabel = document.getElementById('info');
         infoLabel.innerText = 'Wrong password.';
       }

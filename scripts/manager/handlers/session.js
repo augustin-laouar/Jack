@@ -77,8 +77,8 @@ function updateLastAction() {
 
 async function isFirstLogin(){
     try {
-        const hash = await storage.read('masterPswHash');
-        if(hash === null) {
+        const challenge = await storage.read('challenge');
+        if(challenge === null) {
             return true;
         }
         return false;
