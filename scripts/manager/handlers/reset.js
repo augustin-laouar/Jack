@@ -24,6 +24,7 @@ async function removeAllData() {
     await storage.remove('connectionDuration');
     await storage.remove('challenge');
     await storage.remove('generators');
+    await storage.remove('workFactor');
     setDerivedKey(null);
     setIsLogged(false);
     setLastAction(null);

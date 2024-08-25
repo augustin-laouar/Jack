@@ -55,19 +55,24 @@ async function import_account(jsonfile, password, keepCurrPsw) {
     if(version !== 1) { // If, in a future version of Jack's Mails, the file account won't be the same 
         throw new error.Error("This file version is not supported. Please udpate Jack's Mails to import this account.", true);
     }
+    const workFactor = json.workFactor;
     const challenge = json.challenge;
+
+    //transform stored salt into Uint8arry
+    const saltObject = json.challenge.salt;
+    const salt = new Uint8Array(Object.values(saltObject));
+    challenge.salt = salt;
+    
     const connectionDuration = json.connectionDuration ?? 3; // 3 mins is default value
     const emails = json.emails ?? []; //Empty list by default
     const creds = json.credentials ?? [];
     const generators = json.generators ?? [];
-    if(!(await checkChallenge(password, challenge))){
+    const fileKey = await checkChallenge(password, challenge, workFactor);
+    if(fileKey === null){
         throw new error.Error('Invalid password. Unable to decrypt the file.', true);
     }
-
     if(keepCurrPsw) {
         try {
-            //create other key
-            const fileKey = await crypto.generateDerivedKey(password);
             const currentKey = getDerivedKey();
             var newEmails = [];
             var newCreds = [];
@@ -104,8 +109,7 @@ async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ emails: emails});
         await storage.store({ credentials: creds });
         await storage.store({ psw_generators: generators});
-        const newKey = await crypto.generateDerivedKey(password);
-        setDerivedKey(newKey);
+        setDerivedKey(fileKey);
     }
 }
 

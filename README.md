@@ -1,16 +1,14 @@
 # Jack
 
 ## todo
-- hache mdp avec argon2
 - Ajouter sur chrome
 - noms des fichiers
 - Changer les screens
-- Agrandir la page mails et la page credentials
-- Si possible enlever le hash du mdp -> le remplacer par un challenge à résoudre en se connectant, en ajoutant un facteur de travail (1000 par exemple).
-- utiliser le generator via le clic droit
 - browser.storage.sync
+- config du noncesize dans settings => affichage du temps approximatif que prendrait à se connecter avec un noncesize tel
 # Bugs 
 ## Tache actuel
+Pour nonce : utiliser une série de bit générer à la place d'un entier 
 ## Terminé
 - Page about
 - Stocker logs via des ids et non url 

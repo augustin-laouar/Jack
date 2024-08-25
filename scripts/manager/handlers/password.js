@@ -20,18 +20,41 @@ import * as storage from '../../tools/storage.js';
 import * as error from '../../exception/error.js';
 import { setDerivedKey, getDerivedKey } from '../vars.js';
 import { checkChallenge, createChallenge } from '../../tools/challenge.js';
+import { directRequest } from '../manager.js';
 
-async function storeChallenge(password) {
-    const challenge = await createChallenge(password);
+async function storeChallenge(password, nonce = null, salt = null) {
+    const workFactor = await directRequest('workFactor', 'get', null);
+    const challenge = await createChallenge(password, workFactor, nonce, salt);
     await storage.store({ challenge: challenge });
 }
 
 async function verifyPassword(password) {
+    const workFactor = await directRequest('workFactor', 'get', null);
     const challenge = await storage.read('challenge');
-    const res = await checkChallenge(password, challenge);
-    return res;
+    const res = await checkChallenge(password, challenge, workFactor);
+    if(res !== null){
+        return true;
+    }
+    else {
+        return false;
+    }
 
 }
+
+async function updatePassword(password, workFactor) {
+    const oldKey = getDerivedKey();
+    var nonce = null;
+    workFactor = parseInt(workFactor, 10);
+    if(workFactor !== 0) {
+        nonce = Math.floor(Math.random() * (workFactor + 1));
+    }
+    const result = await crypto.generateDerivedKey(password, nonce);
+    await encryptCredsWithNewkey(oldKey, result.key);
+    await encryptEmailsWithNewKey(oldKey, result.key);
+    setDerivedKey(result.key);
+    await storeChallenge(password, nonce, result.salt);
+}
+
 
 async function encryptCredsWithNewkey(oldKey, newKey) {
     try {
@@ -84,14 +107,9 @@ export async function handle(message) {
     }
 
     if(message.type === 'update') {
-        const password = message.params.password;        
-        const oldKey = getDerivedKey();
-        const newKey = await crypto.generateDerivedKey(password);
-
-        await encryptCredsWithNewkey(oldKey, newKey);
-        await encryptEmailsWithNewKey(oldKey, newKey);
-        setDerivedKey(newKey);
-        await storeChallenge(password)
+        const password = message.params.password;   
+        const workFactor = message.params.workFactor;     
+        await updatePassword(password, workFactor);
         return true;
     }
 

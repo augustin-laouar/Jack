@@ -16,6 +16,7 @@
  */
 const alphaNumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const allCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=[]{}|:;"<>,.?/~`';
+const numbers = '0123456789';
 
 export function generate(length, chars) {
   let randomString = '';
@@ -32,5 +33,9 @@ export function generateAllChars(length) {
 
 export function generateAlphaNumeric(length) {
   return generate(length, alphaNumeric);
+}
+
+export function generateNumbers(length) {
+  return generate(length, numbers);
 }
 

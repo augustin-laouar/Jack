@@ -94,7 +94,8 @@ async function changePassword() {
                 newPswConfirm.value = ''
             }
             else {
-                await request.makeRequest('password', 'update', { password: newPsw.value });
+                const workFactor = await request.makeRequest('workFactor', 'get', null);
+                await request.makeRequest('password', 'update', { password: newPsw.value, workFactor: workFactor });
                 popup.closePopup();
                 currentPsw.value = '';
                 newPsw.value = '';

@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-import * as crypto from '../../tools/crypto.js';
 import * as storage from '../../tools/storage.js';
 import * as error from '../../exception/error.js';
 import { setIsLogged, setDerivedKey, setLastAction } from '../vars.js';
 import { checkChallenge } from '../../tools/challenge.js';
-
+import { directRequest } from '../manager.js';
 
 async function login(password){
     try{
         const challenge = await storage.read('challenge');
-        const isValid = await checkChallenge(password, challenge);
-        if (isValid) {
+        const workFactor = await directRequest('workFactor', 'get', null);
+        const derivedKey = await checkChallenge(password, challenge, workFactor);
+        if (derivedKey !== null) {
             const currentDate = new Date();
-            const derivedKey = await crypto.generateDerivedKey(password);
             setIsLogged(true);
             setLastAction(currentDate);
             setDerivedKey(derivedKey);

@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       try{
+        await request.makeRequest('workFactor', 'set', { workFactor: 0 });
         await request.makeRequest('password', 'set', { password: passwordInput.value });
         await request.makeRequest('generators', 'add', { default: true });
         await request.makeRequest('sessionDuration', 'set', { duration: 3 });

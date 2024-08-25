@@ -27,6 +27,7 @@ import * as generatorsHandler from './handlers/generators.js';
 import * as importHandler from './handlers/import.js';
 import * as exportHandler from './handlers/export.js';
 import * as resetHandler from './handlers/reset.js';
+import * as workFactorHandler from './handlers/work_factor.js';
 
 /*
 MESSAGE STRUCTURE :
@@ -78,6 +79,10 @@ async function handleRequest(message) {
     }
     if (message.endpoint === "reset") { 
         const result = await resetHandler.handle(message);
+        return result;
+    }
+    if (message.endpoint === "workFactor") { 
+        const result = await workFactorHandler.handle(message);
         return result;
     }
     throw new error.Error("Manager : Unknown endpoint.", false);

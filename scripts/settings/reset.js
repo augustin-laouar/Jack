@@ -27,7 +27,7 @@ export async function reset() {
 
 function passwordConfirmPopupContent() {
     return `
-      <p class="lead">Confirm your password</p>
+      <p class="lead">Confirm with your password</p>
       <p class="text-warning" style="font-size:0.9em;">Warning: Resetting will permanently delete all your data and cannot be undone.</p>
       <form id="confirm-psw-form">
           <div class="m-1">

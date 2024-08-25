@@ -17,7 +17,7 @@
 
 import * as error from '../exception/error.js';
 import * as popup from '../popup.js';
-import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
+import {showInfo, showError, showPopupInfo} from './info.js';
 import { fillGeneratorsList } from './generator.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
@@ -65,7 +65,7 @@ export async function import_account(jsonfile, password, keepCurrPsw) {
 
 function passwordConfirmPopupContent() {
     return `
-      <p class="lead">Confirm your password</p>
+      <p class="lead">Confirm with your password</p>
       <p style="font-size:0.9em;">This file will be protected by your current master password.</p>
       <form id="confirm-psw-form">
           <div class="m-1">

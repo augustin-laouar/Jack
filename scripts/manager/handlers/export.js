@@ -16,6 +16,7 @@
  */
 
 import * as storage from '../../tools/storage.js';
+import { directRequest } from '../manager.js';
 
 function get_meta_data() {
     const version = 1; //Jack file version
@@ -35,10 +36,12 @@ async function get_json() {
     const emails = await storage.read('emails');
     const creds = await storage.read('credentials');
     const generators = await storage.read('generators');
+    const workFactor = await directRequest('workFactor', 'get', null);
     const metadata = get_meta_data();
     const jsonData = {
         metadata: metadata,
         challenge: challenge,
+        workFactor: workFactor,
         connectionDuration: connectionDuration,
         emails: emails,
         credentials: creds,

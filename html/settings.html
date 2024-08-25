@@ -66,6 +66,19 @@ limitations under the License.
             <option value="10">10 minutes</option>
           </select>  
         </form>
+        <p class ="lead mt-3 mb-1">Work factor</p>
+        <form id="work-factor-form" class="mb-3">
+          <label class="form-label" >Work factor level :</label>
+          <select class="form-select dark-select mb-1" id="work-factor-select" style ="width:45%;">
+            <option value="0" selected="selected">Disabled</option>
+            <option value="10">Very low</option>
+            <option value="100">Low</option>
+            <option value="500" selected="selected">Medium</option>
+            <option value="1000">Hight</option>
+            <option value="10000">Very hight</option>
+          </select>  
+        </form>        
+        <p class="text-warning" id="work-factor-time-info"></p>
         <p class ="lead mb-1">Password generators</p>
         <div class="d-flex justify-content-end align-items-center w-50">
           <button type="button" class="btn transparent-button" id="add-generator-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="New password generator">
@@ -116,5 +129,6 @@ limitations under the License.
   <script type="module" src="/scripts/settings/generator.js"></script>
   <script type="module" src="/scripts/settings/reset.js"></script>
   <script type="module" src="/scripts/settings/sessionValidity.js"></script>
+  <script type="module" src="/scripts/settings/work_factor.js"></script>
 </body>
 </html>
