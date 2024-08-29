@@ -67,17 +67,25 @@ limitations under the License.
           </select>  
         </form>
         <p class ="lead mt-3 mb-1">Work factor</p>
-        <form id="work-factor-form" class="mb-3">
-          <label class="form-label" >Work factor level :</label>
-          <select class="form-select dark-select mb-1" id="work-factor-select" style ="width:45%;">
-            <option value="0" selected="selected">Disabled</option>
-            <option value="10">Very low</option>
-            <option value="100">Low</option>
-            <option value="500" selected="selected">Medium</option>
-            <option value="1000">Hight</option>
-            <option value="10000">Very hight</option>
-          </select>  
-        </form>        
+        <div class="d-flex align-items-center mb-1">
+          <form id="work-factor-form" class="mb-3">
+            <label class="form-label">
+              Work factor level 
+              <img src="../svg-images/question.svg" alt="Change" style="width: 15px; height: 15px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="The work factor helps make your password more resistant to brute-force attacks. The higher it is, the more protected your password will be, but the longer it will take to verify the password. An indicator shows how long the password verification will take.">
+            </label>
+            <select class="form-select dark-select mb-1" id="work-factor-select" >
+              <option value="0" selected="selected">Disabled</option>
+              <option value="8">Very low</option>
+              <option value="16">Low</option>
+              <option value="32" selected="selected">Medium</option>
+              <option value="1024">Hight</option>
+              <option value="4096">Very hight</option>
+            </select>  
+          </form>      
+          <button class="btn transparent-button ms-1" id="work-factor-apply" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Apply">
+            <img src="../svg-images/update.svg" alt="Change" style="width: 25px; height: 25px;">
+          </button>
+        </div>  
         <p class="text-warning" id="work-factor-time-info"></p>
         <p class ="lead mb-1">Password generators</p>
         <div class="d-flex justify-content-end align-items-center w-50">

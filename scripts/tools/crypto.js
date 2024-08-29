@@ -22,13 +22,17 @@ export async function generateDerivedKey(password, nonce = null, salt = null, it
   if (salt === null) {
     salt = window.crypto.getRandomValues(new Uint8Array(16)); 
   }
-  var toEncode = password;
+  var toEncode = encoder.encode(password);
   if(nonce !== null) {
-    toEncode += nonce;
+    const nonceEncoded = encoder.encode(nonce);
+    const minLength = Math.min(toEncode.length, nonceEncoded.length);
+    for (let i = 0; i < minLength; i++) {
+      toEncode[i] ^= nonceEncoded[i];
+    }
   }
   const keyMaterial = await window.crypto.subtle.importKey(
     'raw',
-    encoder.encode(toEncode),
+    toEncode,
     'PBKDF2',
     false, 
     ['deriveKey']

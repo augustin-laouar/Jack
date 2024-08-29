@@ -124,15 +124,25 @@ async function updateWorkFactor(password, workFactor) {
 }
 document.addEventListener('DOMContentLoaded', async function() {
     const workFactorSelect = document.getElementById('work-factor-select');
+    const workFactorApply = document.getElementById('work-factor-apply');
+
     const currentWorkFactor = await getWorkFactor();
     await setTimeInfo(currentWorkFactor);
     selectCurrentWorkFactor(workFactorSelect, currentWorkFactor);
     workFactorSelect.addEventListener('change', async function() {
         try {
+            const workFactorValue = workFactorSelect.value;
+            await setTimeInfo(workFactorValue);
+        }
+        catch(e) {
+            showError(e);
+        }
+    });
+    workFactorApply.addEventListener('click', async function() {
+        try {
             const password = await askForPasswordConfirm();
             const workFactorValue = workFactorSelect.value;
             await updateWorkFactor(password, workFactorValue);
-            await setTimeInfo(workFactorValue);
             showInfo('Work factor updated !');
         }
         catch(e) {
