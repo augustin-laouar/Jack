@@ -5,10 +5,10 @@
 - noms des fichiers
 - Changer les screens
 - browser.storage.sync
-- config du noncesize dans settings => affichage du temps approximatif que prendrait à se connecter avec un noncesize tel
 # Bugs 
 ## Tache actuel
-Pour nonce : utiliser une série de bit générer à la place d'un entier 
+- changer style password strenght
+- utiliser setTimout au lieu de timer
 ## Terminé
 - Page about
 - Stocker logs via des ids et non url 

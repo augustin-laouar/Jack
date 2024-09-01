@@ -16,7 +16,7 @@
  */
 
 import * as popup from '../popup.js';
-import {showInfo, showPopupError, showPopupInfo} from './info.js';
+import { showInfo, showError } from '../style/show_info.js';
 import { updatePasswordStrength } from '../style/pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
@@ -85,11 +85,11 @@ async function changePassword() {
             }
             const isValid = await request.makeRequest('password', 'verify', { password: currentPsw.value});
             if (isValid === false) {
-                showPopupInfo('Wrong current password.', true);
+                showInfo('Wrong current password.', true, true);
                 currentPsw.value = '';
             }
             else if(newPsw.value !== newPswConfirm.value){
-                showPopupInfo('Passwords are not the same.', true);
+                showInfo('Passwords are not the same.', true, true);
                 newPsw.value = '';
                 newPswConfirm.value = ''
             }
@@ -100,11 +100,11 @@ async function changePassword() {
                 currentPsw.value = '';
                 newPsw.value = '';
                 newPswConfirm.value = ''
-                showInfo('Password updated !');
+                showInfo('Password updated !', false, true);
             };
         }
         catch(e) {
-            showPopupError(e);
+            showError(e, true);
         }
     });
 

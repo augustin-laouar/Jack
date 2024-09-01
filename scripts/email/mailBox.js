@@ -15,19 +15,10 @@
  * limitations under the License.
  */
 
-import * as error from '../exception/error.js';
 import * as viewer from './view_tools.js';
 import * as api from '../tools/emails_api.js';
 import * as request from '../manager/manager_request.js';
-
-function showError(e){
-    if(!(e instanceof error.Error)){
-      return;
-    }
-    const message = error.errorToString(e);
-    const infoLabel = document.getElementById('info');
-    infoLabel.innerText = message;
-}
+import { showInfo, showError } from '../style/show_info.js';
 
 
 async function markAsRead(email, message, trElement) {

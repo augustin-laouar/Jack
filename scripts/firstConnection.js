@@ -19,6 +19,7 @@
 import { updatePasswordStrength } from './style/pswStrength.js';
 import { togglePassword } from './style/toggle_password.js';
 import * as request from './manager/manager_request.js';
+import { showInfo, showError } from './style/show_info.js';
 
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("create-psw-form");
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
       if(passwordInput.value !== confirmInput.value){
-        document.getElementById('info').innerText = "Passwords are not the same.";
+        showInfo('Password are not the same.', true, false);
         return;
       }
       try{
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "../html/login.html";
       }
       catch(error){
-        document.getElementById('info').innerText = "Unexpected error.";
+        showError(error);
       }
     });
     passwordInput.addEventListener('input', function() {

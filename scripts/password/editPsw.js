@@ -21,6 +21,7 @@ import {fillGenerators} from './addPsw.js';
 import { updatePasswordStrength } from '../style/pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
+import { showInfo, showError } from '../style/show_info.js';
 
 function editPopupContent(title)  {
   if(title.length > 20) {
@@ -93,20 +94,6 @@ function editPopupContent(title)  {
   `;
 }
 
-function showPopupInfo(message, warning = false) {
-  const infoLabel = document.getElementById('popup-info');
-  infoLabel.innerText = message;
-  if(warning) {
-      infoLabel.classList.remove('text-info');
-      infoLabel.classList.add('text-warning');
-  }
-  else {
-      infoLabel.classList.remove('text-warning');
-      infoLabel.classList.add('text-info');
-  }
-}
-
-
 export async function editCredential(id, title, url, username, password, description) {
   popup.initClosePopupEvent();
   popup.fillPopupContent(editPopupContent(title));
@@ -137,8 +124,8 @@ export async function editCredential(id, title, url, username, password, descrip
       event.preventDefault(); 
       try{
         if(pswInput.value !== pswConfirmInput.value) {
-          showPopupInfo('Passwords are not the same.', true);
-          return;
+            showInfo('Passwords are not the same.', true, true);
+            return;
         }
         const params = {
             id: id,
@@ -154,7 +141,7 @@ export async function editCredential(id, title, url, username, password, descrip
           fillPasswordList();
       }
       catch(error){
-          showPopupError(error);
+          showError(error, true);
       }
   });
 

@@ -16,10 +16,11 @@
  */
 
 import * as popup from '../popup.js';
-import { fillAddressList, showInfo } from './mainPage.js';
+import { fillAddressList } from './mainPage.js';
 import * as error from '../exception/error.js';
 import { getDomains } from '../tools/emails_api.js';
 import * as request from '../manager/manager_request.js';
+import { showInfo, showError } from '../style/show_info.js';
 
 function addPopupContent()  {
     return `
@@ -38,27 +39,6 @@ function addPopupContent()  {
       </form>
       <p id="info-popup" class="text-warning mt-2" style="font-size: 0.8em;"></p>
     `;
-}
-
-function showPopupInfo(message, warning = false) {
-    const infoLabel = document.getElementById('info-popup');
-    infoLabel.innerText = message;
-    if(warning) {
-        infoLabel.classList.remove('text-info');
-        infoLabel.classList.add('text-warning');
-    }
-    else {
-        infoLabel.classList.remove('text-warning');
-        infoLabel.classList.add('text-info');
-    }
-}
-
-function showPopupError(e){
-    if(!(e instanceof error.Error)){
-      return;
-    }
-    const message = error.errorToString(e);
-    showPopupInfo(message, true);
 }
 
 async function fillSelectDomain() {
@@ -112,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             fillAddressList();
         }
         catch(error){
-            showPopupError(error);
+            showError(error);
         }
     });
 });

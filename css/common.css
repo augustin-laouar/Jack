@@ -184,3 +184,28 @@
     height: 24px;
     fill: gray;
 }
+
+
+
+.text-displayer {
+    position: relative;
+}
+
+.text-displayer-buttons {
+    position: absolute;
+    width: auto !important;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px; 
+}
+
+.text-displayer-button {
+    cursor: pointer;
+}
+
+.text-displayer-button img {
+    width: 24px;
+    height: 24px;
+}

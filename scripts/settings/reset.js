@@ -16,7 +16,7 @@
  */
 
 import * as popup from '../popup.js';
-import {showPopupInfo} from './info.js';
+import { showInfo, showError } from '../style/show_info.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
 
@@ -67,7 +67,7 @@ async function askForPasswordConfirm() {
             try {
                 const isValid = await request.makeRequest('password', 'verify', { password: givenPsw});
                 if (!isValid) {
-                    showPopupInfo('Invalid password.', true);
+                    showInfo('Wrong password.', true, true);
                     confirmPswInput.value = '';
                 } else {
                     popup.closePopup();

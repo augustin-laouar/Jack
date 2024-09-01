@@ -16,11 +16,11 @@
  */
 
 import * as popup from '../popup.js';
-import * as error from '../exception/error.js';
 import { fillPasswordList } from './mainPage.js';
 import { updatePasswordStrength } from '../style/pswStrength.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
+import { showInfo, showError } from '../style/show_info.js';
 
 function addPopupContent()  {
     return `
@@ -90,27 +90,6 @@ function addPopupContent()  {
     `;
 }
 
-function showPopupInfo(message, warning = false) {
-    const infoLabel = document.getElementById('popup-info');
-    infoLabel.innerText = message;
-    if(warning) {
-        infoLabel.classList.remove('text-info');
-        infoLabel.classList.add('text-warning');
-    }
-    else {
-        infoLabel.classList.remove('text-warning');
-        infoLabel.classList.add('text-info');
-    }
-}
-
-function showPopupError(e){
-    if(!(e instanceof error.Error)){
-      return;
-    }
-    const message = error.errorToString(e);
-    showPopupInfo(message, true);
-}
-
 export async function fillGenerators(selectElement) {
     const generators = await request.makeRequest('generators', 'get', {default: false, id: null});
     for(const generator of generators) {
@@ -144,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             event.preventDefault();
             try{
                 if(psw.value !== pswConfirm.value) {
-                    showPopupInfo('Passwords are not the same.', true);
+                    showInfo('Passwords are not the same.', true, true);
                     return;
                 }
                 const params = {
@@ -164,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 fillPasswordList();
             }
             catch(e){
-                showPopupError(e);
+                showError(e, true);
             }
         
         });

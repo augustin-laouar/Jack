@@ -137,6 +137,9 @@ limitations under the License.
                 <p class="lead">You can change your master password, which allows access to the application, by clicking on <strong>Change Master Password</strong>. Be sure to use a secure password! A strength indicator will show you how long it might take for your password to be discovered by brute force.</p>
                 <h1 class="h4">Change the session validity time</h1>
                 <p class="lead">You can change the validity period of your session, which corresponds to the duration after which you will be logged out of the application if no activity is detected from you on the browser.</p>
+                <h1 class="h4">Password work factor</h1>
+                <p class="lead">The work factor adds an extra layer of security to your main password. A random variable is added during the generation of the encryption key, derived from your password, making brute force attacks very slow. However, the time required to verify your password is also affected.
+                    This setting can be modified in the Security section of the settings. An indicator simulates how long it would take to verify your password based on the work factor.</p>
                 <h1 class="h4">Data Import/Export</h1>
                 <p class="lead">You can export all the data stored on your Jack Extension using the Export Local Data feature. This will generate a file, with the name you have chosen, containing all the data stored locally by Jack. This data will be protected by your password.</p>
                 <p class="lead">
@@ -152,7 +155,7 @@ limitations under the License.
                 <h1 class="display-4">Legal</h1>
                 <h1 class="h2">Privacy</h1>
                 <p class="lead">
-                    All your data is stored locally on your computer, ensuring that you are the only person who has access to it. Jack does not communicate with the outside. All your data is stored encrypted with a robust encryption algorithm (AES-128).
+                    All your data is stored locally on your computer, ensuring that you are the only person who has access to it. Jack does not communicate with the outside (except for emails). All your data is stored encrypted with a robust encryption algorithm (AES-128).
                     </br>
                     <strong style="color:red">Jack does not collect any user-related data</strong>.
                     </br>
@@ -175,7 +178,7 @@ limitations under the License.
                 <p class="lead">Here you will find a list of frequently asked questions, to which we will try to provide the most accurate answers possible.</p>
                 <p class="h4">Is Jack really secure for my passwords ?</p>
                 <p class="lead">
-                    Jack stores all data locally. Since nothing goes online, many threats are neutralized. To protect your data locally, Jack encrypts your data with the AES-128 algorithm, which is known for its security. The encryption key is not kept in memory but is generated on-the-fly during your login. Your master password is hashed using the SHA-512 algorithm with salt, which is considered secure.
+                    Jack stores all data locally. Since nothing goes online, many threats are neutralized. To protect your data locally, Jack encrypts your data with the AES-128 algorithm, which is known for its security. The encryption key is not kept in memory but is generated on-the-fly during your login, by using the PBKDF2 algorithm.
                     </br>
                     Jack takes every measure to keep your data as secure as possible.
                 </p>

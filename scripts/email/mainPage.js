@@ -17,32 +17,7 @@
 
 import * as error from '../exception/error.js';
 import * as request from '../manager/manager_request.js';
-
-export function showInfo(message){
-  const infoLabel = document.getElementById('info');
-  infoLabel.innerText = message;
-  infoLabel.className = 'text-info';
-}
-
-export function showError(e){
-  if(!(e instanceof error.Error)){
-    return;
-  }
-  const message = error.errorToString(e);
-  const infoLabel = document.getElementById('info');
-  infoLabel.innerText = message;
-  infoLabel.className = 'text-warning';
-}
-
-function showPopupError(e){
-  if(!(e instanceof error.Error)){
-    return;
-  }
-  const message = error.errorToString(e);
-  const infoLabel = document.getElementById('info-popup');
-  infoLabel.innerText = message;
-}
-
+import { showInfo, showError } from '../style/show_info.js';
 
 
 function getTrContent(address){ 

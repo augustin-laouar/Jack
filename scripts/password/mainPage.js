@@ -19,19 +19,8 @@
 import * as error from '../exception/error.js';
 import { editCredential } from './editPsw.js';
 import * as request from '../manager/manager_request.js';
+import { showInfo, showError } from '../style/show_info.js';
 
-function showErrorMessage(message) {
-  const infoLabel = document.getElementById('info');
-  infoLabel.innerText = message;
-}
-function showError(e){
-  if(!(e instanceof error.Error)){
-    return;
-  }
-  const message = error.errorToString(e);
-  const infoLabel = document.getElementById('info');
-  infoLabel.innerText = message;
-}
 
 async function researchPassword(){
   try{
@@ -230,7 +219,7 @@ async function copyToClipboard(text) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function() { //on attend que la page se charge
+document.addEventListener("DOMContentLoaded", function() {
     fillPasswordList();
     const searchInput = document.getElementById('search');
     let timeout;
@@ -241,16 +230,5 @@ document.addEventListener("DOMContentLoaded", function() { //on attend que la pa
     const searchMethod = document.getElementById('search-method');
     searchMethod.addEventListener('change', function() {
       researchPassword();
-    });
-    //Listen for messages from popup
-    browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-      if (message.action === "updatePswList") {
-        fillPasswordList();
-      }
-      if (message.action === "errorUpdatePsw") {
-        if(message.error){
-          showErrorMessage(message.error.message, message.error.type);
-        }
-      }
     });
 });

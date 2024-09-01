@@ -15,18 +15,9 @@
  * limitations under the License.
  */
 
-import * as error from './exception/error.js';
 import { togglePassword } from './style/toggle_password.js';
 import * as request from './manager/manager_request.js';
-
-function showError(e){
-  if(!(e instanceof error.Error)){
-    return;
-  }
-  const message = error.errorToString(e);
-  const infoLabel = document.getElementById('info');
-  infoLabel.innerText = message;
-}
+import { showInfo, showError } from './style/show_info.js';
 
 document.addEventListener("DOMContentLoaded", async function() {
   try{
@@ -50,8 +41,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       }
       else{
         passwordField.value = '';
-        const infoLabel = document.getElementById('info');
-        infoLabel.innerText = 'Wrong password.';
+        showInfo('Wrong password.', true, false);
       }
     });
 

@@ -69,7 +69,7 @@ async function import_account(jsonfile, password, keepCurrPsw) {
     const generators = json.generators ?? [];
     const fileKey = await checkChallenge(password, challenge, workFactor);
     if(fileKey === null){
-        throw new error.Error('Invalid password. Unable to decrypt the file.', true);
+        throw new error.Error('Wrong password. Unable to decrypt the file.', true);
     }
     if(keepCurrPsw) {
         try {

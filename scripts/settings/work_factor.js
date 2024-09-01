@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
+import { showInfo, showError } from '../style/show_info.js';
 import * as request from '../manager/manager_request.js';
 import * as popup from '../popup.js';
 import { generateDerivedKey } from '../tools/crypto.js';
@@ -96,7 +96,7 @@ async function askForPasswordConfirm() {
             try {
                 const isValid = await request.makeRequest('password', 'verify', { password: givenPsw });
                 if (!isValid) {
-                    showPopupInfo('Invalid password.', true);
+                    showInfo('Wrong password.', true, true);
                     confirmPswInput.value = '';
                 } else {
                     popup.closePopup();

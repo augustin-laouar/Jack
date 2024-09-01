@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {showInfo, showError} from './info.js';
+import { showInfo, showError } from '../style/show_info.js';
 import * as request from '../manager/manager_request.js';
 
 function selectCurrentDuration(sessionValiditySelect, currentDuration) {

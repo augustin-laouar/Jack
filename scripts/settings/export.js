@@ -17,8 +17,7 @@
 
 import * as error from '../exception/error.js';
 import * as popup from '../popup.js';
-import {showInfo, showError, showPopupInfo} from './info.js';
-import { fillGeneratorsList } from './generator.js';
+import { showInfo, showError } from '../style/show_info.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
 
@@ -105,7 +104,7 @@ async function askForPasswordConfirm() {
             try {
                 const isValid = await request.makeRequest('password', 'verify', { password: givenPsw});
                 if (!isValid) {
-                    showPopupInfo('Invalid password.', true);
+                    showInfo('Wrong password.', true, true);
                     confirmPswInput.value = '';
                 } else {
                     popup.closePopup();
@@ -170,15 +169,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const importAccountFile = document.getElementById('import-account-file');
         const keepCurrPsw = document.getElementById('import-keep-psw');
         if(importAccountFile.files.length === 0) {
-            showError(new error.Error('Please select an account file to import.', true));
+            console.log("error");
+            showInfo('Please select an account file to import.', true, false);
             return;
         }
         try {
             const file = importAccountFile.files[0];
             const filePassword = await confirmFilePsw();
             await import_account(file, filePassword, keepCurrPsw.checked);
-            fillGeneratorsList();
-
             showInfo('Account imported with success !');
         }
         catch(e) {
@@ -194,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
             await export_account(password, fileName);
         }
         catch(e) {
-            showError(new error.Error('Unexpected error while exporting your account.', true));
+            showInfo('Unexpected error while exporting your account.', true, false);
         }
     });
 });

@@ -16,8 +16,57 @@
  */
 
 import * as popup from '../popup.js';
-import {showInfo, showError, showPopupError, showPopupInfo} from './info.js';
 import * as request from '../manager/manager_request.js';
+import { updatePasswordStrength } from '../style/pswStrength.js';
+import { showInfo, showError } from '../style/show_info.js';
+
+function generatorsPopupContent()  {
+  return `
+<div class="d-flex flex-column" style="width: 550px; height: 400px;">
+    <p class ="lead text-center mb-2">Password generators</p>
+    <div class="border-top"  style="margin: 10px; width:100%"></div>
+    <div class="row">
+        <div class="col-5">
+            <div id="generators-list" class="list-group" style="width: 100%; max-height:250px; overflow-y: scroll; overflow-x: hidden;"></div>
+            <div class="d-flex justify-content-end align-items-center">
+                <button type="button" class="btn transparent-button" id="add-generator-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="New password generator">
+                    <img src="../svg-images/add.svg" alt="Add" style="width: 20px; height: 20px;">
+                </button>
+            </div>    
+        </div>
+        <div class="col-7">
+            <p class="lead" style="display: flex; align-items: center;">
+                Selected:&nbsp
+                <span id="selected-generator" class="text-info" 
+                    style="overflow-x: auto; white-space: nowrap; width: 70%; display: block;">Empty</span>
+            </p>
+            <div class="form-group text-displayer">
+                <input id="generated-password-displayer" class="form-control dark-input"
+                    style="border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;" readonly>
+                <div class="text-displayer-buttons">
+                    <span class="text-displayer-button">
+                        <img id="copy-generated-password" src="/svg-images/copy.svg" alt="copy">
+                    </span>
+                    <span class="text-displayer-button">
+                        <img id="generate-password" src="/svg-images/update.svg" alt="generate">
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div id="password-strength-wrapper" class="password-strength-wrapper w-100" style="visibility: hidden;">
+                    <div class="password-strength" id="password-strength" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <div id="password-strength-bar" class="password-strength-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div id="password-strength-text" class="password-strength-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
+
+</div>
+  `;
+}
 
 function getGeneratorDivContent(name, disableDelete = false) {
     var deleteSvgPath = '';
@@ -30,10 +79,12 @@ function getGeneratorDivContent(name, disableDelete = false) {
     return `
     <div class="text-info d-flex justify-content-between align-items-center">
     <span id="name" style="overflow-y: scroll; white-space: nowrap; width: 70%; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">` + name + `</span>
+    <button id="edit-button" class="btn transparent-button">
+        <img src="../svg-images/edit.svg" alt="Edit" style="width: 20px; height: 20px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
+    </button> 
     <button id="delete-button" class="btn transparent-button">
         <img src="`+ deleteSvgPath +` " alt="Delete" style="width: 20px; height: 20px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete">
     </button> 
-
     </div>
     `;
 }
@@ -63,18 +114,55 @@ export async function fillGeneratorsList() {
             });
 
         }
-        const name = divElement.querySelector('#name');
-        name.addEventListener('click', function(){
+        const editButton = divElement.querySelector('#edit-button');
+        editButton.addEventListener('click', function(){
             editGenerator(generator.id);
         });
-
+        const name = divElement.querySelector('#name');
+        name.addEventListener('click', async function(){
+            await selectGenerator(generator);
+        });
         generatorsListDiv.appendChild(divElement);
     }
 }
 
+async function selectGenerator(generator) {
+    const selectedGenerator = document.getElementById("selected-generator");
+    selectedGenerator.innerText = generator.name;
+    const generatedPasswordDisplayer = document.getElementById("generated-password-displayer");
+    var generatedPassword = await request.makeRequest('generators', 'generate', { generator_id: generator.id });
+    displayPassword(generatedPassword, generatedPasswordDisplayer);
+    const copyButton = document.getElementById("copy-generated-password");
+    const generateButton = document.getElementById("generate-password");
+    //cloning buttons to delete all eventlisteners before using it
+    const newCopyButton = copyButton.cloneNode(true);
+    copyButton.parentNode.replaceChild(newCopyButton, copyButton);
+    const newGenerateButton = generateButton.cloneNode(true);
+    generateButton.parentNode.replaceChild(newGenerateButton, generateButton);
+    newCopyButton.addEventListener("click", async function() {
+        await navigator.clipboard.writeText(generatedPassword);
+        showInfo("Password copied !", false, true);
+    });
+    newGenerateButton.addEventListener("click", async function() {
+        generatedPassword = await request.makeRequest('generators', 'generate', { generator_id: generator.id });
+        displayPassword(generatedPassword, generatedPasswordDisplayer);
+    });
+}
+
+function displayPassword(generatedPassword, generatedPasswordDisplayer) {
+    if (generatedPassword.length > 25) {
+        generatedPasswordDisplayer.value = generatedPassword.substring(0, 25) + "...";
+    }
+    else {
+        generatedPasswordDisplayer.value = generatedPassword;
+    }        
+    updatePasswordStrength(generatedPassword);
+}
+
 function generatorPopupContent(title) {
     return `
-    <p class="lead">` + title + `</p>
+<div class="d-flex flex-column" style="width: 550px; height: 400px;">
+    <p class="lead text-center">` + title + `</p>
     <form id="generator-form" class="d-flex flex-column" style="width: 90%;">
         <div class="form-group form-group-custom">
             <label for="name">Name</label>
@@ -123,15 +211,13 @@ function generatorPopupContent(title) {
         </div>
     </form>
     <p id="popup-info" class="mt-2 text-center" style="font-size: 0.8em;"></p>
+</div>
   `;
 }
 
 
 async function addGenerator() {
-    popup.initClosePopupEvent();
     popup.fillPopupContent(generatorPopupContent('New generator'));
-    popup.setPopupSize(600, 500);
-    popup.openPopup();
     const popupContent = document.getElementById('popup-content');
     const addGeneratorForm = popupContent.querySelector('#generator-form');
     const generatorName = popupContent.querySelector('#generator-name');
@@ -159,12 +245,12 @@ async function addGenerator() {
                 char_params: char_params
             };
             await request.makeRequest('generators', 'add', params);
-            fillGeneratorsList();
-            popup.closePopup();
-            showInfo('New password generator created !');
+            popup.fillPopupContent(generatorsPopupContent());
+            init();
+            showInfo('New password generator created !', false, true);
         }
         catch(e) {
-            showPopupError(e);
+            showInfo('Unexpected error', true, true);
         }
     });
     excludedChars.addEventListener('input', function(event) {
@@ -183,10 +269,7 @@ async function addGenerator() {
 
 async function editGenerator(id) {
     const generator = await request.makeRequest('generators', 'get', { id: id });
-    popup.initClosePopupEvent();
     popup.fillPopupContent(generatorPopupContent('Edit ' + generator.name));
-    popup.setPopupSize(600, 500);
-    popup.openPopup();
     const popupContent = document.getElementById('popup-content');
     const editGeneratorForm = popupContent.querySelector('#generator-form');
     const generatorName = popupContent.querySelector('#generator-name');
@@ -224,12 +307,12 @@ async function editGenerator(id) {
                 char_params: char_params
             };
             await request.makeRequest('generators', 'update', params);
-            fillGeneratorsList();
-            popup.closePopup();
-            showInfo('Password generator ' + generatorName.value + ' updated !');
+            popup.fillPopupContent(generatorsPopupContent());
+            init();
+            showInfo('Password generator ' + generatorName.value + ' updated !', false, true);
         }
         catch(e) {
-            showPopupError(e);
+            showInfo('Unexpected error', true, true);
         }
     });
     excludedChars.addEventListener('input', function(event) {
@@ -245,10 +328,30 @@ async function editGenerator(id) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    fillGeneratorsList();
+
+async function init() {
+    await fillGeneratorsList();
     const addPasswordGeneratorButton = document.getElementById('add-generator-button');
     addPasswordGeneratorButton.addEventListener('click', function() {
         addGenerator();
+    });
+    const defaultGenerator = await request.makeRequest('generators', 'get', { default: true });
+    selectGenerator(defaultGenerator);
+
+}
+async function openGeneratorsPopup() {
+    popup.initClosePopupEvent();
+    popup.fillPopupContent(generatorsPopupContent());
+    popup.setPopupSize(600,500);
+    popup.openPopup();
+    await init();
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const pswGeneratorsBtn = document.getElementById("open-password-generators");
+    pswGeneratorsBtn.addEventListener("click", function() {
+        openGeneratorsPopup();
     });
 });
