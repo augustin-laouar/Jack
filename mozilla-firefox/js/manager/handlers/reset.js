@@ -1,0 +1,40 @@
+/*
+ * Author: Augustin Laouar
+ * Project Repository: https://github.com/augustin-laouar/Jack
+ * License: GNU General Public License v3.0
+ * 
+ * This project is licensed under the GNU General Public License v3.0.
+ * You may obtain a copy of the License at
+ * 
+ *     https://www.gnu.org/licenses/gpl-3.0.en.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import * as storage from '../../tools/storage.js';
+import { setDerivedKey, setIsLogged, setLastAction } from '../vars.js';
+
+async function removeAllData() {
+    await storage.remove('emails');
+    await storage.remove('credentials');
+    await storage.remove('connectionDuration');
+    await storage.remove('challenge');
+    await storage.remove('generators');
+    await storage.remove('workFactor');
+    setDerivedKey(null);
+    setIsLogged(false);
+    setLastAction(null);
+}
+
+async function reset() {
+    removeAllData();
+}
+
+export async function handle(message) {
+    await reset();
+    return true;
+}
