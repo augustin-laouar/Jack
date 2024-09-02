@@ -27,9 +27,9 @@ export async function waitLogin() {
         function messageListener(message) {
             if (message.endpoint === 'managerIgnore' && message.type === 'loginSucess') {
                 resolve(true);
-                browser.runtime.onMessage.removeListener(messageListener);
+                chrome.runtime.onMessage.removeListener(messageListener);
             }
         }
-        browser.runtime.onMessage.addListener(messageListener);
+        chrome.runtime.onMessage.addListener(messageListener);
     });
 }

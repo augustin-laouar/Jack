@@ -16,7 +16,7 @@
  */
 
 function notifyExtension() {
-  browser.runtime.sendMessage({ endpoint: 'session', type: 'update' });
+  chrome.runtime.sendMessage({ endpoint: 'session', type: 'update' });
 }
 
 function throttle(func, limit) {

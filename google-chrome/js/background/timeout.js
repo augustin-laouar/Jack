@@ -25,15 +25,15 @@ async function checkLogin() {
       await directRequest('logout', null, null);
       updateIsLoggedInCred(false);
       updateIsLoggedInEmail(false);
-      browser.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
+      chrome.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
     }
   } catch (error) {
   }
 }
 
-browser.alarms.onAlarm.addListener(async () => {
+chrome.alarms.onAlarm.addListener(async () => {
   await checkLogin();
-  browser.alarms.create({ delayInMinutes: 0.05 });
+  chrome.alarms.create({ delayInMinutes: 1 });
 });
 
-browser.alarms.create({ delayInMinutes: 0.05 });
+chrome.alarms.create({ delayInMinutes: 1 });

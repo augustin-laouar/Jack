@@ -152,7 +152,7 @@ export async function fillPasswordList(credParam = null, searching = false){
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
               url = 'https://' + url;
             }
-            browser.tabs.create({ url: url });
+            chrome.tabs.create({ url: url });
           }
           catch(error){
             showError(error);

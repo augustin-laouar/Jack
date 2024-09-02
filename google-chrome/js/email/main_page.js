@@ -77,8 +77,8 @@ export async function fillAddressList(){
         const addressDiv = trElement.querySelector('#address-div');
         addressDiv.style.cursor = 'pointer';
         addressDiv.addEventListener('click', function(){
-          const url = browser.runtime.getURL('../../html/mailbox.html') + '?emailId=' + encodeURIComponent(email.id);
-          browser.tabs.create({ url });
+          const url = chrome.runtime.getURL('../../html/mailbox.html') + '?emailId=' + encodeURIComponent(email.id);
+          chrome.tabs.create({ url });
         });
         const copyButton = trElement.querySelector('#copy-button');
         const deleteButton = trElement.querySelector('#delete-button');
@@ -116,17 +116,17 @@ document.addEventListener("DOMContentLoaded", function() {
     fillAddressList();
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/settings.html');
-      browser.tabs.create({ url });
+      const url = chrome.runtime.getURL('../../html/settings.html');
+      chrome.tabs.create({ url });
     });
     const aboutButton = document.getElementById('about');
     aboutButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/about.html');
-      browser.tabs.create({ url });
+      const url = chrome.runtime.getURL('../../html/about.html');
+      chrome.tabs.create({ url });
     });
     const passwordButton = document.getElementById('password-button');
     passwordButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/credentials.html');
-      browser.tabs.create({ url });
+      const url = chrome.runtime.getURL('../../html/credentials.html');
+      chrome.tabs.create({ url });
     });
 });

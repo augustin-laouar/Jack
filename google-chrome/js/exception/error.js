@@ -17,6 +17,7 @@
 
 export class Error {
     constructor(message, show = false) {
+        console.log(message); //debug
         this.show = show;
         if(message === null || message === ''){
             this.message = 'Unexpected error.';

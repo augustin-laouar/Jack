@@ -28,7 +28,7 @@ async function fillFields(cred_id, tab) {
       username: username,
       password: password
   };
-  browser.tabs.executeScript(tab.id, {
+  chrome.tabs.executeScript(tab.id, {
   code: `
   (function() {
       const params = ${JSON.stringify(params)};
@@ -84,7 +84,7 @@ function notify(message) {
       isUserLoggedIn = true;
     }
     if(message.type === 'firstLogin') {
-      browser.contextMenus.create({
+      chrome.contextMenus.create({
         id: "jack_fill_creds",
         title: "Use saved credentials",
         contexts: ["editable"]
@@ -97,7 +97,7 @@ async function init() {
   try {
     const res = await directRequest('session', 'isFirstLogin', null);
     if (!res) {
-      browser.contextMenus.create({
+      chrome.contextMenus.create({
         id: "jack_fill_creds",
         title: "Use saved credentials",
         contexts: ["editable"]
@@ -116,15 +116,15 @@ export function updateIsLoggedInCred(value) {
 
 init();
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "jack_fill_creds") {
     const url = new URL(tab.url);
     var host = url.host;
     var path = url.pathname;
     if(!isUserLoggedIn) {
-      browser.browserAction.setPopup({popup: "/html/ask_login.html"});
-      browser.browserAction.openPopup();
-      browser.browserAction.setPopup({popup: "/html/emails.html"});
+      chrome.browserAction.setPopup({popup: "/html/ask_login.html"});
+      chrome.browserAction.openPopup();
+      chrome.browserAction.setPopup({popup: "/html/emails.html"});
       waitLogin().then(async isLoggedIn => {
         if(isLoggedIn) {
             find_cred_id_from_url(host+path).then(cred_id => {
@@ -145,5 +145,5 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
-browser.runtime.onMessage.addListener(notify);
+chrome.runtime.onMessage.addListener(notify);
 

@@ -105,7 +105,7 @@ export async function directRequest(endpoint, type, params) {
         throw error.castError(e);
     }
 }
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {   
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {   
     if(message.endpoint === 'managerIgnore') {
         return true;
     }

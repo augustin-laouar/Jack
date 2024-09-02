@@ -24,7 +24,7 @@ export async function makeRequest(endpoint, type, params) {
             type: type,
             params: params
         };
-        const response = await browser.runtime.sendMessage(message);
+        const response = await chrome.runtime.sendMessage(message);
         if(response.error) {
             throw error.castError(response.error);
         }

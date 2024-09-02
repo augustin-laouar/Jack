@@ -29,7 +29,7 @@ if(!isLogged) {
     }
 }
 
-browser.runtime.onMessage.addListener(notify);
+chrome.runtime.onMessage.addListener(notify);
 
 function notify(message) {
     if(message.endpoint === 'logout') {
