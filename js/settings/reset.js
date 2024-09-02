@@ -87,6 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
     resetDataButton.addEventListener('click', async function() {
         await askForPasswordConfirm(); 
         await reset();
-        window.location.href = "/html/firstConnection.html";
+        window.location.href = "/html/first_login.html";
     });
 });

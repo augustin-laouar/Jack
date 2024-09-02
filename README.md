@@ -2,13 +2,9 @@
 
 ## todo
 - Ajouter sur chrome
-- noms des fichiers
-- Changer les screens
 - browser.storage.sync
 # Bugs 
 ## Tache actuel
-- changer style password strenght
-- utiliser setTimout au lieu de timer
 ## Terminé
 - Page about
 - Stocker logs via des ids et non url 
@@ -40,4 +36,3 @@
 ## Next MAJ
 - Probleme lorsque déco sur un onglet, on est reconnecté sur emails.html
 - Enregistrement automatique de mots de passes lorsque l'on s'inscrit sur un site ?
-- Utiliser le generateur de mot de passe via le clic droit

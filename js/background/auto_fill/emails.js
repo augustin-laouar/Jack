@@ -103,7 +103,7 @@ init();
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "jack_random_email") {
     if(!isUserLoggedIn) {
-      browser.browserAction.setPopup({popup: "/html/askLogin.html"});
+      browser.browserAction.setPopup({popup: "/html/ask_login.html"});
       browser.browserAction.openPopup();
       browser.browserAction.setPopup({popup: "/html/emails.html"});
       waitLogin().then(isLoggedIn => {

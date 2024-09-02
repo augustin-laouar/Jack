@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { updatePasswordStrength } from './style/pswStrength.js';
+import { updatePasswordStrength } from './style/password_strength.js';
 import { togglePassword } from './style/toggle_password.js';
 import * as request from './manager/manager_request.js';
 import { showInfo, showError } from './style/show_info.js';

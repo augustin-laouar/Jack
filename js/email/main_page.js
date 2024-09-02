@@ -77,7 +77,7 @@ export async function fillAddressList(){
         const addressDiv = trElement.querySelector('#address-div');
         addressDiv.style.cursor = 'pointer';
         addressDiv.addEventListener('click', function(){
-          const url = browser.runtime.getURL('../../html/mailBox.html') + '?emailId=' + encodeURIComponent(email.id);
+          const url = browser.runtime.getURL('../../html/mailbox.html') + '?emailId=' + encodeURIComponent(email.id);
           browser.tabs.create({ url });
         });
         const copyButton = trElement.querySelector('#copy-button');
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     const passwordButton = document.getElementById('password-button');
     passwordButton.addEventListener("click", function(){
-      const url = browser.runtime.getURL('../../html/passwords.html');
+      const url = browser.runtime.getURL('../../html/credentials.html');
       browser.tabs.create({ url });
     });
 });

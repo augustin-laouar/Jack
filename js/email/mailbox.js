@@ -304,9 +304,9 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
     deleteMenuItem.style.cursor = "pointer";
     deleteMenuItem.addEventListener("click", async function() {
         try{
+            document.body.removeChild(customMenu);
             await api.deleteMessage(myMail, message.id);
             tab.removeChild(trElement);
-            document.body.removeChild(customMenu);
             var showMailContainer = document.getElementById('showMailContainer');
             showMailContainer.classList.remove('bg-light');
             showMailContainer.classList.remove('text-dark');
@@ -336,6 +336,7 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
     markAsReadMenuItem.style.padding = "5px 20px";
     markAsReadMenuItem.style.cursor = "pointer";
     markAsReadMenuItem.addEventListener("click", async function() {
+        document.body.removeChild(customMenu);
         if(message.seen){
             try{
                 markAsUnread(myMail, message, trElement);
@@ -352,7 +353,6 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
                 showError(error);
             }        
         }
-        document.body.removeChild(customMenu);
     });
     customMenu.appendChild(markAsReadMenuItem);
     document.body.appendChild(customMenu);

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   try{
     const isFirstLogin = await request.makeRequest('session', 'isFirstLogin', null);
     if(isFirstLogin) {
-      window.location.href = "/html/firstConnection.html";
+      window.location.href = "/html/first_login.html";
     }
     const isLogged = await request.makeRequest('session', 'check', null);
     if(isLogged) {

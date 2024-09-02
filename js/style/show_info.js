@@ -39,7 +39,7 @@ export function showInfo(message, warning = false, popup = false) {
     }
     setTimeout(function() {
       newInfoLabel.innerText = '';
-      }, 3000);
+      }, 5000);
 }
   
 export function showError(e, popup = false){
@@ -47,7 +47,4 @@ export function showError(e, popup = false){
     return;
   }
   showInfo(error.errorToString(e), true, popup);
-  const message = error.errorToString(e);
-  const infoLabel = document.getElementById('info');
-  infoLabel.innerText = message;
 }

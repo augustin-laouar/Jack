@@ -122,7 +122,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     var host = url.host;
     var path = url.pathname;
     if(!isUserLoggedIn) {
-      browser.browserAction.setPopup({popup: "/html/askLogin.html"});
+      browser.browserAction.setPopup({popup: "/html/ask_login.html"});
       browser.browserAction.openPopup();
       browser.browserAction.setPopup({popup: "/html/emails.html"});
       waitLogin().then(async isLoggedIn => {

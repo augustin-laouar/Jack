@@ -17,7 +17,7 @@
  */
 
 import * as error from '../exception/error.js';
-import { editCredential } from './editPsw.js';
+import { editCredential } from './edit_cred.js';
 import * as request from '../manager/manager_request.js';
 import { showInfo, showError } from '../style/show_info.js';
 
@@ -28,25 +28,25 @@ async function researchPassword(){
     if(creds.length === 0){
       return;
     }
-    const input = document.getElementById('search').value;
+    const input = document.getElementById('search').value.toLowerCase();
     const searchMethod = document.getElementById('search-method').value;
     let logsFiltred;
 
     if (searchMethod === 'title') {
-      logsFiltred = creds.filter(element => element.content.title.includes(input));
+      logsFiltred = creds.filter(element => element.content.title.toLowerCase().includes(input));
     } 
     if (searchMethod === 'url') {
-        logsFiltred = creds.filter(element => element.content.url.includes(input));
+        logsFiltred = creds.filter(element => element.content.url.toLowerCase().includes(input));
     } 
     else if (searchMethod === 'username') {
-      logsFiltred = creds.filter(element => element.content.username.includes(input));
+      logsFiltred = creds.filter(element => element.content.username.toLowerCase().includes(input));
     } 
     else if (searchMethod === 'all') {
       logsFiltred = creds.filter(element => 
-        element.content.title.includes(input) ||
-        element.content.url.includes(input) || 
-        element.content.username.includes(input) || 
-        element.content.description.includes(input)
+        element.content.title.toLowerCase().includes(input) ||
+        element.content.url.toLowerCase().includes(input) || 
+        element.content.username.toLowerCase().includes(input) || 
+        element.content.description.toLowerCase().includes(input)
       );
     }
     
@@ -55,7 +55,6 @@ async function researchPassword(){
   catch(error){
     showError(error);
   }
-
 }
 
 function sortByTitle(credentials) {
@@ -214,6 +213,7 @@ export async function fillPasswordList(credParam = null, searching = false){
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
+    showInfo('Copied !');
   } catch (e) {
     throw new error.Error('Error copying to clipboard.', true);
   }

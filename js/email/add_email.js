@@ -16,8 +16,7 @@
  */
 
 import * as popup from '../popup.js';
-import { fillAddressList } from './mainPage.js';
-import * as error from '../exception/error.js';
+import { fillAddressList } from './main_page.js';
 import { getDomains } from '../tools/emails_api.js';
 import * as request from '../manager/manager_request.js';
 import { showInfo, showError } from '../style/show_info.js';
@@ -37,7 +36,7 @@ function addPopupContent()  {
         </div>
         <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 50%;">Generate</button>
       </form>
-      <p id="info-popup" class="text-warning mt-2" style="font-size: 0.8em;"></p>
+      <p id="popup-info" class="text-warning mt-2" style="font-size: 0.8em;"></p>
     `;
 }
 
@@ -92,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             fillAddressList();
         }
         catch(error){
-            showError(error);
+            showError(error, true);
         }
     });
 });
