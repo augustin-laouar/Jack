@@ -1,5 +1,6 @@
 import * as manager from '../manager/manager.js';
 import * as vars from '../manager/vars.js';
+import { checkChallenge } from '../tools/challenge.js';
 import { decryptWithAES } from "../tools/crypto.js";
 
 async function waitLogin() {
@@ -142,23 +143,6 @@ async function init() {
     }
 }
 
-function notify(message) {
-    if(message.endpoint === 'managerIgnore') {
-        if(message.type === 'firstLogin') {
-            chrome.contextMenus.create({
-                id: "jack_fill_creds",
-                title: "Use saved credentials",
-                contexts: ["editable"]
-            });
-            chrome.contextMenus.create({
-                id: "jack_random_email",
-                title: "Use temporary email",
-                contexts: ["editable"]
-            });
-        }
-    }
-}
-
 manager.startManager();
 
 init();
@@ -211,10 +195,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener(notify);
-
-
-
 //CHECK LOGIN
 async function checkLogin() {
     try {
@@ -226,8 +206,35 @@ async function checkLogin() {
       }
     } catch (error) {
     }
-  }
-  
+}
+
+
+function notify(message) {
+    if(message.endpoint === 'managerIgnore') {
+        if(message.type === 'firstLogin') {
+            chrome.contextMenus.create({
+                id: "jack_fill_creds",
+                title: "Use saved credentials",
+                contexts: ["editable"]
+            });
+            chrome.contextMenus.create({
+                id: "jack_random_email",
+                title: "Use temporary email",
+                contexts: ["editable"]
+            });
+        }
+    }
+    if(message.endpoint === 'session') {
+        if(message.type === 'update') {
+            checkLogin();
+        }
+    }
+}
+
+
+
+chrome.runtime.onMessage.addListener(notify);
+
 chrome.alarms.onAlarm.addListener(async () => {
     await checkLogin();
     chrome.alarms.create({ delayInMinutes: 1 });

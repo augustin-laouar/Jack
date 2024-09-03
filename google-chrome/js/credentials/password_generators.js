@@ -22,7 +22,7 @@ import { showInfo, showError } from '../style/show_info.js';
 
 function generatorsPopupContent()  {
   return `
-<div class="d-flex flex-column" style="width: 550px; height: 400px;">
+<div class="d-flex flex-column" style="width: 650px; height: 400px;">
     <p class ="lead text-center mb-2">Password generators</p>
     <div class="border-top"  style="margin: 10px; width:100%"></div>
     <div class="row">
@@ -78,7 +78,7 @@ function getGeneratorDivContent(name, disableDelete = false) {
     }
     return `
     <div class="text-info d-flex justify-content-between align-items-center">
-    <span id="name" style="overflow-y: scroll; white-space: nowrap; width: 70%; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">` + name + `</span>
+    <span id="name" style="overflow-y: auto; white-space: nowrap; width: 80%; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">` + name + `</span>
     <button id="edit-button" class="btn transparent-button">
         <img src="../svg-images/edit.svg" alt="Edit" style="width: 20px; height: 20px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit">
     </button> 
@@ -161,7 +161,7 @@ function displayPassword(generatedPassword, generatedPasswordDisplayer) {
 
 function generatorPopupContent(title) {
     return `
-<div class="d-flex flex-column" style="width: 550px; height: 400px;">
+<div class="d-flex flex-column" style="width: 650px; height: 400px;">
     <p class="lead text-center">` + title + `</p>
     <form id="generator-form" class="d-flex flex-column" style="width: 90%;">
         <div class="form-group form-group-custom">
@@ -342,7 +342,7 @@ async function init() {
 async function openGeneratorsPopup() {
     popup.initClosePopupEvent();
     popup.fillPopupContent(generatorsPopupContent());
-    popup.setPopupSize(600,500);
+    popup.setPopupSize(700,500);
     popup.openPopup();
     await init();
 }

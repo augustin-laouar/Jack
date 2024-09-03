@@ -102,7 +102,10 @@ export async function handle(message) {
         return result;
     }
     if(message.type === 'update') {
-        updateLastAction();
+        const expired = await sessionExpired();
+        if(!expired) {
+            updateLastAction();
+        }
         return true;
     }
     if(message.type === 'isFirstLogin') {

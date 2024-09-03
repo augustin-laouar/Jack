@@ -4,7 +4,13 @@
 - Ajouter sur chrome
 - browser.storage.sync
 # Bugs 
+GOOGLE
+- data export/import
+- session timeout
 ## Tache actuel
+- overflow auto au lieu de scroll. 
+- passage manifest v3 sur firefox ??
+- enlever coms css
 ## Terminé
 - Page about
 - Stocker logs via des ids et non url 

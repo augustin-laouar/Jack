@@ -28,15 +28,15 @@ function addPopupContent()  {
       <form id="add-email-form">
         <div class="d-flex align-items-center m-1">
             <div class="me-1" style="width:60%;">
-                <input id="email-name" autocomplete="off" placeholder="Email name (optional)" class="form-control dark-input" style="font-size: 0.8em;">
+                <input id="email-name" autocomplete="off" placeholder="Email name (optional)" class="form-control dark-input">
             </div>
             <div style="width:60%;">
-                <select class="form-select dark-select mb-1" id="select-domain" style="font-size: 0.8em;"></select>
+                <select class="form-select dark-select mb-1" id="select-domain"></select>
             </div>
         </div>
         <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 50%;">Generate</button>
       </form>
-      <p id="popup-info" class="text-warning mt-2" style="font-size: 0.8em;"></p>
+      <p id="popup-info" class="text-warning mt-2"></p>
     `;
 }
 
@@ -58,6 +58,7 @@ async function fillSelectDomain() {
 document.addEventListener("DOMContentLoaded", async function() {
     popup.initClosePopupEvent();
     popup.fillPopupContent(addPopupContent());
+    popup.setPopupSize(450,200);
     await fillSelectDomain();
     const addEmailButton = document.getElementById('add-email-button');
     addEmailButton.addEventListener('click', async function() {

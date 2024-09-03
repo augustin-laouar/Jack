@@ -15,7 +15,20 @@
  * limitations under the License.
  */
 
- 
+ * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.6) transparent; 
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.6) transparent;
+}
+
+*:hover {
+    scrollbar-color: rgba(128, 128, 128, 0.8) transparent;
+}
+
 .dark-input {
     background-color: #343a40; /* Dark background */
     color: #ffffff; /* White text */
