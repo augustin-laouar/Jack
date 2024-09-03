@@ -29,14 +29,16 @@ export async function createChallenge(password, workFactor, nonce = null, salt =
     const result = await crypto.generateDerivedKey(password, nonce, salt);
     const randomString = generateAlphaNumeric(64);
     const encryptedString = await crypto.encryptWithAES(randomString, result.key);
-    const jsonChallenge = { challenge: encryptedString, answer: randomString, salt: result.salt };
+    const saltArray = Array.from(result.salt);  //convert into array, only for chrome because UInt8Array can't be serialized to json
+    const jsonChallenge = { challenge: encryptedString, answer: randomString, salt: saltArray };
     return jsonChallenge;
 }
 
 export async function checkChallenge(password, challenge, workFactor) {
     try {
         workFactor = parseInt(workFactor, 10);
-        const salt = challenge.salt;
+        const saltArray = challenge.salt;
+        const salt = new Uint8Array(saltArray); 
         if(workFactor === 0) {
             const result = await crypto.generateDerivedKey(password, null, salt);
             const answer = await crypto.decryptWithAES(challenge.challenge, result.key);

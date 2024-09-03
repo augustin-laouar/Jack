@@ -26,6 +26,8 @@ async function storeChallenge(password, nonce = null, salt = null) {
     const workFactor = await directRequest('workFactor', 'get', null);
     const challenge = await createChallenge(password, workFactor, nonce, salt);
     await storage.store({ challenge: challenge });
+    const data = await storage.read('challenge');
+    console.log(data);
 }
 
 async function verifyPassword(password) {

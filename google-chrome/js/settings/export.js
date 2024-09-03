@@ -169,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const importAccountFile = document.getElementById('import-account-file');
         const keepCurrPsw = document.getElementById('import-keep-psw');
         if(importAccountFile.files.length === 0) {
-            console.log("error");
             showInfo('Please select an account file to import.', true, false);
             return;
         }

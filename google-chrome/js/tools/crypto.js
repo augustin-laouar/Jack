@@ -20,7 +20,7 @@ export async function generateDerivedKey(password, nonce = null, salt = null, it
   const encoder = new TextEncoder();
   
   if (salt === null) {
-    salt = window.crypto.getRandomValues(new Uint8Array(16)); 
+    salt = crypto.getRandomValues(new Uint8Array(16)); 
   }
   var toEncode = encoder.encode(password);
   if(nonce !== null) {
@@ -30,7 +30,7 @@ export async function generateDerivedKey(password, nonce = null, salt = null, it
       toEncode[i] ^= nonceEncoded[i];
     }
   }
-  const keyMaterial = await window.crypto.subtle.importKey(
+  const keyMaterial = await crypto.subtle.importKey(
     'raw',
     toEncode,
     'PBKDF2',
@@ -38,7 +38,7 @@ export async function generateDerivedKey(password, nonce = null, salt = null, it
     ['deriveKey']
   );
 
-  const key = await window.crypto.subtle.deriveKey(
+  const key = await crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
       salt: salt,
@@ -61,9 +61,9 @@ export async function generateDerivedKey(password, nonce = null, salt = null, it
 export async function encryptWithAES(data, key) {
   const encodedData = new TextEncoder().encode(data);
 
-  const iv = window.crypto.getRandomValues(new Uint8Array(12)); // 12 bytes IV for GCM
+  const iv = crypto.getRandomValues(new Uint8Array(12)); // 12 bytes IV for GCM
 
-  const encryptedData = await window.crypto.subtle.encrypt(
+  const encryptedData = await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
       iv: iv,
@@ -92,7 +92,7 @@ export async function decryptWithAES(encryptedData, key) {
   const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
   const encryptedArray = new Uint8Array(encryptedHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
 
-  const decryptedData = await window.crypto.subtle.decrypt(
+  const decryptedData = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
       iv: iv,

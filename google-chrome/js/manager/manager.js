@@ -107,7 +107,7 @@ export async function directRequest(endpoint, type, params) {
 }
 
 export function startManager() {
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {   
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {  
         if(message.endpoint === 'managerIgnore') {
             return true;
         }
