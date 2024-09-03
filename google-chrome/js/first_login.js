@@ -33,17 +33,11 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       try{
-        console.log('test');
         await request.makeRequest('workFactor', 'set', { workFactor: 0 });
-        console.log('test-2');
         await request.makeRequest('password', 'set', { password: passwordInput.value });
-        console.log('test-3');
         await request.makeRequest('generators', 'add', { default: true });
-        console.log('test-5');
         await request.makeRequest('sessionDuration', 'set', { duration: 3 });
-        console.log('test-6');
         request.makeRequest('managerIgnore', 'firstLogin', null);
-        console.log('test-7');
         window.location.href = "../html/login.html";
       }
       catch(error){

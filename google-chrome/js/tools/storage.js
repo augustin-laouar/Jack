@@ -17,14 +17,7 @@
  */
 
 export async function store(jsonValue) {
-    try{
-        console.log(jsonValue);
-        await chrome.storage.local.set(jsonValue);
-    }
-    catch(e) {
-        console.log(e);
-        throw e;
-    }
+    await chrome.storage.local.set(jsonValue);
 }
 
 export async function read(key) {
