@@ -36,7 +36,7 @@ MESSAGE STRUCTURE :
 * params : additional parameters
 */
 //handle the request. If nothing to return, return null
-async function handleRequest(message) {
+export async function handleRequest(message) {
     if (message.endpoint === "login") {
         const result = await loginHandler.handle(message);
         return result;
@@ -105,16 +105,19 @@ export async function directRequest(endpoint, type, params) {
         throw error.castError(e);
     }
 }
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {   
-    if(message.endpoint === 'managerIgnore') {
+
+export function startManager() {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {   
+        if(message.endpoint === 'managerIgnore') {
+            return true;
+        }
+        handleRequest(message)
+        .then(result => {
+            sendResponse({ result: result });
+        })
+        .catch(e => {
+            sendResponse({ error: e });
+        });
         return true;
-    }
-    handleRequest(message)
-    .then(result => {
-        sendResponse({ result: result });
-    })
-    .catch(e => {
-        sendResponse({ error: e });
     });
-    return true;
-});
+}

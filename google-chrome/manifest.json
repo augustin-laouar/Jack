@@ -1,37 +1,39 @@
 {
-    "name": "Jack",
-    "description": "Manage temporary e-mails addresses and passwords.",
-    "manifest_version": 3,
-    "version" : "1.2",
-    "author": "Augustin LAOUAR",
-    "icons": {
-        "48": "icons/jack-2-min.png"
-      },
-    "browser_action": {
-        "default_area": "navbar",
-        "default_icon": "icons/jack-2-min.png",
-        "default_popup" :"html/login.html",
-        "default_title": "Jack"
-    },
-    "permissions": [
-        "storage",
-        "tabs",
-        "<all_urls>",
-        "contextMenus",
-        "activeTab",
-        "alarms",
-        "notifications"
-        ],
-    "background": {
-      "page": "/html/background.html",
-      "persistent": true
-    },
-    "content_scripts": [
+  "name": "Jack",
+  "description": "Manage temporary e-mails addresses and passwords.",
+  "manifest_version": 3,
+  "version": "1.2",
+  "author": "Augustin LAOUAR",
+  "icons": {
+      "48": "icons/jack-2-min.png"
+  },
+  "action": {
+      "default_icon": "icons/jack-2-min.png",
+      "default_popup": "html/login.html",
+      "default_title": "Jack"
+  },
+  "permissions": [
+      "storage",
+      "tabs",
+      "contextMenus",
+      "activeTab",
+      "alarms",
+      "notifications"
+  ],
+  "host_permissions": [
+      "http://*/*",
+      "https://*/*"
+  ],
+  "background": {
+      "service_worker": "/js/background/background.js",
+      "type": "module"
+  },
+  "content_scripts": [
       {
-        "matches": ["<all_urls>"],
-        "js": [
-        "/js/content/refresh_timer.js"
-        ]
+          "matches": ["http://*/*", "https://*/*"],
+          "js": [
+              "/js/content/refresh_timer.js"
+          ]
       }
-    ]
+  ]
 }

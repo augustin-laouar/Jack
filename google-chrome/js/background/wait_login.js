@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { directRequest } from "../../manager/manager.js";
+import { directRequest } from "../manager/manager.js";
 
 export async function checkLogin() {
     const result = await directRequest('session', 'check', null);

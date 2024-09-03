@@ -41,6 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "../html/login.html";
       }
       catch(error){
+        console.log('error');
+        console.log(error);
         showError(error);
       }
     });
