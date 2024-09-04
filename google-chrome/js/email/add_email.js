@@ -36,7 +36,7 @@ function addPopupContent()  {
         </div>
         <button type="submit" class="confirm-button mt-2 d-block mx-auto" style="width: 50%;">Generate</button>
       </form>
-      <p id="popup-info" class="text-warning mt-2"></p>
+      <p id="popup-info" class="text-warning mt-2" style="font-size:0.8em;"></p>
     `;
 }
 
