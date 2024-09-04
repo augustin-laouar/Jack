@@ -3,8 +3,27 @@
 ## todo
 - Ajouter sur chrome
 - browser.storage.sync
+## Process vérification App
+### Connexion 
+- Création du compte avec bon/mauvais mot de passe
+- Utilisation du workFactor
+- Modification du mot de passe
+### Emails
+- Ajout/Supp d'adresses
+- Lecture d'emails
+### Credentials 
+- Ajout/Modif/supp cred
+- Ajout/Modif/supp generators
+- Recherche
+### Import/export
+- Import/export avec cred, emails, generatrs, workFactor, sessionValidity
+- Import en gardant le mdp
+- Compataibilité chrome/mozilla
+- Test avec fichiers corrompus
+### About
+- Relecture
+
 # Bugs 
- Import de mozilla a chrome ne fonctionne pas
 ## Tache actuel
 - overflow auto au lieu de scroll. 
 - passage manifest v3 sur firefox ??
