@@ -19,7 +19,8 @@
       "activeTab",
       "alarms",
       "notifications",
-      "downloads"
+      "downloads",
+      "scripting"
   ],
   "host_permissions": [
       "http://*/*",
