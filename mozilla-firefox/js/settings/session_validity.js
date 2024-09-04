@@ -18,14 +18,17 @@
 import { showInfo, showError } from '../style/show_info.js';
 import * as request from '../manager/manager_request.js';
 
-function selectCurrentDuration(sessionValiditySelect, currentDuration) {
+
+export async function initSessionValidityValue() {
+    const sessionValiditySelect = document.getElementById('session-validity-select');
+    const currentDuration = await request.makeRequest('sessionDuration', 'get', null);
     sessionValiditySelect.value = currentDuration;
+
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
+    initSessionValidityValue();
     const sessionValiditySelect = document.getElementById('session-validity-select');
-    const currentDuration = await request.makeRequest('sessionDuration', 'get', null);
-    selectCurrentDuration(sessionValiditySelect, currentDuration);
     sessionValiditySelect.addEventListener('change', async function() {
         try {
             const sessionValidityValue = sessionValiditySelect.value;

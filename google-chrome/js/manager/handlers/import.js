@@ -80,6 +80,7 @@ async function import_account(json, password, keepCurrPsw) {
     }
     else {
         await storage.store({ challenge: challenge});
+        await storage.store({ workFactor: workFactor});
         await storage.store({ connectionDuration: connectionDuration});
         await storage.store({ emails: emails});
         await storage.store({ credentials: creds });

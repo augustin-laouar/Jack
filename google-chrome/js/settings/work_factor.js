@@ -114,21 +114,23 @@ async function getWorkFactor() {
     return workFactor;
 }
 
-function selectCurrentWorkFactor(workFactorSelect, currentValue) {
-    workFactorSelect.value = currentValue;
-}
 
 async function updateWorkFactor(password, workFactor) {
     await request.makeRequest('workFactor', 'set', { workFactor: workFactor });
     await request.makeRequest('password', 'update', { password: password, workFactor: workFactor});
 }
+
+export async function initWorkFactorValue() {
+    const currentWorkFactor = await getWorkFactor();
+    const workFactorSelect = document.getElementById('work-factor-select');
+    workFactorSelect.value = currentWorkFactor;
+    setTimeInfo(currentWorkFactor);
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
+    initWorkFactorValue();
     const workFactorSelect = document.getElementById('work-factor-select');
     const workFactorApply = document.getElementById('work-factor-apply');
-
-    const currentWorkFactor = await getWorkFactor();
-    await setTimeInfo(currentWorkFactor);
-    selectCurrentWorkFactor(workFactorSelect, currentWorkFactor);
     workFactorSelect.addEventListener('change', async function() {
         try {
             const workFactorValue = workFactorSelect.value;

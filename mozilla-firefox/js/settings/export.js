@@ -20,7 +20,8 @@ import * as popup from '../popup.js';
 import { showInfo, showError } from '../style/show_info.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
-
+import { initSessionValidityValue } from './session_validity.js';
+import { initWorkFactorValue } from './work_factor.js';
 
 export async function export_account(password, givenFileName) {
     const isValid = await request.makeRequest('password', 'verify', { password: password});
@@ -176,6 +177,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const file = importAccountFile.files[0];
             const filePassword = await confirmFilePsw();
             await import_account(file, filePassword, keepCurrPsw.checked);
+            initSessionValidityValue();
+            initWorkFactorValue();
             showInfo('Account imported with success !');
         }
         catch(e) {
