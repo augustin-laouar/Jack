@@ -53,12 +53,11 @@ async function get_json() {
 async function export_account() {
     const jsonObject = await get_json();
     const jsonStr = JSON.stringify(jsonObject, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    return blob;
+    return jsonStr;
 }
 
 
 export async function handle(message) {
-    const blob = await export_account();
-    return blob;
+    const jsonStr = await export_account();
+    return jsonStr;
 }

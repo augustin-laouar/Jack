@@ -21,32 +21,7 @@ import * as crypto from '../../tools/crypto.js';
 import { setDerivedKey, getDerivedKey } from '../vars.js';
 import { checkChallenge } from '../../tools/challenge.js';
 
-async function read_json_file(jsonfile) {
-    return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.readAsText(jsonfile);
-        reader.onload = function(event) {
-            try {
-                const jsonData = JSON.parse(event.target.result);
-                resolve(jsonData);
-            } catch (e) {
-                reject(new error.Error('Error reading account file.', true));
-            }
-        };
-        reader.onerror = function() {
-            reject(new error.Error('Account file is unreadable.', true));
-        };
-    });
-}
-
-async function import_account(jsonfile, password, keepCurrPsw) {
-    let json;
-    try {
-        json = await read_json_file(jsonfile);
-    }
-    catch(e) {
-        throw new error.Error('Unreadable file.', true);
-    }
+async function import_account(json, password, keepCurrPsw) {
     //Check if these required values exists
     if (!(json.metadata && json.metadata.version && json.challenge)) {
         throw new error.Error('File is corrupted.', true);
@@ -58,9 +33,9 @@ async function import_account(jsonfile, password, keepCurrPsw) {
     const workFactor = json.workFactor;
     const challenge = json.challenge;
 
-    //transform stored salt into Uint8arry
+    //transform stored salt into array
     const saltObject = json.challenge.salt;
-    const salt = new Uint8Array(Object.values(saltObject));
+    const salt = Array.from(saltObject);  //convert into array, only for chrome because UInt8Array can't be serialized to json
     challenge.salt = salt;
     
     const connectionDuration = json.connectionDuration ?? 3; // 3 mins is default value
@@ -108,13 +83,13 @@ async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ connectionDuration: connectionDuration});
         await storage.store({ emails: emails});
         await storage.store({ credentials: creds });
-        await storage.store({ psw_generators: generators});
+        await storage.store({ generators: generators});
         setDerivedKey(fileKey);
     }
 }
 
 
 export async function handle(message) {
-    await import_account(message.params.jsonFile, message.params.password, message.params.keepCurrPsw);
+    await import_account(message.params.json, message.params.password, message.params.keepCurrPsw);
     return true;
 }

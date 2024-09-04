@@ -1,6 +1,5 @@
 import * as manager from '../manager/manager.js';
 import * as vars from '../manager/vars.js';
-import { checkChallenge } from '../tools/challenge.js';
 import { decryptWithAES } from "../tools/crypto.js";
 
 async function waitLogin() {
@@ -198,12 +197,12 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 //CHECK LOGIN
 async function checkLogin() {
     try {
-      const sessionTimeout = await manager.directRequest('session', 'timeout', null);
-      if (sessionTimeout) {
-        await manager.directRequest('logout', null, null);
-        vars.setIsLogged(false);
-        chrome.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
-      }
+        const sessionTimeout = await manager.directRequest('session', 'timeout', null);
+        if (sessionTimeout) {
+            await manager.directRequest('logout', null, null);
+            vars.setIsLogged(false);
+            chrome.runtime.sendMessage({ endpoint: 'managerIgnore', type: 'logout', params: null});
+        }
     } catch (error) {
     }
 }

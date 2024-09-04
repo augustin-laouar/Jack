@@ -20,37 +20,58 @@ import * as popup from '../popup.js';
 import { showInfo, showError } from '../style/show_info.js';
 import { togglePassword } from '../style/toggle_password.js';
 import * as request from '../manager/manager_request.js';
+import { read } from '../tools/storage.js';
 
 
 export async function export_account(password, givenFileName) {
-    const isValid = await request.makeRequest('password', 'verify', { password: password});
-    if(isValid === false){
+    const isValid = await request.makeRequest('password', 'verify', { password: password });
+    if (isValid === false) {
         throw new error.Error('Your current password is invalid.', true);
     }
-    const blob = await request.makeRequest('export', null, null);
+    const jsonStr = await request.makeRequest('export', null, null);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
     var filename;
-    if(givenFileName === '') {
+    if (givenFileName === '') {
         filename = 'jack.json';
-    }
-    else {
+    } else {
         filename = givenFileName + '.json';
     }
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
 
-    document.body.appendChild(a);
-    a.click();
-
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    chrome.downloads.download({
+        url: url,
+        filename: filename,
+        saveAs: true 
+    }, function (downloadId) {
+        URL.revokeObjectURL(url);
+    });
 }
 
+
+async function read_json_file(jsonfile) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.readAsText(jsonfile);
+        reader.onload = function(event) {
+            try {
+                const jsonData = JSON.parse(event.target.result);
+                resolve(jsonData);
+            } catch (e) {
+                reject(new error.Error('Error reading account file.', true));
+            }
+        };
+        reader.onerror = function() {
+            reject(new error.Error('Account file is unreadable.', true));
+        };
+    });
+}
+
+
 export async function import_account(jsonfile, password, keepCurrPsw) {
+    const json = await read_json_file(jsonfile)
     const params = {
-        jsonFile: jsonfile,
+        json: json,
         password: password,
         keepCurrPsw: keepCurrPsw
     }

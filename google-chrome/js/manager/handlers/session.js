@@ -50,21 +50,24 @@ async function sessionExpired() {
 async function sessionTimeout() {
     const lastAction = getLastAction();
     if(lastAction === null) {
-        return false;
+        return true;
     }
-    const sessionDuration = await storage.read('connectionDuration');
-    if(!sessionDuration) {
-        return false;
+    const sessionDurationStr = await storage.read('connectionDuration');
+    if(!sessionDurationStr) {
+        return true;
     }
+    const sessionDuration = parseFloat(sessionDurationStr);
+    const finalSessionDuration = Math.min(sessionDuration, 10);
     const currentDate = new Date();
     const elapsedTime = currentDate.getTime() - lastAction.getTime();
-    if (elapsedTime >= sessionDuration * 60000) {
+    if (elapsedTime >= finalSessionDuration * 60000) {
         return true;
     } 
     else {
         return false;
     }
 }
+
 function updateLastAction() {
     try{
         const currentDate = new Date();

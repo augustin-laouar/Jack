@@ -18,7 +18,8 @@
       "contextMenus",
       "activeTab",
       "alarms",
-      "notifications"
+      "notifications",
+      "downloads"
   ],
   "host_permissions": [
       "http://*/*",

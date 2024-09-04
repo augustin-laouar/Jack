@@ -108,7 +108,7 @@ async function import_account(jsonfile, password, keepCurrPsw) {
         await storage.store({ connectionDuration: connectionDuration});
         await storage.store({ emails: emails});
         await storage.store({ credentials: creds });
-        await storage.store({ psw_generators: generators});
+        await storage.store({ generators: generators});
         setDerivedKey(fileKey);
     }
 }
