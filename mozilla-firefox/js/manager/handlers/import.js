@@ -60,7 +60,7 @@ async function import_account(jsonfile, password, keepCurrPsw) {
 
     //transform stored salt into Uint8arry
     const saltObject = json.challenge.salt;
-    const salt = new Uint8Array(Object.values(saltObject));
+    const salt = Array.from(saltObject); 
     challenge.salt = salt;
     
     const connectionDuration = json.connectionDuration ?? 3; // 3 mins is default value
