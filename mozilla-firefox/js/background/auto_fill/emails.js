@@ -24,7 +24,7 @@ import { getDerivedKey } from "../../manager/vars.js";
 async function get_email() {
   try {
     let encryptedEmails = await directRequest('emails', 'get', {});
-    if(encryptedEmails.length === 0 ) {
+    if(!encryptedEmails || encryptedEmails.length === 0 ) {
       await directRequest('emails', 'create', { random: true });
       encryptedEmails = await directRequest('emails', 'get', {});
     }

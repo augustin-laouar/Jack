@@ -90,7 +90,7 @@ async function fillCredentialsFields(cred_id, tab) {
 async function get_email() {
     try {
       let encryptedEmails = await manager.directRequest('emails', 'get', {});
-      if(encryptedEmails.length === 0 ) {
+      if(!encryptedEmails || encryptedEmails.length === 0) {
         await manager.directRequest('emails', 'create', { random: true });
         encryptedEmails = await manager.directRequest('emails', 'get', {});
       }

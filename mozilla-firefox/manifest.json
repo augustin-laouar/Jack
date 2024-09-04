@@ -2,7 +2,7 @@
     "name": "Jack",
     "description": "Manage temporary e-mails addresses and passwords.",
     "manifest_version": 2,
-    "version" : "1.2",
+    "version" : "1.3",
     "author": "Augustin LAOUAR",
     "icons": {
         "48": "icons/jack-2-min.png"
@@ -24,8 +24,7 @@
         "<all_urls>",
         "contextMenus",
         "activeTab",
-        "alarms",
-        "notifications"
+        "alarms"
         ],
     "background": {
       "page": "/html/background.html",

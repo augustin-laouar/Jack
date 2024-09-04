@@ -1,28 +1,31 @@
 # Jack
 
 ## todo
-- Ajouter sur chrome
 - browser.storage.sync
 ## Process vérification App
 ### Connexion 
-- Création du compte avec bon/mauvais mot de passe
-- Utilisation du workFactor
-- Modification du mot de passe
+- Création du compte avec bon/mauvais mot de passe OK C/
+- Utilisation du workFactor OK C/
+- Modification du mot de passe OK C/
 ### Emails
-- Ajout/Supp d'adresses
-- Lecture d'emails
+- Ajout/Supp d'adresses OK C/   
+- Lecture d'emails OK C/ 
+- auto gen OK C/
 ### Credentials 
-- Ajout/Modif/supp cred
-- Ajout/Modif/supp generators
-- Recherche
+- Ajout/Modif/supp cred OK C/
+- Ajout/Modif/supp generators OK C/
+- Recherche OK C/
+- Use saved cred OK C/
 ### Import/export
-- Import/export avec cred, emails, generatrs, workFactor, sessionValidity
-- Import en gardant le mdp
+- Import/export avec cred, emails, generatrs, workFactor, sessionValidity OK C/
+- Import en gardant le mdp OK C/
 - Compataibilité chrome/mozilla
-- Test avec fichiers corrompus
+- Test avec fichiers corrompus OK C/
 ### About
 - Relecture
-
+### Autre
+- reset OK C/
+- 
 # Bugs 
 ## Tache actuel
 - overflow auto au lieu de scroll. 
