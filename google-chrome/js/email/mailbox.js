@@ -314,6 +314,7 @@ function showCustomMenu(x, y, myMail, message, tab, trElement) {
             showMailContainer.classList.add('text-light');
             showMailContainer.style.removeProperty('overflow');
             emptyMailContent();
+            fillEmailList(myMail);
         }
         catch(error){
             showError(error);
