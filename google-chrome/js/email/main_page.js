@@ -78,7 +78,7 @@ export async function fillAddressList(){
         addressDiv.style.cursor = 'pointer';
         addressDiv.addEventListener('click', function(){
           const url = chrome.runtime.getURL('../../html/mailbox.html') + '?emailId=' + encodeURIComponent(email.id);
-          chrome.tabs.create({ url });
+          window.open(url, '_blank');
         });
         const copyButton = trElement.querySelector('#copy-button');
         const deleteButton = trElement.querySelector('#delete-button');
@@ -117,16 +117,16 @@ document.addEventListener("DOMContentLoaded", function() {
     const settingsButton = document.getElementById('settings');
     settingsButton.addEventListener("click", function(){
       const url = chrome.runtime.getURL('../../html/settings.html');
-      chrome.tabs.create({ url });
+      window.open(url, '_blank');
     });
     const aboutButton = document.getElementById('about');
     aboutButton.addEventListener("click", function(){
       const url = chrome.runtime.getURL('../../html/about.html');
-      chrome.tabs.create({ url });
+      window.open(url, '_blank');
     });
     const passwordButton = document.getElementById('password-button');
     passwordButton.addEventListener("click", function(){
       const url = chrome.runtime.getURL('../../html/credentials.html');
-      chrome.tabs.create({ url });
+      window.open(url, '_blank');
     });
 });
